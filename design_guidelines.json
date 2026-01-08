@@ -1,0 +1,139 @@
+{
+  "identity": {
+    "persona": "E1 - The Anti-AI Designer",
+    "philosophy": "Fusion over Imitation. Emotion First. Content is King.",
+    "anti_patterns": [
+      "Generic center alignment",
+      "Overused gradients",
+      "Inter font for headings",
+      "Low contrast text"
+    ]
+  },
+  "theme": {
+    "name": "Swiss Urgency",
+    "mode": "light",
+    "emotional_archetype": "Swiss & High-Contrast (Authority, Clarity, Speed)",
+    "description": "A high-contrast, objective design that prioritizes speed and trust. White backgrounds, stark black text, and signal orange/red for emergency actions."
+  },
+  "typography": {
+    "headings": {
+      "font_family": "Chivo, sans-serif",
+      "weights": ["700", "900"],
+      "usage": "All section titles, hero text, and major calls to action. Use tight tracking (-0.02em).",
+      "google_font_url": "https://fonts.googleapis.com/css2?family=Chivo:wght@400;700;900&display=swap"
+    },
+    "body": {
+      "font_family": "Inter, sans-serif",
+      "weights": ["400", "500"],
+      "usage": "Paragraphs, inputs, labels, and data tables.",
+      "google_font_url": "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
+    },
+    "mono": {
+      "font_family": "JetBrains Mono, monospace",
+      "usage": "Timestamps, pricing, and technical data."
+    }
+  },
+  "colors": {
+    "primary": {
+      "name": "Emergency Orange",
+      "hex": "#FF4500",
+      "usage": "Primary CTAs (Book Now), Emergency Toggles, Urgent Badges",
+      "tailwind": "bg-[#FF4500] text-white hover:bg-[#CC3700]"
+    },
+    "secondary": {
+      "name": "Trust Slate",
+      "hex": "#0F172A",
+      "usage": "Headings, Footer Background, Primary Navigation",
+      "tailwind": "bg-slate-900 text-white"
+    },
+    "background": {
+      "default": "#FFFFFF",
+      "subtle": "#F8FAFC",
+      "paper": "#FFFFFF"
+    },
+    "text": {
+      "primary": "#0F172A",
+      "secondary": "#475569",
+      "muted": "#94A3B8"
+    },
+    "status": {
+      "success": "#10B981",
+      "warning": "#F59E0B",
+      "error": "#EF4444"
+    }
+  },
+  "layout_strategies": {
+    "marketing": {
+      "grid": "Bento Grid (Mode A: Tetris)",
+      "spacing": "Generous (p-8 to p-24)",
+      "alignment": "Asymmetrical. Avoid centering everything.",
+      "hero_style": "Split screen or Heavy Typography + Action Box"
+    },
+    "dashboard": {
+      "grid": "Control Room (Mode B)",
+      "spacing": "Compact (p-4 to p-6)",
+      "surface": "Flat cards with 1px borders, no shadows"
+    },
+    "booking_flow": {
+      "style": "Progressive Disclosure Stepper",
+      "focus": "One question per screen on mobile, 2-column on desktop"
+    }
+  },
+  "components": {
+    "buttons": {
+      "style": "Sharp corners or small radius (rounded-md). High contrast.",
+      "animation": "Scale down on click (active:scale-95)"
+    },
+    "cards": {
+      "style": "Flat, 1px border (border-slate-200), no shadow by default. Hover: Lift + Shadow.",
+      "padding": "p-6 or p-8"
+    },
+    "inputs": {
+      "style": "Tall (h-12), bg-slate-50, border-slate-200. Focus: Ring-2 ring-orange-500/20"
+    }
+  },
+  "visual_enhancers": {
+    "textures": "Subtle noise overlay on solid backgrounds to reduce digital flatness.",
+    "glassmorphism": "Use only for sticky headers and floating action bars (backdrop-blur-xl).",
+    "icons": "Phosphor Icons (Duotone) for marketing, Lucide for UI."
+  },
+  "image_urls": {
+    "hero": {
+      "url": "https://images.pexels.com/photos/8165345/pexels-photo-8165345.jpeg",
+      "description": "Service van arriving, implies speed and readiness",
+      "category": "hero_bg"
+    },
+    "services": {
+      "electrician": "https://images.pexels.com/photos/8488029/pexels-photo-8488029.jpeg",
+      "plumber": "https://images.pexels.com/photos/7220892/pexels-photo-7220892.jpeg",
+      "locksmith": "https://images.pexels.com/photos/18783949/pexels-photo-18783949.jpeg"
+    },
+    "trust": {
+      "happy_customer": "https://images.pexels.com/photos/7415122/pexels-photo-7415122.jpeg",
+      "tools_flatlay": "https://images.pexels.com/photos/7482641/pexels-photo-7482641.jpeg"
+    }
+  },
+  "instructions_to_main_agent": {
+    "general": "You are building a high-trust, high-speed emergency service platform. Do not make it look like a generic SaaS. It should feel like a utility tool.",
+    "critical_rules": [
+      "Use the 'Chivo' font for all headings. Import it in index.css.",
+      "Do not use gradients for the primary action button. Solid Orange only.",
+      "Ensure the 'Emergency' toggle or badge is visible in the hero.",
+      "Use the provided image URLs for the respective sections.",
+      "Follow the 'Bento Grid' layout for the services section.",
+      "Dashboard must be dense and data-rich, not airy like the landing page."
+    ],
+    "step_by_step": [
+      "1. Setup Tailwind config with new colors and fonts.",
+      "2. Create the Landing Page with Hero, Services (Bento), and Trust sections.",
+      "3. Build the Booking Flow (Stepper).",
+      "4. Build the Dashboards (Customer & Vakman)."
+    ]
+  },
+  "UNIVERSAL_GUIDELINES_FOR_MAIN_AGENT": {
+    "design_philosophy": "Avoid 'AI Slop'. Create distinct, character-rich interfaces.",
+    "interaction": "Every button needs a hover and active state. Use 'sonner' for toasts.",
+    "spacing": "Use 2x more whitespace than you think is necessary for marketing pages.",
+    "accessibility": "Ensure text contrast is AA compliant. Use data-testid for all interactive elements."
+  }
+}
