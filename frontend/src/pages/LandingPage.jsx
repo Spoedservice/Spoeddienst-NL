@@ -201,9 +201,9 @@ export default function LandingPage() {
 
             <div className="relative hidden lg:block">
               <img 
-                src="https://images.unsplash.com/photo-1621905251918-48416bd8575a?w=800&q=80" 
-                alt="Professionele elektricien aan het werk - SpoedDienst24 24/7 spoed elektricien service voor storingen en reparaties"
-                title="Spoed elektricien nodig? SpoedDienst24.nl - 24 uur per dag bereikbaar"
+                src="https://customer-assets.emergentagent.com/job_handylink-13/artifacts/m01vxn24_4d12ce14-c713-457e-a364-25944a3c3a96-md.jpeg" 
+                alt="SpoedDienst24 - Spoed Slotenmaker, Elektricien en Loodgieter - Binnen 30 minuten ter plaatse 24/7 bereikbaar"
+                title="SpoedDienst24.nl - Spoed vakmannen voor slotenmaker, elektricien en loodgieter"
                 className="rounded-2xl shadow-2xl w-full h-[500px] object-cover"
                 loading="eager"
               />
