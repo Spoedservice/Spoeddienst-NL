@@ -201,9 +201,11 @@ export default function LandingPage() {
 
             <div className="relative hidden lg:block">
               <img 
-                src="https://images.pexels.com/photos/5691622/pexels-photo-5691622.jpeg" 
-                alt="Vakman aan het werk"
+                src="https://images.unsplash.com/photo-1621905251918-48416bd8575a?w=800&q=80" 
+                alt="Professionele elektricien aan het werk - SpoedDienst24 24/7 spoed elektricien service voor storingen en reparaties"
+                title="Spoed elektricien nodig? SpoedDienst24.nl - 24 uur per dag bereikbaar"
                 className="rounded-2xl shadow-2xl w-full h-[500px] object-cover"
+                loading="eager"
               />
               <div className="absolute -bottom-6 -left-6 bg-white p-4 rounded-xl shadow-lg">
                 <div className="flex items-center gap-3">
