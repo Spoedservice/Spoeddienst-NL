@@ -143,25 +143,25 @@ export default function BookingPage() {
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Progress Steps */}
-        <div className="flex items-center justify-center mb-8">
+        <div className="flex items-center justify-center mb-6 md:mb-8 px-2">
           {[1, 2, 3, 4].map((s) => (
             <div key={s} className="flex items-center">
               <div 
-                className={`w-10 h-10 rounded-full flex items-center justify-center font-heading font-bold text-sm
+                className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center font-heading font-bold text-xs md:text-sm
                   ${step >= s ? 'bg-[#FF4500] text-white' : 'bg-slate-200 text-slate-500'}`}
               >
-                {step > s ? <CheckCircle className="w-5 h-5" /> : s}
+                {step > s ? <CheckCircle className="w-4 h-4 md:w-5 md:h-5" /> : s}
               </div>
               {s < 4 && (
-                <div className={`w-16 h-1 mx-2 ${step > s ? 'bg-[#FF4500]' : 'bg-slate-200'}`} />
+                <div className={`w-8 md:w-16 h-1 mx-1 md:mx-2 ${step > s ? 'bg-[#FF4500]' : 'bg-slate-200'}`} />
               )}
             </div>
           ))}
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-8">
+        <div className="grid lg:grid-cols-3 gap-6 lg:gap-8">
           {/* Main Form */}
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-2 order-1">
             <Card className="border border-slate-200">
               <CardHeader>
                 <div className="flex items-center gap-3 mb-2">
@@ -238,7 +238,7 @@ export default function BookingPage() {
                     </div>
                     <div>
                       <Label className="text-base font-medium">Selecteer een tijdslot</Label>
-                      <div className="grid grid-cols-2 gap-3 mt-2">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 md:gap-3 mt-2">
                         {timeSlots.map((slot) => (
                           <button
                             key={slot}
@@ -388,8 +388,8 @@ export default function BookingPage() {
           </div>
 
           {/* Summary Sidebar */}
-          <div>
-            <Card className="border border-slate-200 sticky top-4">
+          <div className="order-2 lg:order-2">
+            <Card className="border border-slate-200 lg:sticky lg:top-4">
               <CardHeader>
                 <CardTitle className="font-heading text-lg">Overzicht</CardTitle>
               </CardHeader>
