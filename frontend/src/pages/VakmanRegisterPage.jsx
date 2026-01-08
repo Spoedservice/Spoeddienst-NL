@@ -6,7 +6,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { Zap, Droplets, Key, ArrowLeft, CheckCircle } from "lucide-react";
 
@@ -179,20 +178,21 @@ export default function VakmanRegisterPage() {
 
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
-                  <Label>Vakgebied</Label>
-                  <Select 
-                    value={formData.service_type} 
-                    onValueChange={(value) => setFormData({ ...formData, service_type: value })}
+                  <Label htmlFor="service_type">Vakgebied</Label>
+                  <select
+                    id="service_type"
+                    name="service_type"
+                    value={formData.service_type}
+                    onChange={handleInputChange}
+                    className="mt-1 w-full h-10 px-3 py-2 border border-slate-200 rounded-md bg-white text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#FF4500] focus:border-transparent"
+                    required
+                    data-testid="vakman-service"
                   >
-                    <SelectTrigger className="mt-1" data-testid="vakman-service">
-                      <SelectValue placeholder="Selecteer vakgebied" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="elektricien" data-testid="service-elektricien">Elektricien</SelectItem>
-                      <SelectItem value="loodgieter" data-testid="service-loodgieter">Loodgieter</SelectItem>
-                      <SelectItem value="slotenmaker" data-testid="service-slotenmaker">Slotenmaker</SelectItem>
-                    </SelectContent>
-                  </Select>
+                    <option value="">Selecteer vakgebied</option>
+                    <option value="elektricien">Elektricien</option>
+                    <option value="loodgieter">Loodgieter</option>
+                    <option value="slotenmaker">Slotenmaker</option>
+                  </select>
                 </div>
                 <div>
                   <Label htmlFor="hourly_rate">Uurtarief (€)</Label>
