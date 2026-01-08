@@ -12,6 +12,9 @@ from datetime import datetime, timezone
 import bcrypt
 import jwt
 from emergentintegrations.payments.stripe.checkout import StripeCheckout, CheckoutSessionResponse, CheckoutStatusResponse, CheckoutSessionRequest
+import aiosmtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -27,6 +30,13 @@ JWT_ALGORITHM = "HS256"
 
 # Stripe Config
 STRIPE_API_KEY = os.environ.get('STRIPE_API_KEY')
+
+# SMTP Config
+SMTP_HOST = os.environ.get('SMTP_HOST', 'smtp.transip.email')
+SMTP_PORT = int(os.environ.get('SMTP_PORT', 465))
+SMTP_USER = os.environ.get('SMTP_USER', 'info@spoeddienst24.nl')
+SMTP_PASSWORD = os.environ.get('SMTP_PASSWORD', '')
+SMTP_FROM = os.environ.get('SMTP_FROM', 'info@spoeddienst24.nl')
 
 # Create the main app
 app = FastAPI()
