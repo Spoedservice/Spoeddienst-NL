@@ -637,7 +637,7 @@ async def get_latest_reviews():
 
 @api_router.get("/")
 async def root():
-    return {"message": "SpoedKlus API", "version": "1.0.0"}
+    return {"message": "SpoedDienst24 API", "version": "1.0.0"}
 
 # Include the router in the main app
 app.include_router(api_router)
