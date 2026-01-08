@@ -192,6 +192,126 @@ async def get_current_user(request: Request):
     except jwt.InvalidTokenError:
         raise HTTPException(status_code=401, detail="Invalid token")
 
+async def send_booking_email(booking_data: dict):
+    """Send booking notification email to info@spoeddienst24.nl"""
+    try:
+        service_names = {
+            "elektricien": "Elektricien",
+            "loodgieter": "Loodgieter",
+            "slotenmaker": "Slotenmaker"
+        }
+        service_name = service_names.get(booking_data.get("service_type", ""), booking_data.get("service_type", "Onbekend"))
+        is_spoed = "JA - SPOED" if booking_data.get("is_emergency") else "Nee"
+        
+        # Create email content
+        html_content = f"""
+        <html>
+        <body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+            <div style="background-color: #FF4500; padding: 20px; text-align: center;">
+                <h1 style="color: white; margin: 0;">⚡ SpoedDienst24</h1>
+                <p style="color: white; margin: 5px 0;">Nieuwe Boeking Ontvangen</p>
+            </div>
+            
+            <div style="padding: 20px; background-color: #f8f9fa;">
+                <h2 style="color: #333; border-bottom: 2px solid #FF4500; padding-bottom: 10px;">Boekingsdetails</h2>
+                
+                <table style="width: 100%; border-collapse: collapse;">
+                    <tr>
+                        <td style="padding: 10px; border-bottom: 1px solid #ddd;"><strong>Boeking ID:</strong></td>
+                        <td style="padding: 10px; border-bottom: 1px solid #ddd;">{booking_data.get('id', 'N/A')}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border-bottom: 1px solid #ddd;"><strong>Dienst:</strong></td>
+                        <td style="padding: 10px; border-bottom: 1px solid #ddd;">{service_name}</td>
+                    </tr>
+                    <tr style="background-color: {'#ffe6e6' if booking_data.get('is_emergency') else 'transparent'};">
+                        <td style="padding: 10px; border-bottom: 1px solid #ddd;"><strong>Spoed:</strong></td>
+                        <td style="padding: 10px; border-bottom: 1px solid #ddd; color: {'#FF4500' if booking_data.get('is_emergency') else '#333'}; font-weight: {'bold' if booking_data.get('is_emergency') else 'normal'};">{is_spoed}</td>
+                    </tr>
+                </table>
+                
+                <h3 style="color: #333; margin-top: 20px;">Klantgegevens</h3>
+                <table style="width: 100%; border-collapse: collapse;">
+                    <tr>
+                        <td style="padding: 10px; border-bottom: 1px solid #ddd;"><strong>Naam:</strong></td>
+                        <td style="padding: 10px; border-bottom: 1px solid #ddd;">{booking_data.get('customer_name', 'N/A')}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border-bottom: 1px solid #ddd;"><strong>E-mail:</strong></td>
+                        <td style="padding: 10px; border-bottom: 1px solid #ddd;"><a href="mailto:{booking_data.get('customer_email', '')}">{booking_data.get('customer_email', 'N/A')}</a></td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border-bottom: 1px solid #ddd;"><strong>Telefoon:</strong></td>
+                        <td style="padding: 10px; border-bottom: 1px solid #ddd;"><a href="tel:{booking_data.get('customer_phone', '')}">{booking_data.get('customer_phone', 'N/A')}</a></td>
+                    </tr>
+                </table>
+                
+                <h3 style="color: #333; margin-top: 20px;">Locatie</h3>
+                <table style="width: 100%; border-collapse: collapse;">
+                    <tr>
+                        <td style="padding: 10px; border-bottom: 1px solid #ddd;"><strong>Adres:</strong></td>
+                        <td style="padding: 10px; border-bottom: 1px solid #ddd;">{booking_data.get('address', 'N/A')}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border-bottom: 1px solid #ddd;"><strong>Postcode:</strong></td>
+                        <td style="padding: 10px; border-bottom: 1px solid #ddd;">{booking_data.get('postal_code', 'N/A')}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border-bottom: 1px solid #ddd;"><strong>Plaats:</strong></td>
+                        <td style="padding: 10px; border-bottom: 1px solid #ddd;">{booking_data.get('city', 'N/A')}</td>
+                    </tr>
+                </table>
+                
+                <h3 style="color: #333; margin-top: 20px;">Afspraak</h3>
+                <table style="width: 100%; border-collapse: collapse;">
+                    <tr>
+                        <td style="padding: 10px; border-bottom: 1px solid #ddd;"><strong>Datum:</strong></td>
+                        <td style="padding: 10px; border-bottom: 1px solid #ddd;">{booking_data.get('preferred_date', 'N/A')}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border-bottom: 1px solid #ddd;"><strong>Tijd:</strong></td>
+                        <td style="padding: 10px; border-bottom: 1px solid #ddd;">{booking_data.get('preferred_time', 'N/A')}</td>
+                    </tr>
+                </table>
+                
+                <h3 style="color: #333; margin-top: 20px;">Probleemomschrijving</h3>
+                <div style="background-color: white; padding: 15px; border-radius: 5px; border: 1px solid #ddd;">
+                    <p style="margin: 0; white-space: pre-wrap;">{booking_data.get('description', 'Geen omschrijving')}</p>
+                </div>
+            </div>
+            
+            <div style="background-color: #333; padding: 15px; text-align: center;">
+                <p style="color: #999; margin: 0; font-size: 12px;">Dit is een automatisch gegenereerd bericht van SpoedDienst24.nl</p>
+            </div>
+        </body>
+        </html>
+        """
+        
+        # Create message
+        message = MIMEMultipart("alternative")
+        message["From"] = SMTP_FROM
+        message["To"] = "info@spoeddienst24.nl"
+        message["Subject"] = f"{'🚨 SPOED - ' if booking_data.get('is_emergency') else ''}Nieuwe Boeking: {service_name} - {booking_data.get('customer_name', 'Klant')}"
+        
+        # Add HTML content
+        html_part = MIMEText(html_content, "html")
+        message.attach(html_part)
+        
+        # Send email
+        await aiosmtplib.send(
+            message,
+            hostname=SMTP_HOST,
+            port=SMTP_PORT,
+            username=SMTP_USER,
+            password=SMTP_PASSWORD,
+            use_tls=True
+        )
+        logging.info(f"Booking email sent successfully for booking {booking_data.get('id')}")
+        return True
+    except Exception as e:
+        logging.error(f"Failed to send booking email: {str(e)}")
+        return False
+
 # ==================== SERVICE DATA ====================
 
 SERVICES = [
