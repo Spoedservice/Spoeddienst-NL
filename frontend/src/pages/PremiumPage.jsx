@@ -65,8 +65,8 @@ export default function PremiumPage() {
               <CardContent className="p-8">
                 <h2 className="font-heading font-bold text-2xl text-slate-900 mb-2">Premium</h2>
                 <p className="text-slate-500 mb-6">Voor zorgeloos wonen</p>
-                <p className="font-heading font-black text-4xl text-slate-900 mb-1">€9,95<span className="text-lg font-normal text-slate-500">/maand</span></p>
-                <p className="text-slate-500 text-sm mb-6">of €99/jaar (bespaar €20)</p>
+                <p className="font-heading font-black text-4xl text-slate-900 mb-1">€39,95<span className="text-lg font-normal text-slate-500">/maand</span></p>
+                <p className="text-slate-500 text-sm mb-6">of €399/jaar (bespaar €80)</p>
                 <ul className="space-y-3 mb-8">
                   {[
                     "Alles van Standaard",
