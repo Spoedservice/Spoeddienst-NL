@@ -214,7 +214,7 @@ export default function LandingPage() {
                   </div>
                   <div>
                     <p className="text-sm text-slate-500">Gemiddelde reactietijd</p>
-                    <p className="font-heading font-bold text-lg text-slate-900">30 minuten</p>
+                    <p className="font-heading font-bold text-lg text-slate-900">15 minuten</p>
                   </div>
                 </div>
               </div>
