@@ -633,6 +633,91 @@ async def get_latest_reviews():
     
     return reviews
 
+# ==================== PREMIUM SUBSCRIPTION ROUTES ====================
+
+# Bankgegevens voor premium betalingen
+# IBAN: NL07REVO6329249105
+# BIC: CHASDEFX
+
+class PremiumSubscribeRequest(BaseModel):
+    plan: str  # 'monthly' or 'yearly'
+    amount: float
+
+class PremiumSubscription(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_email: Optional[str] = None
+    plan: str
+    amount: float
+    currency: str = "eur"
+    status: str = "pending"
+    payment_method: str = "stripe"
+    session_id: Optional[str] = None
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+@api_router.post("/premium/subscribe")
+async def create_premium_subscription(subscription: PremiumSubscribeRequest, request: Request):
+    """Create a premium subscription checkout session"""
+    
+    amount = 39.95 if subscription.plan == 'monthly' else 399.00
+    
+    host_url = str(request.base_url).rstrip('/')
+    webhook_url = f"{host_url}/api/webhook/stripe"
+    
+    stripe_checkout = StripeCheckout(api_key=STRIPE_API_KEY, webhook_url=webhook_url)
+    
+    origin = request.headers.get("origin", host_url)
+    success_url = f"{origin}/premium/success?session_id={{CHECKOUT_SESSION_ID}}"
+    cancel_url = f"{origin}/premium"
+    
+    checkout_request = CheckoutSessionRequest(
+        amount=amount,
+        currency="eur",
+        success_url=success_url,
+        cancel_url=cancel_url,
+        metadata={
+            "type": "premium_subscription",
+            "plan": subscription.plan
+        }
+    )
+    
+    session: CheckoutSessionResponse = await stripe_checkout.create_checkout_session(checkout_request)
+    
+    # Store subscription record
+    sub = PremiumSubscription(
+        plan=subscription.plan,
+        amount=amount,
+        session_id=session.session_id
+    )
+    sub_dict = sub.model_dump()
+    sub_dict["created_at"] = sub_dict["created_at"].isoformat()
+    await db.premium_subscriptions.insert_one(sub_dict)
+    
+    return {"url": session.url, "session_id": session.session_id}
+
+@api_router.get("/premium/status/{session_id}")
+async def get_premium_status(session_id: str, request: Request):
+    """Check premium subscription payment status"""
+    
+    host_url = str(request.base_url).rstrip('/')
+    webhook_url = f"{host_url}/api/webhook/stripe"
+    
+    stripe_checkout = StripeCheckout(api_key=STRIPE_API_KEY, webhook_url=webhook_url)
+    status: CheckoutStatusResponse = await stripe_checkout.get_checkout_status(session_id)
+    
+    if status.payment_status == "paid":
+        await db.premium_subscriptions.update_one(
+            {"session_id": session_id},
+            {"$set": {"status": "active", "payment_status": "paid"}}
+        )
+    
+    return {
+        "status": status.status,
+        "payment_status": status.payment_status,
+        "amount_total": status.amount_total,
+        "currency": status.currency
+    }
+
 # ==================== ROOT ====================
 
 @api_router.get("/")
