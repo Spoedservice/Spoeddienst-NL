@@ -402,8 +402,108 @@ async def get_me(current_user: dict = Depends(get_current_user)):
 
 # ==================== VAKMAN ROUTES ====================
 
+async def send_vakman_registration_email(vakman_data: dict, base_url: str):
+    """Send vakman registration email to info@spoeddienst24.nl for approval"""
+    try:
+        service_names = {
+            "elektricien": "Elektricien",
+            "loodgieter": "Loodgieter", 
+            "slotenmaker": "Slotenmaker"
+        }
+        service_name = service_names.get(vakman_data.get("service_type", ""), vakman_data.get("service_type", "Onbekend"))
+        vakman_id = vakman_data.get("id")
+        
+        # Create approval and rejection URLs
+        approve_url = f"{base_url}/api/vakman/{vakman_id}/approve?action=approve"
+        reject_url = f"{base_url}/api/vakman/{vakman_id}/approve?action=reject"
+        
+        html_content = f"""
+        <html>
+        <body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+            <div style="background-color: #FF4500; padding: 20px; text-align: center;">
+                <h1 style="color: white; margin: 0;">👷 SpoedDienst24</h1>
+                <p style="color: white; margin: 5px 0;">Nieuwe Vakman Aanmelding</p>
+            </div>
+            
+            <div style="padding: 20px; background-color: #f8f9fa;">
+                <h2 style="color: #333; border-bottom: 2px solid #FF4500; padding-bottom: 10px;">Vakman Gegevens</h2>
+                
+                <table style="width: 100%; border-collapse: collapse;">
+                    <tr>
+                        <td style="padding: 10px; border-bottom: 1px solid #ddd;"><strong>Naam:</strong></td>
+                        <td style="padding: 10px; border-bottom: 1px solid #ddd;">{vakman_data.get('name', 'N/A')}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border-bottom: 1px solid #ddd;"><strong>E-mail:</strong></td>
+                        <td style="padding: 10px; border-bottom: 1px solid #ddd;"><a href="mailto:{vakman_data.get('email', '')}">{vakman_data.get('email', 'N/A')}</a></td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border-bottom: 1px solid #ddd;"><strong>Telefoon:</strong></td>
+                        <td style="padding: 10px; border-bottom: 1px solid #ddd;"><a href="tel:{vakman_data.get('phone', '')}">{vakman_data.get('phone', 'N/A')}</a></td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border-bottom: 1px solid #ddd;"><strong>Vakgebied:</strong></td>
+                        <td style="padding: 10px; border-bottom: 1px solid #ddd;">{service_name}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border-bottom: 1px solid #ddd;"><strong>Werkgebied:</strong></td>
+                        <td style="padding: 10px; border-bottom: 1px solid #ddd;">{vakman_data.get('location', 'N/A')}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border-bottom: 1px solid #ddd;"><strong>Uurtarief:</strong></td>
+                        <td style="padding: 10px; border-bottom: 1px solid #ddd;">€{vakman_data.get('hourly_rate', 'N/A')},-</td>
+                    </tr>
+                </table>
+                
+                <h3 style="color: #333; margin-top: 20px;">Over de vakman</h3>
+                <div style="background-color: white; padding: 15px; border-radius: 5px; border: 1px solid #ddd;">
+                    <p style="margin: 0; white-space: pre-wrap;">{vakman_data.get('description', 'Geen beschrijving')}</p>
+                </div>
+                
+                <div style="margin-top: 30px; text-align: center;">
+                    <p style="color: #666; margin-bottom: 20px;">Klik op een knop om de aanmelding te verwerken:</p>
+                    
+                    <a href="{approve_url}" style="display: inline-block; background-color: #22c55e; color: white; padding: 15px 40px; text-decoration: none; border-radius: 8px; font-weight: bold; margin-right: 10px;">
+                        ✓ GOEDKEUREN
+                    </a>
+                    
+                    <a href="{reject_url}" style="display: inline-block; background-color: #ef4444; color: white; padding: 15px 40px; text-decoration: none; border-radius: 8px; font-weight: bold;">
+                        ✗ AFWIJZEN
+                    </a>
+                </div>
+            </div>
+            
+            <div style="background-color: #333; padding: 15px; text-align: center;">
+                <p style="color: #999; margin: 0; font-size: 12px;">Dit is een automatisch gegenereerd bericht van SpoedDienst24.nl</p>
+            </div>
+        </body>
+        </html>
+        """
+        
+        message = MIMEMultipart("alternative")
+        message["From"] = SMTP_FROM
+        message["To"] = "info@spoeddienst24.nl"
+        message["Subject"] = f"👷 Nieuwe Vakman Aanmelding: {vakman_data.get('name', 'Vakman')} - {service_name}"
+        
+        html_part = MIMEText(html_content, "html")
+        message.attach(html_part)
+        
+        await aiosmtplib.send(
+            message,
+            hostname=SMTP_HOST,
+            port=SMTP_PORT,
+            username=SMTP_USER,
+            password=SMTP_PASSWORD,
+            use_tls=True
+        )
+        logging.info(f"Vakman registration email sent successfully for {vakman_data.get('name')}")
+        return True
+    except Exception as e:
+        logging.error(f"Failed to send vakman registration email: {str(e)}")
+        return False
+
 @api_router.post("/vakman/register")
-async def register_vakman(vakman: VakmanCreate):
+async def register_vakman(vakman: VakmanCreate, request: Request):
     existing = await db.vakmannen.find_one({"email": vakman.email})
     if existing:
         raise HTTPException(status_code=400, detail="Email already registered")
@@ -424,7 +524,32 @@ async def register_vakman(vakman: VakmanCreate):
     await db.vakmannen.insert_one(vakman_dict)
     token = create_token(vakman_obj.id, "vakman")
     
+    # Send email notification for approval
+    base_url = str(request.base_url).rstrip('/')
+    # Use the frontend URL for the approval links
+    frontend_url = os.environ.get('FRONTEND_URL', base_url.replace(':8001', ':3000'))
+    await send_vakman_registration_email(vakman_dict, base_url)
+    
     return {"token": token, "user": {"id": vakman_obj.id, "email": vakman_obj.email, "name": vakman_obj.name, "role": "vakman", "is_approved": False}}
+
+@api_router.get("/vakman/{vakman_id}/approve")
+async def approve_or_reject_vakman(vakman_id: str, action: str):
+    """Approve or reject a vakman registration via email link"""
+    vakman = await db.vakmannen.find_one({"id": vakman_id})
+    if not vakman:
+        return {"status": "error", "message": "Vakman niet gevonden"}
+    
+    if action == "approve":
+        await db.vakmannen.update_one(
+            {"id": vakman_id}, 
+            {"$set": {"is_approved": True, "is_available": True}}
+        )
+        return {"status": "success", "message": f"✅ {vakman['name']} is goedgekeurd als vakman!", "action": "approved"}
+    elif action == "reject":
+        await db.vakmannen.delete_one({"id": vakman_id})
+        return {"status": "success", "message": f"❌ Aanmelding van {vakman['name']} is afgewezen en verwijderd.", "action": "rejected"}
+    else:
+        return {"status": "error", "message": "Ongeldige actie"}
 
 @api_router.get("/vakmannen")
 async def get_vakmannen(service_type: Optional[str] = None):
