@@ -29,6 +29,9 @@ import PremiumPage from "@/pages/PremiumPage";
 import PremiumSuccessPage from "@/pages/PremiumSuccessPage";
 import BlogPage from "@/pages/BlogPage";
 import VacaturesPage from "@/pages/VacaturesPage";
+import PrivacyPage from "@/pages/PrivacyPage";
+import VoorwaardenPage from "@/pages/VoorwaardenPage";
+import CookiePage from "@/pages/CookiePage";
 
 function App() {
   return (
@@ -65,6 +68,10 @@ function App() {
           <Route path="/premium/success" element={<PremiumSuccessPage />} />
           <Route path="/blog" element={<BlogPage />} />
           <Route path="/vacatures" element={<VacaturesPage />} />
+          {/* Juridische pagina's */}
+          <Route path="/privacy" element={<PrivacyPage />} />
+          <Route path="/voorwaarden" element={<VoorwaardenPage />} />
+          <Route path="/cookies" element={<CookiePage />} />
         </Routes>
       </BrowserRouter>
       <Toaster position="top-right" />
