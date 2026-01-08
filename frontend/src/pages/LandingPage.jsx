@@ -427,12 +427,12 @@ export default function LandingPage() {
             <div>
               <h4 className="font-heading font-bold text-white mb-4">Zakelijk</h4>
               <ul className="space-y-2 text-slate-400 text-sm">
-                <li><Link to="#" className="hover:text-white">VVE klusservice</Link></li>
-                <li><Link to="#" className="hover:text-white">Horeca klusservice</Link></li>
-                <li><Link to="#" className="hover:text-white">Kantoor klusservice</Link></li>
-                <li><Link to="#" className="hover:text-white">Winkel klusservice</Link></li>
-                <li><Link to="#" className="hover:text-white">Partner worden?</Link></li>
-                <li><Link to="#" className="hover:text-white">Affiliate programma</Link></li>
+                <li><Link to="/vve" className="hover:text-white">VVE klusservice</Link></li>
+                <li><Link to="/horeca" className="hover:text-white">Horeca klusservice</Link></li>
+                <li><Link to="/kantoor" className="hover:text-white">Kantoor klusservice</Link></li>
+                <li><Link to="/winkel" className="hover:text-white">Winkel klusservice</Link></li>
+                <li><Link to="/partner" className="hover:text-white">Partner worden?</Link></li>
+                <li><Link to="/affiliate" className="hover:text-white">Affiliate programma</Link></li>
               </ul>
             </div>
 
@@ -440,10 +440,10 @@ export default function LandingPage() {
             <div>
               <h4 className="font-heading font-bold text-white mb-4">Vakman info</h4>
               <ul className="space-y-2 text-slate-400 text-sm">
-                <li><Link to="/vakman/register" className="hover:text-white">Word vakman</Link></li>
-                <li><Link to="#" className="hover:text-white">Vakman App</Link></li>
-                <li><Link to="#" className="hover:text-white">Vakman voorwaarden</Link></li>
-                <li><Link to="#" className="hover:text-white">Veelgestelde vragen vakman</Link></li>
+                <li><Link to="/vakman" className="hover:text-white">Word vakman</Link></li>
+                <li><Link to="/vakman/app" className="hover:text-white">Vakman App</Link></li>
+                <li><Link to="/vakman/voorwaarden" className="hover:text-white">Vakman voorwaarden</Link></li>
+                <li><Link to="/vakman/faq" className="hover:text-white">Veelgestelde vragen vakman</Link></li>
                 <li><Link to="/login" className="hover:text-white">Inloggen</Link></li>
               </ul>
             </div>
