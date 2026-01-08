@@ -378,7 +378,7 @@ export default function BookingPage() {
                       className="bg-[#FF4500] hover:bg-[#CC3700]"
                       data-testid="submit-btn"
                     >
-                      {loading ? "Bezig..." : "Bevestig & Betaal"}
+                      {loading ? "Bezig..." : "Bevestig Boeking"}
                       <ArrowRight className="w-4 h-4 ml-2" />
                     </Button>
                   )}
@@ -420,22 +420,24 @@ export default function BookingPage() {
 
                 <div className="border-t border-slate-200 pt-4">
                   <div className="flex justify-between items-center">
-                    <span className="text-slate-600">Totaal</span>
+                    <span className="text-slate-600">Vanaf</span>
                     <span className="font-heading font-bold text-2xl text-slate-900">€{price},-</span>
                   </div>
-                  <p className="text-xs text-slate-500 mt-1">incl. BTW</p>
+                  <p className="text-xs text-slate-500 mt-1">incl. BTW • exacte prijs na inspectie</p>
                 </div>
 
                 <div className="bg-slate-50 p-3 rounded-lg">
+                  <div className="flex items-center gap-2 text-sm text-slate-600 mb-1">
+                    <CheckCircle className="w-4 h-4 text-green-500" />
+                    <span>Betalen bij de monteur</span>
+                  </div>
                   <div className="flex items-center gap-2 text-sm text-slate-600">
                     <CheckCircle className="w-4 h-4 text-green-500" />
-                    <span>Tevredenheidsgarantie</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm text-slate-600 mt-1">
-                    <CheckCircle className="w-4 h-4 text-green-500" />
-                    <span>Veilig betalen</span>
+                    <span>Of factuur na overleg</span>
                   </div>
                 </div>
+
+                <div className="bg-slate-50 p-3 rounded-lg">
               </CardContent>
             </Card>
           </div>
