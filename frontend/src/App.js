@@ -18,6 +18,16 @@ import VakmanAppPage from "@/pages/VakmanAppPage";
 import VakmanVoorwaardenPage from "@/pages/VakmanVoorwaardenPage";
 import VakmanFAQPage from "@/pages/VakmanFAQPage";
 import PartnerPage from "@/pages/PartnerPage";
+import HorecaPage from "@/pages/HorecaPage";
+import KantoorPage from "@/pages/KantoorPage";
+import WinkelPage from "@/pages/WinkelPage";
+import AffiliatePage from "@/pages/AffiliatePage";
+import OverOnsPage from "@/pages/OverOnsPage";
+import GarantiePage from "@/pages/GarantiePage";
+import PrijsgidsenPage from "@/pages/PrijsgidsenPage";
+import PremiumPage from "@/pages/PremiumPage";
+import BlogPage from "@/pages/BlogPage";
+import VacaturesPage from "@/pages/VacaturesPage";
 
 function App() {
   return (
@@ -34,13 +44,25 @@ function App() {
           <Route path="/vakman/register" element={<VakmanRegisterPage />} />
           <Route path="/dashboard" element={<CustomerDashboard />} />
           <Route path="/vakman/dashboard" element={<VakmanDashboard />} />
-          {/* Nieuwe pagina's */}
+          {/* Zakelijke pagina's */}
           <Route path="/vve" element={<VVEPage />} />
+          <Route path="/horeca" element={<HorecaPage />} />
+          <Route path="/kantoor" element={<KantoorPage />} />
+          <Route path="/winkel" element={<WinkelPage />} />
+          <Route path="/partner" element={<PartnerPage />} />
+          <Route path="/affiliate" element={<AffiliatePage />} />
+          {/* Vakman pagina's */}
           <Route path="/vakman" element={<VakmanInfoPage />} />
           <Route path="/vakman/app" element={<VakmanAppPage />} />
           <Route path="/vakman/voorwaarden" element={<VakmanVoorwaardenPage />} />
           <Route path="/vakman/faq" element={<VakmanFAQPage />} />
-          <Route path="/partner" element={<PartnerPage />} />
+          {/* Info pagina's */}
+          <Route path="/over-ons" element={<OverOnsPage />} />
+          <Route path="/garantie" element={<GarantiePage />} />
+          <Route path="/prijzen" element={<PrijsgidsenPage />} />
+          <Route path="/premium" element={<PremiumPage />} />
+          <Route path="/blog" element={<BlogPage />} />
+          <Route path="/vacatures" element={<VacaturesPage />} />
         </Routes>
       </BrowserRouter>
       <Toaster position="top-right" />
