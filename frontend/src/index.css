@@ -21,6 +21,13 @@ code {
     font-family: 'JetBrains Mono', monospace;
 }
 
+/* Hide external badges */
+body > div[style*="position: fixed"],
+body > div[style*="z-index: 9999"],
+body > div:last-child:not(.App):not(#root) {
+    display: none !important;
+}
+
 @layer base {
     :root {
         --background: 0 0% 100%;
