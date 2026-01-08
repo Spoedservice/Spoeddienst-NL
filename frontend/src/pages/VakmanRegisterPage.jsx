@@ -188,14 +188,9 @@ export default function VakmanRegisterPage() {
                       <SelectValue placeholder="Selecteer vakgebied" />
                     </SelectTrigger>
                     <SelectContent>
-                      {services.map((service) => (
-                        <SelectItem key={service.id} value={service.id}>
-                          <div className="flex items-center gap-2">
-                            <service.icon className="w-4 h-4" />
-                            {service.name}
-                          </div>
-                        </SelectItem>
-                      ))}
+                      <SelectItem value="elektricien" data-testid="service-elektricien">Elektricien</SelectItem>
+                      <SelectItem value="loodgieter" data-testid="service-loodgieter">Loodgieter</SelectItem>
+                      <SelectItem value="slotenmaker" data-testid="service-slotenmaker">Slotenmaker</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
