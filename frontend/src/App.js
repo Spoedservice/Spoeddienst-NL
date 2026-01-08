@@ -46,6 +46,7 @@ import VoorwaardenPage from "@/pages/VoorwaardenPage";
 import CookiePage from "@/pages/CookiePage";
 import ReviewPage from "@/pages/ReviewPage";
 import DienstenSelectiePage from "@/pages/DienstenSelectiePage";
+import VakmanApprovePage from "@/pages/VakmanApprovePage";
 
 function App() {
   return (
@@ -91,6 +92,8 @@ function App() {
           <Route path="/review" element={<ReviewPage />} />
           {/* Diensten selectie */}
           <Route path="/diensten" element={<DienstenSelectiePage />} />
+          {/* Vakman goedkeuring */}
+          <Route path="/vakman/:vakmanId/approve" element={<VakmanApprovePage />} />
         </Routes>
       </BrowserRouter>
       <Toaster position="top-right" />
