@@ -158,20 +158,19 @@ export default function ReviewPage() {
 
               {/* Service */}
               <div>
-                <Label>Welke klus is uitgevoerd? *</Label>
-                <Select 
-                  value={formData.service} 
-                  onValueChange={(value) => setFormData({...formData, service: value})}
+                <Label htmlFor="service">Welke klus is uitgevoerd? *</Label>
+                <select
+                  id="service"
+                  value={formData.service}
+                  onChange={(e) => setFormData({...formData, service: e.target.value})}
+                  className="mt-1 w-full h-10 px-3 py-2 border border-slate-200 rounded-md bg-white text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#FF4500] focus:border-transparent"
+                  required
                 >
-                  <SelectTrigger className="mt-1">
-                    <SelectValue placeholder="Selecteer een dienst" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {services.map((service) => (
-                      <SelectItem key={service} value={service}>{service}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                  <option value="">Selecteer een dienst</option>
+                  {services.map((service) => (
+                    <option key={service} value={service}>{service}</option>
+                  ))}
+                </select>
               </div>
 
               {/* Comment */}
