@@ -12,6 +12,12 @@ import VakmanRegisterPage from "@/pages/VakmanRegisterPage";
 import CustomerDashboard from "@/pages/CustomerDashboard";
 import VakmanDashboard from "@/pages/VakmanDashboard";
 import ServicePage from "@/pages/ServicePage";
+import VVEPage from "@/pages/VVEPage";
+import VakmanInfoPage from "@/pages/VakmanInfoPage";
+import VakmanAppPage from "@/pages/VakmanAppPage";
+import VakmanVoorwaardenPage from "@/pages/VakmanVoorwaardenPage";
+import VakmanFAQPage from "@/pages/VakmanFAQPage";
+import PartnerPage from "@/pages/PartnerPage";
 
 function App() {
   return (
@@ -28,6 +34,13 @@ function App() {
           <Route path="/vakman/register" element={<VakmanRegisterPage />} />
           <Route path="/dashboard" element={<CustomerDashboard />} />
           <Route path="/vakman/dashboard" element={<VakmanDashboard />} />
+          {/* Nieuwe pagina's */}
+          <Route path="/vve" element={<VVEPage />} />
+          <Route path="/vakman" element={<VakmanInfoPage />} />
+          <Route path="/vakman/app" element={<VakmanAppPage />} />
+          <Route path="/vakman/voorwaarden" element={<VakmanVoorwaardenPage />} />
+          <Route path="/vakman/faq" element={<VakmanFAQPage />} />
+          <Route path="/partner" element={<PartnerPage />} />
         </Routes>
       </BrowserRouter>
       <Toaster position="top-right" />
