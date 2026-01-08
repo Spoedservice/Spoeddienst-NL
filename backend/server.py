@@ -373,9 +373,12 @@ async def create_booking(booking: BookingCreate):
     booking_dict = booking_obj.model_dump()
     booking_dict["created_at"] = booking_dict["created_at"].isoformat()
     
+    # Store the original dict before MongoDB adds _id
+    response_booking = booking_dict.copy()
+    
     await db.bookings.insert_one(booking_dict)
     
-    return {"booking": booking_dict, "message": "Booking created successfully"}
+    return {"booking": response_booking, "message": "Booking created successfully"}
 
 @api_router.get("/bookings")
 async def get_bookings(current_user: dict = Depends(get_current_user)):
