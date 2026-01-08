@@ -438,6 +438,11 @@ export default function BookingPage() {
                 </div>
 
                 <div className="bg-slate-50 p-3 rounded-lg">
+                  <div className="flex items-center gap-2 text-sm text-slate-600">
+                    <CheckCircle className="w-4 h-4 text-green-500" />
+                    <span>Tevredenheidsgarantie</span>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </div>
