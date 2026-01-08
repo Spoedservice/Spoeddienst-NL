@@ -1,9 +1,37 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Zap, Crown, CheckCircle, Star } from "lucide-react";
+import { Zap, Crown, CheckCircle, Star, Loader2 } from "lucide-react";
+import { toast } from "sonner";
+import axios from "axios";
+
+const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
 export default function PremiumPage() {
+  const [loading, setLoading] = useState(null);
+
+  const handleSubscribe = async (plan) => {
+    setLoading(plan);
+    try {
+      const response = await axios.post(`${API}/premium/subscribe`, { 
+        plan: plan,
+        amount: plan === 'monthly' ? 39.95 : 399.00
+      });
+      
+      if (response.data.url) {
+        window.location.href = response.data.url;
+      } else {
+        toast.success("Bedankt! Je ontvangt een e-mail met betalingsinstructies.");
+      }
+    } catch (error) {
+      console.error("Subscription error:", error);
+      toast.error("Er is iets misgegaan. Probeer het later opnieuw.");
+    } finally {
+      setLoading(null);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-white">
       <header className="bg-white border-b border-slate-200 py-4 px-4 sm:px-6 lg:px-8 sticky top-0 z-50">
@@ -82,9 +110,33 @@ export default function PremiumPage() {
                     </li>
                   ))}
                 </ul>
-                <Button className="w-full bg-yellow-500 hover:bg-yellow-600 text-white">
-                  Word Premium
-                </Button>
+                <div className="space-y-3">
+                  <Button 
+                    className="w-full bg-yellow-500 hover:bg-yellow-600 text-white"
+                    onClick={() => handleSubscribe('monthly')}
+                    disabled={loading !== null}
+                    data-testid="subscribe-monthly"
+                  >
+                    {loading === 'monthly' ? (
+                      <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Bezig...</>
+                    ) : (
+                      "Maandelijks - €39,95/mnd"
+                    )}
+                  </Button>
+                  <Button 
+                    variant="outline"
+                    className="w-full border-yellow-500 text-yellow-600 hover:bg-yellow-50"
+                    onClick={() => handleSubscribe('yearly')}
+                    disabled={loading !== null}
+                    data-testid="subscribe-yearly"
+                  >
+                    {loading === 'yearly' ? (
+                      <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Bezig...</>
+                    ) : (
+                      "Jaarlijks - €399/jaar (bespaar €80)"
+                    )}
+                  </Button>
+                </div>
               </CardContent>
             </Card>
           </div>
@@ -98,13 +150,51 @@ export default function PremiumPage() {
             {[
               { q: "Kan ik op elk moment opzeggen?", a: "Ja, Premium is maandelijks opzegbaar. Bij jaarabonnement is er geen tussentijdse opzegging mogelijk." },
               { q: "Hoe werkt de 10% korting?", a: "De korting wordt automatisch toegepast bij elke boeking zolang je Premium lid bent." },
-              { q: "Wat houdt de jaarlijkse check-up in?", a: "Een vakman komt langs voor een preventieve controle van je belangrijkste installaties (elektra, water)." }
+              { q: "Wat houdt de jaarlijkse check-up in?", a: "Een vakman komt langs voor een preventieve controle van je belangrijkste installaties (elektra, water)." },
+              { q: "Hoe kan ik betalen?", a: "Je kunt betalen via iDEAL, creditcard of bankoverschrijving. Betalingen worden veilig verwerkt." }
             ].map((item, idx) => (
               <div key={idx} className="bg-white p-6 rounded-lg border border-slate-200">
                 <h3 className="font-heading font-bold text-slate-900 mb-2">{item.q}</h3>
                 <p className="text-slate-600">{item.a}</p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Betaalgegevens sectie */}
+      <section className="py-12 px-4 sm:px-6 lg:px-8 bg-white border-t border-slate-200">
+        <div className="max-w-2xl mx-auto">
+          <h3 className="font-heading font-bold text-xl text-slate-900 mb-4 text-center">
+            Betalen via bankoverschrijving?
+          </h3>
+          <div className="bg-slate-50 p-6 rounded-xl border border-slate-200">
+            <p className="text-slate-600 text-sm mb-4">
+              Je kunt ook handmatig overmaken naar onderstaande rekening. 
+              Vermeld je e-mailadres bij de betaling.
+            </p>
+            <div className="space-y-2 text-sm">
+              <div className="flex justify-between">
+                <span className="text-slate-500">IBAN:</span>
+                <span className="font-mono font-medium text-slate-900">NL07REVO6329249105</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-slate-500">BIC:</span>
+                <span className="font-mono font-medium text-slate-900">CHASDEFX</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-slate-500">T.n.v.:</span>
+                <span className="font-medium text-slate-900">SpoedDienst24</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-slate-500">Bedrag maandelijks:</span>
+                <span className="font-medium text-slate-900">€39,95</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-slate-500">Bedrag jaarlijks:</span>
+                <span className="font-medium text-slate-900">€399,00</span>
+              </div>
+            </div>
           </div>
         </div>
       </section>
