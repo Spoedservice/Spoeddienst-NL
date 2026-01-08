@@ -193,7 +193,7 @@ SERVICES = [
         "icon": "Zap",
         "base_price": 69.0,
         "emergency_price": 99.0,
-        "image_url": "https://images.pexels.com/photos/8488029/pexels-photo-8488029.jpeg"
+        "image_url": "https://images.pexels.com/photos/257736/pexels-photo-257736.jpeg?auto=compress&cs=tinysrgb&w=800"
     },
     {
         "id": "loodgieter",
@@ -203,7 +203,7 @@ SERVICES = [
         "icon": "Droplets",
         "base_price": 75.0,
         "emergency_price": 109.0,
-        "image_url": "https://images.pexels.com/photos/7220892/pexels-photo-7220892.jpeg"
+        "image_url": "https://images.pexels.com/photos/6419128/pexels-photo-6419128.jpeg?auto=compress&cs=tinysrgb&w=800"
     },
     {
         "id": "slotenmaker",
@@ -213,7 +213,7 @@ SERVICES = [
         "icon": "Key",
         "base_price": 89.0,
         "emergency_price": 129.0,
-        "image_url": "https://images.pexels.com/photos/18783949/pexels-photo-18783949.jpeg"
+        "image_url": "https://images.pexels.com/photos/279810/pexels-photo-279810.jpeg?auto=compress&cs=tinysrgb&w=800"
     }
 ]
 
