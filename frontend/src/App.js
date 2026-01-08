@@ -26,6 +26,7 @@ import OverOnsPage from "@/pages/OverOnsPage";
 import GarantiePage from "@/pages/GarantiePage";
 import PrijsgidsenPage from "@/pages/PrijsgidsenPage";
 import PremiumPage from "@/pages/PremiumPage";
+import PremiumSuccessPage from "@/pages/PremiumSuccessPage";
 import BlogPage from "@/pages/BlogPage";
 import VacaturesPage from "@/pages/VacaturesPage";
 
