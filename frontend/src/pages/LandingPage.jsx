@@ -510,9 +510,14 @@ export default function LandingPage() {
 
           {/* Bottom Bar */}
           <div className="border-t border-slate-800 pt-6 md:pt-8 flex flex-col md:flex-row justify-between items-center gap-3 md:gap-4">
-            <p className="text-slate-500 text-xs md:text-sm text-center md:text-left">
-              © 2024 SpoedDienst24.nl. Alle rechten voorbehouden.
-            </p>
+            <div className="text-center md:text-left">
+              <p className="text-slate-500 text-xs md:text-sm">
+                © 2024 SpoedDienst24.nl. Alle rechten voorbehouden.
+              </p>
+              <p className="text-slate-500 text-xs mt-1">
+                KVK: 99210835
+              </p>
+            </div>
             <div className="flex flex-wrap justify-center gap-4 md:gap-6 text-slate-400 text-xs md:text-sm">
               <Link to="/privacy" className="hover:text-white">Privacybeleid</Link>
               <Link to="/voorwaarden" className="hover:text-white">Algemene voorwaarden</Link>
