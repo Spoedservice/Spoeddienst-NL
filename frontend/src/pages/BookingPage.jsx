@@ -94,17 +94,9 @@ export default function BookingPage() {
 
       const response = await axios.post(`${API}/bookings`, bookingData);
       
-      // Redirect to payment
-      const paymentResponse = await axios.post(`${API}/payments/checkout?booking_id=${response.data.booking.id}`, {}, {
-        headers: { origin: window.location.origin }
-      });
-      
-      if (paymentResponse.data.url) {
-        window.location.href = paymentResponse.data.url;
-      } else {
-        toast.success("Boeking succesvol! We nemen contact met u op.");
-        navigate('/');
-      }
+      // Geen online betaling - redirect naar success pagina
+      toast.success("Boeking succesvol ontvangen!");
+      navigate(`/booking/success?booking_id=${response.data.booking.id}`);
     } catch (error) {
       console.error("Error creating booking:", error);
       toast.error("Er is iets misgegaan. Probeer het opnieuw.");
