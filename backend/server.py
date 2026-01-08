@@ -508,6 +508,9 @@ async def create_booking(booking: BookingCreate):
     
     await db.bookings.insert_one(booking_dict)
     
+    # Send email notification to info@spoeddienst24.nl
+    await send_booking_email(response_booking)
+    
     return {"booking": response_booking, "message": "Booking created successfully"}
 
 @api_router.get("/bookings")
