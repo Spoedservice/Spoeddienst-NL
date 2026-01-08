@@ -519,6 +519,30 @@ async def stripe_webhook(request: Request):
 
 # ==================== REVIEW ROUTES ====================
 
+class PublicReviewCreate(BaseModel):
+    customer_name: str
+    city: Optional[str] = ""
+    service: str
+    rating: int
+    comment: str
+
+@api_router.post("/reviews/public")
+async def create_public_review(review: PublicReviewCreate):
+    """Allow customers to submit reviews without login"""
+    review_obj = {
+        "id": str(uuid.uuid4()),
+        "customer_name": review.customer_name,
+        "city": review.city,
+        "service": review.service,
+        "rating": review.rating,
+        "comment": review.comment,
+        "status": "pending",  # needs approval
+        "created_at": datetime.now(timezone.utc).isoformat()
+    }
+    
+    await db.public_reviews.insert_one(review_obj)
+    return {"message": "Review submitted successfully"}
+
 @api_router.post("/reviews")
 async def create_review(review: ReviewCreate, current_user: dict = Depends(get_current_user)):
     user = await db.users.find_one({"id": current_user["user_id"]}, {"_id": 0})
