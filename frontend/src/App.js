@@ -44,6 +44,7 @@ import VacaturesPage from "@/pages/VacaturesPage";
 import PrivacyPage from "@/pages/PrivacyPage";
 import VoorwaardenPage from "@/pages/VoorwaardenPage";
 import CookiePage from "@/pages/CookiePage";
+import ReviewPage from "@/pages/ReviewPage";
 
 function App() {
   return (
