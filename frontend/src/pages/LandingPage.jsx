@@ -452,12 +452,11 @@ export default function LandingPage() {
             <div>
               <h4 className="font-heading font-bold text-white mb-4">SpoedDienst24 info</h4>
               <ul className="space-y-2 text-slate-400 text-sm">
-                <li><Link to="#" className="hover:text-white">Over ons</Link></li>
-                <li><Link to="#" className="hover:text-white">Garantie</Link></li>
-                <li><Link to="#" className="hover:text-white">Prijsgidsen</Link></li>
-                <li><Link to="#" className="hover:text-white">Premium lidmaatschap</Link></li>
-                <li><Link to="#" className="hover:text-white">Veelgestelde vragen</Link></li>
-                <li><Link to="#" className="hover:text-white">Blog</Link></li>
+                <li><Link to="/over-ons" className="hover:text-white">Over ons</Link></li>
+                <li><Link to="/garantie" className="hover:text-white">Garantie</Link></li>
+                <li><Link to="/prijzen" className="hover:text-white">Prijsgidsen</Link></li>
+                <li><Link to="/premium" className="hover:text-white">Premium lidmaatschap</Link></li>
+                <li><Link to="/blog" className="hover:text-white">Blog</Link></li>
               </ul>
             </div>
 
@@ -465,9 +464,9 @@ export default function LandingPage() {
             <div>
               <h4 className="font-heading font-bold text-white mb-4">Contact & Overig</h4>
               <ul className="space-y-2 text-slate-400 text-sm">
-                <li><Link to="#" className="hover:text-white">Neem contact op</Link></li>
-                <li><Link to="#" className="hover:text-white">Vacatures</Link></li>
-                <li><Link to="#" className="hover:text-white">Sitemap</Link></li>
+                <li><a href="tel:0800-1234" className="hover:text-white">Bel 0800-1234</a></li>
+                <li><a href="mailto:info@spoeddienst24.nl" className="hover:text-white">info@spoeddienst24.nl</a></li>
+                <li><Link to="/vacatures" className="hover:text-white">Vacatures</Link></li>
               </ul>
               <h4 className="font-heading font-bold text-white mt-6 mb-4">Diensten</h4>
               <ul className="space-y-2 text-slate-400 text-sm">
@@ -484,9 +483,9 @@ export default function LandingPage() {
               © 2024 SpoedDienst24.nl. Alle rechten voorbehouden.
             </p>
             <div className="flex gap-6 text-slate-400 text-sm">
-              <Link to="#" className="hover:text-white">Privacybeleid</Link>
-              <Link to="#" className="hover:text-white">Algemene voorwaarden</Link>
-              <Link to="#" className="hover:text-white">Cookiebeleid</Link>
+              <Link to="/privacy" className="hover:text-white">Privacybeleid</Link>
+              <Link to="/voorwaarden" className="hover:text-white">Algemene voorwaarden</Link>
+              <Link to="/cookies" className="hover:text-white">Cookiebeleid</Link>
             </div>
           </div>
         </div>
