@@ -107,27 +107,33 @@ user_problem_statement: "De website SpoedDienst24.nl moet mobielvriendelijk word
 frontend:
   - task: "Mobile responsiveness - Landing page"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/frontend/src/pages/LandingPage.jsx"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Implemented mobile improvements: phone number in mobile menu, response time card visible on mobile, footer optimized for mobile, 'Zo werkt het' section in 2x2 grid on mobile"
+      - working: true
+        agent: "testing"
+        comment: "MOBILE TESTING COMPLETED (375x812): ✅ Header visible, ✅ Mobile menu button works, ✅ Phone number (085 333 2847) visible in mobile menu, ✅ Response time card '15 minuten' visible on mobile, ✅ 'Zo werkt het' section in 2x2 grid layout, ✅ Footer properly laid out. DESKTOP COMPARISON (1920x800): ✅ Desktop navigation visible, ✅ Mobile menu hidden, ✅ Hero image visible. All mobile responsiveness requirements met successfully."
 
   - task: "Mobile responsiveness - Booking page"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/frontend/src/pages/BookingPage.jsx"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Implemented mobile improvements: smaller progress indicators, better time slot grid on mobile, summary sidebar at bottom on mobile"
+      - working: true
+        agent: "testing"
+        comment: "MOBILE TESTING COMPLETED (375x812): ✅ Progress indicator (steps 1-2-3-4) visible, ✅ Form interactions work (description input, emergency toggle), ✅ Navigation between steps works, ✅ Calendar visible on step 2, ✅ Time slots grid (7 slots) visible, ✅ Summary/Overzicht section visible. DESKTOP COMPARISON (1920x800): ✅ Proper grid layout with sidebar. Complete booking flow works correctly on mobile viewport."
 
   - task: "Complete booking flow"
     implemented: true
