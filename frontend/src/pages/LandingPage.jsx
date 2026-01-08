@@ -214,7 +214,7 @@ export default function LandingPage() {
             {/* Desktop Hero Image */}
             <div className="relative hidden lg:block">
               <img 
-                src="https://images.pexels.com/photos/8005397/pexels-photo-8005397.jpeg?auto=compress&cs=tinysrgb&w=800" 
+                src="https://i.ibb.co/j99zjd0F/27453350-93f2-4f60-b2c2-52bd24282a04-md.jpg" 
                 alt="SpoedDienst24 - Spoed Slotenmaker, Elektricien en Loodgieter - Binnen 30 minuten ter plaatse 24/7 bereikbaar"
                 title="SpoedDienst24.nl - Spoed vakmannen voor slotenmaker, elektricien en loodgieter"
                 className="rounded-2xl shadow-2xl w-full h-[500px] object-contain bg-slate-900"
