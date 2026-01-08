@@ -339,7 +339,7 @@ export default function LandingPage() {
       </section>
 
       {/* Reviews */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8">
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-slate-50">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="font-heading font-bold text-3xl sm:text-4xl text-slate-900 mb-4">
@@ -352,27 +352,40 @@ export default function LandingPage() {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {reviews.map((review, idx) => (
-              <Card key={idx} className="border border-slate-200 p-6">
-                <div className="flex items-center gap-1 mb-4">
-                  {[...Array(5)].map((_, i) => (
-                    <Star 
-                      key={i} 
-                      className={`w-5 h-5 ${i < review.rating ? 'text-yellow-400 fill-yellow-400' : 'text-slate-200'}`} 
-                    />
-                  ))}
-                </div>
-                <p className="text-slate-600 mb-4 text-sm leading-relaxed">"{review.comment}"</p>
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center font-heading font-bold text-slate-600">
-                    {review.customer_name?.charAt(0) || 'A'}
+              <Card key={idx} className="border border-slate-200 bg-white hover:shadow-lg transition-shadow">
+                <CardContent className="p-6">
+                  <div className="flex items-center gap-1 mb-3">
+                    {[...Array(5)].map((_, i) => (
+                      <Star 
+                        key={i} 
+                        className={`w-5 h-5 ${i < review.rating ? 'text-yellow-400 fill-yellow-400' : 'text-slate-200'}`} 
+                      />
+                    ))}
                   </div>
-                  <div>
-                    <p className="font-medium text-slate-900">{review.customer_name}</p>
-                    <p className="text-sm text-slate-500">{review.service || 'Klus'}</p>
+                  <p className="text-slate-700 mb-4 leading-relaxed">"{review.comment}"</p>
+                  <div className="border-t border-slate-100 pt-4">
+                    <p className="text-sm text-[#FF4500] font-medium mb-1">{review.service}</p>
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 bg-[#FF4500] rounded-full flex items-center justify-center text-white font-bold text-sm">
+                        {review.customer_name?.charAt(0) || 'A'}
+                      </div>
+                      <span className="font-medium text-slate-900">{review.customer_name}</span>
+                    </div>
                   </div>
-                </div>
+                </CardContent>
               </Card>
             ))}
+          </div>
+
+          {/* Review schrijven CTA */}
+          <div className="mt-12 text-center">
+            <p className="text-slate-600 mb-4">Ook een ervaring gehad met SpoedDienst24?</p>
+            <Link to="/review">
+              <Button variant="outline" className="border-[#FF4500] text-[#FF4500] hover:bg-[#FF4500] hover:text-white">
+                <Star className="w-4 h-4 mr-2" />
+                Schrijf een review
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
