@@ -659,9 +659,85 @@ class PublicReviewCreate(BaseModel):
     rating: int
     comment: str
 
+async def send_review_email(review_data: dict):
+    """Send review notification email to info@spoeddienst24.nl for approval"""
+    try:
+        stars = "⭐" * review_data.get("rating", 5)
+        
+        html_content = f"""
+        <html>
+        <body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+            <div style="background-color: #FF4500; padding: 20px; text-align: center;">
+                <h1 style="color: white; margin: 0;">⭐ SpoedDienst24</h1>
+                <p style="color: white; margin: 5px 0;">Nieuwe Review Ontvangen</p>
+            </div>
+            
+            <div style="padding: 20px; background-color: #f8f9fa;">
+                <h2 style="color: #333; border-bottom: 2px solid #FF4500; padding-bottom: 10px;">Review Details</h2>
+                
+                <div style="background-color: #fff8e6; padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center;">
+                    <p style="font-size: 24px; margin: 0;">{stars}</p>
+                    <p style="font-size: 18px; font-weight: bold; color: #333; margin: 5px 0;">{review_data.get('rating', 5)} van 5 sterren</p>
+                </div>
+                
+                <table style="width: 100%; border-collapse: collapse;">
+                    <tr>
+                        <td style="padding: 10px; border-bottom: 1px solid #ddd;"><strong>Klant:</strong></td>
+                        <td style="padding: 10px; border-bottom: 1px solid #ddd;">{review_data.get('customer_name', 'Anoniem')}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border-bottom: 1px solid #ddd;"><strong>Plaats:</strong></td>
+                        <td style="padding: 10px; border-bottom: 1px solid #ddd;">{review_data.get('city', 'Niet opgegeven')}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border-bottom: 1px solid #ddd;"><strong>Dienst:</strong></td>
+                        <td style="padding: 10px; border-bottom: 1px solid #ddd;">{review_data.get('service', 'Niet opgegeven')}</td>
+                    </tr>
+                </table>
+                
+                <h3 style="color: #333; margin-top: 20px;">Review Tekst</h3>
+                <div style="background-color: white; padding: 15px; border-radius: 5px; border: 1px solid #ddd; border-left: 4px solid #FF4500;">
+                    <p style="margin: 0; font-style: italic; color: #555;">"{review_data.get('comment', 'Geen tekst')}"</p>
+                </div>
+                
+                <div style="margin-top: 20px; padding: 15px; background-color: #e8f5e9; border-radius: 8px;">
+                    <p style="margin: 0; color: #2e7d32;"><strong>Status:</strong> Wacht op goedkeuring</p>
+                    <p style="margin: 5px 0 0 0; font-size: 12px; color: #666;">Deze review wordt pas getoond op de website na uw goedkeuring.</p>
+                </div>
+            </div>
+            
+            <div style="background-color: #333; padding: 15px; text-align: center;">
+                <p style="color: #999; margin: 0; font-size: 12px;">Dit is een automatisch gegenereerd bericht van SpoedDienst24.nl</p>
+            </div>
+        </body>
+        </html>
+        """
+        
+        message = MIMEMultipart("alternative")
+        message["From"] = SMTP_FROM
+        message["To"] = "info@spoeddienst24.nl"
+        message["Subject"] = f"⭐ Nieuwe Review: {review_data.get('rating', 5)} sterren van {review_data.get('customer_name', 'Klant')}"
+        
+        html_part = MIMEText(html_content, "html")
+        message.attach(html_part)
+        
+        await aiosmtplib.send(
+            message,
+            hostname=SMTP_HOST,
+            port=SMTP_PORT,
+            username=SMTP_USER,
+            password=SMTP_PASSWORD,
+            use_tls=True
+        )
+        logging.info(f"Review email sent successfully for review from {review_data.get('customer_name')}")
+        return True
+    except Exception as e:
+        logging.error(f"Failed to send review email: {str(e)}")
+        return False
+
 @api_router.post("/reviews/public")
 async def create_public_review(review: PublicReviewCreate):
-    """Allow customers to submit reviews without login"""
+    """Allow customers to submit reviews without login - sends email for approval"""
     review_obj = {
         "id": str(uuid.uuid4()),
         "customer_name": review.customer_name,
@@ -669,11 +745,15 @@ async def create_public_review(review: PublicReviewCreate):
         "service": review.service,
         "rating": review.rating,
         "comment": review.comment,
-        "status": "pending",  # needs approval
+        "status": "pending",  # needs approval before showing on website
         "created_at": datetime.now(timezone.utc).isoformat()
     }
     
     await db.public_reviews.insert_one(review_obj)
+    
+    # Send email notification for approval
+    await send_review_email(review_obj)
+    
     return {"message": "Review submitted successfully"}
 
 @api_router.post("/reviews")
