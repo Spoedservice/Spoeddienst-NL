@@ -45,6 +45,7 @@ import PrivacyPage from "@/pages/PrivacyPage";
 import VoorwaardenPage from "@/pages/VoorwaardenPage";
 import CookiePage from "@/pages/CookiePage";
 import ReviewPage from "@/pages/ReviewPage";
+import DienstenSelectiePage from "@/pages/DienstenSelectiePage";
 
 function App() {
   return (
@@ -88,6 +89,8 @@ function App() {
           <Route path="/cookies" element={<CookiePage />} />
           {/* Review pagina */}
           <Route path="/review" element={<ReviewPage />} />
+          {/* Diensten selectie */}
+          <Route path="/diensten" element={<DienstenSelectiePage />} />
         </Routes>
       </BrowserRouter>
       <Toaster position="top-right" />
