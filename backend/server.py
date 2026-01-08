@@ -44,6 +44,11 @@ app = FastAPI()
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
 
+# Health check endpoint for Kubernetes (without /api prefix)
+@app.get("/health")
+async def health_check():
+    return {"status": "healthy", "service": "spoeddienst24-backend"}
+
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
