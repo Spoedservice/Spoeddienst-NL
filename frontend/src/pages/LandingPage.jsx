@@ -201,7 +201,7 @@ export default function LandingPage() {
 
             <div className="relative hidden lg:block">
               <img 
-                src="https://images.pexels.com/photos/8165345/pexels-photo-8165345.jpeg" 
+                src="https://images.pexels.com/photos/5691622/pexels-photo-5691622.jpeg" 
                 alt="Vakman aan het werk"
                 className="rounded-2xl shadow-2xl w-full h-[500px] object-cover"
               />
