@@ -422,75 +422,77 @@ async def send_vakman_registration_email(vakman_data: dict, base_url: str):
         approve_url = f"{base_url}/api/vakman/{vakman_id}/approve?action=approve"
         reject_url = f"{base_url}/api/vakman/{vakman_id}/approve?action=reject"
         
+        # Plain text version for better deliverability
+        text_content = f"""
+Nieuwe Vakman Aanmelding - SpoedDienst24
+
+Naam: {vakman_data.get('name', 'N/A')}
+E-mail: {vakman_data.get('email', 'N/A')}
+Telefoon: {vakman_data.get('phone', 'N/A')}
+Vakgebied: {service_name}
+Werkgebied: {vakman_data.get('location', 'N/A')}
+Uurtarief: EUR {vakman_data.get('hourly_rate', 'N/A')}
+
+Beschrijving:
+{vakman_data.get('description', 'Geen beschrijving')}
+
+Goedkeuren: {approve_url}
+Afwijzen: {reject_url}
+
+Met vriendelijke groet,
+SpoedDienst24
+        """
+        
         html_content = f"""
-        <html>
-        <body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-            <div style="background-color: #FF4500; padding: 20px; text-align: center;">
-                <h1 style="color: white; margin: 0;">👷 SpoedDienst24</h1>
-                <p style="color: white; margin: 5px 0;">Nieuwe Vakman Aanmelding</p>
-            </div>
-            
-            <div style="padding: 20px; background-color: #f8f9fa;">
-                <h2 style="color: #333; border-bottom: 2px solid #FF4500; padding-bottom: 10px;">Vakman Gegevens</h2>
-                
-                <table style="width: 100%; border-collapse: collapse;">
-                    <tr>
-                        <td style="padding: 10px; border-bottom: 1px solid #ddd;"><strong>Naam:</strong></td>
-                        <td style="padding: 10px; border-bottom: 1px solid #ddd;">{vakman_data.get('name', 'N/A')}</td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 10px; border-bottom: 1px solid #ddd;"><strong>E-mail:</strong></td>
-                        <td style="padding: 10px; border-bottom: 1px solid #ddd;"><a href="mailto:{vakman_data.get('email', '')}">{vakman_data.get('email', 'N/A')}</a></td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 10px; border-bottom: 1px solid #ddd;"><strong>Telefoon:</strong></td>
-                        <td style="padding: 10px; border-bottom: 1px solid #ddd;"><a href="tel:{vakman_data.get('phone', '')}">{vakman_data.get('phone', 'N/A')}</a></td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 10px; border-bottom: 1px solid #ddd;"><strong>Vakgebied:</strong></td>
-                        <td style="padding: 10px; border-bottom: 1px solid #ddd;">{service_name}</td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 10px; border-bottom: 1px solid #ddd;"><strong>Werkgebied:</strong></td>
-                        <td style="padding: 10px; border-bottom: 1px solid #ddd;">{vakman_data.get('location', 'N/A')}</td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 10px; border-bottom: 1px solid #ddd;"><strong>Uurtarief:</strong></td>
-                        <td style="padding: 10px; border-bottom: 1px solid #ddd;">€{vakman_data.get('hourly_rate', 'N/A')},-</td>
-                    </tr>
-                </table>
-                
-                <h3 style="color: #333; margin-top: 20px;">Over de vakman</h3>
-                <div style="background-color: white; padding: 15px; border-radius: 5px; border: 1px solid #ddd;">
-                    <p style="margin: 0; white-space: pre-wrap;">{vakman_data.get('description', 'Geen beschrijving')}</p>
-                </div>
-                
-                <div style="margin-top: 30px; text-align: center;">
-                    <p style="color: #666; margin-bottom: 20px;">Klik op een knop om de aanmelding te verwerken:</p>
-                    
-                    <a href="{approve_url}" style="display: inline-block; background-color: #22c55e; color: white; padding: 15px 40px; text-decoration: none; border-radius: 8px; font-weight: bold; margin-right: 10px;">
-                        ✓ GOEDKEUREN
-                    </a>
-                    
-                    <a href="{reject_url}" style="display: inline-block; background-color: #ef4444; color: white; padding: 15px 40px; text-decoration: none; border-radius: 8px; font-weight: bold;">
-                        ✗ AFWIJZEN
-                    </a>
-                </div>
-            </div>
-            
-            <div style="background-color: #333; padding: 15px; text-align: center;">
-                <p style="color: #999; margin: 0; font-size: 12px;">Dit is een automatisch gegenereerd bericht van SpoedDienst24.nl</p>
-            </div>
-        </body>
-        </html>
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"></head>
+<body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+    <div style="background-color: #FF4500; padding: 20px; text-align: center; border-radius: 8px 8px 0 0;">
+        <h1 style="color: white; margin: 0; font-size: 24px;">SpoedDienst24</h1>
+        <p style="color: white; margin: 5px 0;">Nieuwe Vakman Aanmelding</p>
+    </div>
+    
+    <div style="padding: 20px; background-color: #f8f9fa; border: 1px solid #ddd;">
+        <h2 style="color: #333; border-bottom: 2px solid #FF4500; padding-bottom: 10px; margin-top: 0;">Gegevens</h2>
+        
+        <table style="width: 100%; border-collapse: collapse;">
+            <tr><td style="padding: 8px; border-bottom: 1px solid #ddd;"><strong>Naam:</strong></td><td style="padding: 8px; border-bottom: 1px solid #ddd;">{vakman_data.get('name', 'N/A')}</td></tr>
+            <tr><td style="padding: 8px; border-bottom: 1px solid #ddd;"><strong>E-mail:</strong></td><td style="padding: 8px; border-bottom: 1px solid #ddd;">{vakman_data.get('email', 'N/A')}</td></tr>
+            <tr><td style="padding: 8px; border-bottom: 1px solid #ddd;"><strong>Telefoon:</strong></td><td style="padding: 8px; border-bottom: 1px solid #ddd;">{vakman_data.get('phone', 'N/A')}</td></tr>
+            <tr><td style="padding: 8px; border-bottom: 1px solid #ddd;"><strong>Vakgebied:</strong></td><td style="padding: 8px; border-bottom: 1px solid #ddd;">{service_name}</td></tr>
+            <tr><td style="padding: 8px; border-bottom: 1px solid #ddd;"><strong>Werkgebied:</strong></td><td style="padding: 8px; border-bottom: 1px solid #ddd;">{vakman_data.get('location', 'N/A')}</td></tr>
+            <tr><td style="padding: 8px; border-bottom: 1px solid #ddd;"><strong>Uurtarief:</strong></td><td style="padding: 8px; border-bottom: 1px solid #ddd;">EUR {vakman_data.get('hourly_rate', 'N/A')}</td></tr>
+        </table>
+        
+        <h3 style="color: #333; margin-top: 20px;">Beschrijving</h3>
+        <div style="background-color: white; padding: 15px; border-radius: 5px; border: 1px solid #ddd;">
+            <p style="margin: 0;">{vakman_data.get('description', 'Geen beschrijving')}</p>
+        </div>
+        
+        <div style="margin-top: 30px; text-align: center;">
+            <a href="{approve_url}" style="display: inline-block; background-color: #22c55e; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; font-weight: bold; margin: 5px;">GOEDKEUREN</a>
+            <a href="{reject_url}" style="display: inline-block; background-color: #ef4444; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; font-weight: bold; margin: 5px;">AFWIJZEN</a>
+        </div>
+    </div>
+    
+    <div style="padding: 15px; text-align: center; color: #666; font-size: 12px;">
+        <p>SpoedDienst24.nl - 085 333 2847</p>
+    </div>
+</body>
+</html>
         """
         
         message = MIMEMultipart("alternative")
-        message["From"] = SMTP_FROM
+        message["From"] = f"SpoedDienst24 <{SMTP_FROM}>"
         message["To"] = "info@spoeddienst24.nl"
-        message["Subject"] = f"👷 Nieuwe Vakman Aanmelding: {vakman_data.get('name', 'Vakman')} - {service_name}"
+        message["Subject"] = f"Vakman Aanmelding: {vakman_data.get('name', 'Vakman')} ({service_name})"
+        message["Reply-To"] = SMTP_FROM
         
-        html_part = MIMEText(html_content, "html")
+        # Add plain text first, then HTML (email clients prefer the last part)
+        text_part = MIMEText(text_content, "plain", "utf-8")
+        html_part = MIMEText(html_content, "html", "utf-8")
+        message.attach(text_part)
         message.attach(html_part)
         
         await aiosmtplib.send(
