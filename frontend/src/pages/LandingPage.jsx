@@ -122,11 +122,15 @@ export default function LandingPage() {
         {mobileMenuOpen && (
           <div className="md:hidden bg-white border-t border-slate-200 py-4">
             <nav className="flex flex-col gap-2 px-4">
-              <Link to="/diensten/elektricien" className="py-2 text-slate-600">Elektricien</Link>
-              <Link to="/diensten/loodgieter" className="py-2 text-slate-600">Loodgieter</Link>
-              <Link to="/diensten/slotenmaker" className="py-2 text-slate-600">Slotenmaker</Link>
-              <Link to="/vakman/register" className="py-2 text-slate-600">Word Vakman</Link>
-              <Link to="/login" className="py-2 text-slate-600">Inloggen</Link>
+              <Link to="/diensten/elektricien" className="py-2 text-slate-600 hover:text-slate-900">Elektricien</Link>
+              <Link to="/diensten/loodgieter" className="py-2 text-slate-600 hover:text-slate-900">Loodgieter</Link>
+              <Link to="/diensten/slotenmaker" className="py-2 text-slate-600 hover:text-slate-900">Slotenmaker</Link>
+              <Link to="/vakman/register" className="py-2 text-slate-600 hover:text-slate-900">Word Vakman</Link>
+              <Link to="/login" className="py-2 text-slate-600 hover:text-slate-900">Inloggen</Link>
+              <a href="tel:085 333 2847" className="flex items-center gap-2 bg-[#FF4500] text-white px-4 py-3 rounded-md font-medium hover:bg-[#CC3700] transition-colors mt-2">
+                <Phone className="w-4 h-4" />
+                <span>085 333 2847</span>
+              </a>
             </nav>
           </div>
         )}
@@ -199,6 +203,7 @@ export default function LandingPage() {
               </div>
             </div>
 
+            {/* Desktop Hero Image */}
             <div className="relative hidden lg:block">
               <img 
                 src="https://customer-assets.emergentagent.com/job_handylink-13/artifacts/qqmd5gvo_27453350-93f2-4f60-b2c2-52bd24282a04-md.jpeg" 
@@ -216,6 +221,19 @@ export default function LandingPage() {
                     <p className="text-sm text-slate-500">Gemiddelde reactietijd</p>
                     <p className="font-heading font-bold text-lg text-slate-900">15 minuten</p>
                   </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Mobile Hero Image & Response Time Card */}
+            <div className="lg:hidden mt-8">
+              <div className="bg-white p-4 rounded-xl shadow-lg border border-slate-200 flex items-center justify-center gap-4">
+                <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+                  <CheckCircle className="w-6 h-6 text-green-600" />
+                </div>
+                <div>
+                  <p className="text-sm text-slate-500">Gemiddelde reactietijd</p>
+                  <p className="font-heading font-bold text-lg text-slate-900">15 minuten</p>
                 </div>
               </div>
             </div>
@@ -295,7 +313,7 @@ export default function LandingPage() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
             {[
               { step: 1, title: "Kies je klus", desc: "Selecteer de dienst en beschrijf je probleem" },
               { step: 2, title: "Boek direct", desc: "Kies een datum en tijd die jou uitkomt" },
@@ -303,11 +321,11 @@ export default function LandingPage() {
               { step: 4, title: "Betaal achteraf", desc: "Na de klus betaal je veilig via ons platform" }
             ].map((item, idx) => (
               <div key={idx} className="text-center">
-                <div className="w-16 h-16 bg-[#FF4500] text-white rounded-full flex items-center justify-center mx-auto mb-4 font-heading font-bold text-2xl">
+                <div className="w-12 h-12 md:w-16 md:h-16 bg-[#FF4500] text-white rounded-full flex items-center justify-center mx-auto mb-3 md:mb-4 font-heading font-bold text-xl md:text-2xl">
                   {item.step}
                 </div>
-                <h3 className="font-heading font-bold text-lg text-slate-900 mb-2">{item.title}</h3>
-                <p className="text-slate-600 text-sm">{item.desc}</p>
+                <h3 className="font-heading font-bold text-base md:text-lg text-slate-900 mb-1 md:mb-2">{item.title}</h3>
+                <p className="text-slate-600 text-xs md:text-sm">{item.desc}</p>
               </div>
             ))}
           </div>
@@ -416,30 +434,30 @@ export default function LandingPage() {
       </section>
 
       {/* Footer */}
-      <footer className="py-16 px-4 sm:px-6 lg:px-8 bg-slate-900">
+      <footer className="py-12 md:py-16 px-4 sm:px-6 lg:px-8 bg-slate-900">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-8 mb-12">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-6 md:gap-8 mb-8 md:mb-12">
             {/* Logo & Description */}
-            <div className="col-span-2 md:col-span-1">
-              <div className="flex items-center gap-2 mb-4">
-                <div className="w-10 h-10 bg-[#FF4500] rounded-md flex items-center justify-center">
-                  <Zap className="w-6 h-6 text-white" />
+            <div className="col-span-2 md:col-span-1 mb-4 md:mb-0">
+              <div className="flex items-center gap-2 mb-3 md:mb-4">
+                <div className="w-8 h-8 md:w-10 md:h-10 bg-[#FF4500] rounded-md flex items-center justify-center">
+                  <Zap className="w-5 h-5 md:w-6 md:h-6 text-white" />
                 </div>
-                <span className="font-heading font-bold text-xl text-white">SpoedDienst24</span>
+                <span className="font-heading font-bold text-lg md:text-xl text-white">SpoedDienst24</span>
               </div>
-              <p className="text-slate-400 text-sm">
+              <p className="text-slate-400 text-xs md:text-sm">
                 24/7 betrouwbare vakmannen voor al uw spoed en reguliere klussen.
               </p>
-              <div className="mt-4">
-                <p className="text-slate-400 text-sm">085 333 2847 (24/7)</p>
-                <p className="text-slate-400 text-sm">info@spoeddienst24.nl</p>
+              <div className="mt-3 md:mt-4">
+                <a href="tel:085 333 2847" className="text-slate-400 text-xs md:text-sm hover:text-white block">085 333 2847 (24/7)</a>
+                <a href="mailto:info@spoeddienst24.nl" className="text-slate-400 text-xs md:text-sm hover:text-white">info@spoeddienst24.nl</a>
               </div>
             </div>
 
             {/* Zakelijk */}
             <div>
-              <h4 className="font-heading font-bold text-white mb-4">Zakelijk</h4>
-              <ul className="space-y-2 text-slate-400 text-sm">
+              <h4 className="font-heading font-bold text-white mb-3 md:mb-4 text-sm md:text-base">Zakelijk</h4>
+              <ul className="space-y-1.5 md:space-y-2 text-slate-400 text-xs md:text-sm">
                 <li><Link to="/vve" className="hover:text-white">VVE klusservice</Link></li>
                 <li><Link to="/horeca" className="hover:text-white">Horeca klusservice</Link></li>
                 <li><Link to="/kantoor" className="hover:text-white">Kantoor klusservice</Link></li>
@@ -451,8 +469,8 @@ export default function LandingPage() {
 
             {/* Vakman Info */}
             <div>
-              <h4 className="font-heading font-bold text-white mb-4">Vakman info</h4>
-              <ul className="space-y-2 text-slate-400 text-sm">
+              <h4 className="font-heading font-bold text-white mb-3 md:mb-4 text-sm md:text-base">Vakman info</h4>
+              <ul className="space-y-1.5 md:space-y-2 text-slate-400 text-xs md:text-sm">
                 <li><Link to="/vakman" className="hover:text-white">Word vakman</Link></li>
                 <li><Link to="/vakman/app" className="hover:text-white">Vakman App</Link></li>
                 <li><Link to="/vakman/voorwaarden" className="hover:text-white">Vakman voorwaarden</Link></li>
@@ -463,8 +481,8 @@ export default function LandingPage() {
 
             {/* SpoedDienst24 Info */}
             <div>
-              <h4 className="font-heading font-bold text-white mb-4">SpoedDienst24 info</h4>
-              <ul className="space-y-2 text-slate-400 text-sm">
+              <h4 className="font-heading font-bold text-white mb-3 md:mb-4 text-sm md:text-base">SpoedDienst24 info</h4>
+              <ul className="space-y-1.5 md:space-y-2 text-slate-400 text-xs md:text-sm">
                 <li><Link to="/over-ons" className="hover:text-white">Over ons</Link></li>
                 <li><Link to="/garantie" className="hover:text-white">Garantie</Link></li>
                 <li><Link to="/prijzen" className="hover:text-white">Prijsgidsen</Link></li>
@@ -475,14 +493,14 @@ export default function LandingPage() {
 
             {/* Contact & Overig */}
             <div>
-              <h4 className="font-heading font-bold text-white mb-4">Contact & Overig</h4>
-              <ul className="space-y-2 text-slate-400 text-sm">
+              <h4 className="font-heading font-bold text-white mb-3 md:mb-4 text-sm md:text-base">Contact & Overig</h4>
+              <ul className="space-y-1.5 md:space-y-2 text-slate-400 text-xs md:text-sm">
                 <li><a href="tel:085 333 2847" className="hover:text-white">Bel 085 333 2847</a></li>
                 <li><a href="mailto:info@spoeddienst24.nl" className="hover:text-white">info@spoeddienst24.nl</a></li>
                 <li><Link to="/vacatures" className="hover:text-white">Vacatures</Link></li>
               </ul>
-              <h4 className="font-heading font-bold text-white mt-6 mb-4">Diensten</h4>
-              <ul className="space-y-2 text-slate-400 text-sm">
+              <h4 className="font-heading font-bold text-white mt-4 md:mt-6 mb-3 md:mb-4 text-sm md:text-base">Diensten</h4>
+              <ul className="space-y-1.5 md:space-y-2 text-slate-400 text-xs md:text-sm">
                 <li><Link to="/diensten/elektricien" className="hover:text-white">Elektricien</Link></li>
                 <li><Link to="/diensten/loodgieter" className="hover:text-white">Loodgieter</Link></li>
                 <li><Link to="/diensten/slotenmaker" className="hover:text-white">Slotenmaker</Link></li>
@@ -491,11 +509,11 @@ export default function LandingPage() {
           </div>
 
           {/* Bottom Bar */}
-          <div className="border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-slate-500 text-sm">
+          <div className="border-t border-slate-800 pt-6 md:pt-8 flex flex-col md:flex-row justify-between items-center gap-3 md:gap-4">
+            <p className="text-slate-500 text-xs md:text-sm text-center md:text-left">
               © 2024 SpoedDienst24.nl. Alle rechten voorbehouden.
             </p>
-            <div className="flex gap-6 text-slate-400 text-sm">
+            <div className="flex flex-wrap justify-center gap-4 md:gap-6 text-slate-400 text-xs md:text-sm">
               <Link to="/privacy" className="hover:text-white">Privacybeleid</Link>
               <Link to="/voorwaarden" className="hover:text-white">Algemene voorwaarden</Link>
               <Link to="/cookies" className="hover:text-white">Cookiebeleid</Link>
