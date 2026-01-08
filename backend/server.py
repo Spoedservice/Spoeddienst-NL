@@ -623,12 +623,12 @@ async def get_latest_reviews():
     # If no reviews yet, return sample reviews
     if not reviews:
         reviews = [
-            {"customer_name": "Ilse", "rating": 5, "comment": "Prima specialist, werkt netjes en snel, en levert ook nog wat extra service. Top!", "service": "Loodgieter"},
-            {"customer_name": "Maurice", "rating": 5, "comment": "Zeer prettige communicatie vooraf! Keurig op tijd voor de klus. Vakman! Aanrader 👍", "service": "Elektricien"},
-            {"customer_name": "Johan", "rating": 5, "comment": "Heel goed resultaat. Klus gedaan zoals afgesproken. Transparant en soepel.", "service": "Loodgieter"},
-            {"customer_name": "Bente", "rating": 5, "comment": "Heel professioneel!", "service": "Slotenmaker"},
-            {"customer_name": "Anwar", "rating": 5, "comment": "Aardige man. Correct en betrouwbaar. Werkt ook goed en denkt mee.", "service": "Elektricien"},
-            {"customer_name": "Renate", "rating": 5, "comment": "Bekwame vakman. Snel gewerkt en de tijd genomen voor duidelijke uitleg.", "service": "Loodgieter"}
+            {"customer_name": "H.p.m.", "rating": 5, "comment": "De verstopping was snel en effectief verholpen. Snelle reactie en zeer vriendelijk.", "service": "Afvoer laten ontstoppen", "city": "Amsterdam"},
+            {"customer_name": "Ilse", "rating": 5, "comment": "Prima specialist, werkt netjes en snel, en levert ook nog wat extra service. Top!", "service": "Vlotter laten vervangen", "city": "Rotterdam"},
+            {"customer_name": "Richard", "rating": 5, "comment": "Eindresultaat is top. Echt een vakman.", "service": "Kraan laten plaatsen of vervangen", "city": "Utrecht"},
+            {"customer_name": "Anwar", "rating": 5, "comment": "Aardige man. Correct en betrouwbaar. Werkt ook goed en denkt mee. Zou hem zo nogmaals inhuren.", "service": "Quooker laten installeren", "city": "Den Haag"},
+            {"customer_name": "Maurice", "rating": 5, "comment": "Zeer prettige communicatie vooraf! Assistentie bij aanschaf benodigd materiaal en ondanks sneeuw keurig op tijd voor de klus. Vakman! Aanrader 👍", "service": "Opbouw doucheset laten plaatsen", "city": "Eindhoven"},
+            {"customer_name": "Renate", "rating": 5, "comment": "Hüseyin is een bekwame vakman. Snel gewerkt en de tijd genomen voor duidelijke uitleg. We bevelen hem zeker aan!", "service": "Kraan laten plaatsen of vervangen", "city": "Groningen"}
         ]
     
     return reviews
