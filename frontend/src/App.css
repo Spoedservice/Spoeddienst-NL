@@ -2,6 +2,16 @@
     min-height: 100vh;
 }
 
+/* Hide Emergent badge */
+[data-testid="emergent-badge"],
+[class*="emergent"],
+iframe[title*="emergent" i],
+div[class*="Made with"] {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+}
+
 /* Emergency Badge Animation */
 @keyframes pulse-emergency {
     0%, 100% {
