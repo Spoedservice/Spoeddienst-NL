@@ -403,8 +403,9 @@ export default function LandingPage() {
       {/* Footer */}
       <footer className="py-16 px-4 sm:px-6 lg:px-8 bg-slate-900">
         <div className="max-w-7xl mx-auto">
-          <div className="grid md:grid-cols-4 gap-8 mb-12">
-            <div>
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-8 mb-12">
+            {/* Logo & Description */}
+            <div className="col-span-2 md:col-span-1">
               <div className="flex items-center gap-2 mb-4">
                 <div className="w-10 h-10 bg-[#FF4500] rounded-md flex items-center justify-center">
                   <Zap className="w-6 h-6 text-white" />
@@ -414,32 +415,77 @@ export default function LandingPage() {
               <p className="text-slate-400 text-sm">
                 24/7 betrouwbare vakmannen voor al uw spoed en reguliere klussen.
               </p>
+              <div className="mt-4">
+                <p className="text-slate-400 text-sm">0800-1234 (24/7)</p>
+                <p className="text-slate-400 text-sm">info@spoeddienst24.nl</p>
+              </div>
             </div>
+
+            {/* Zakelijk */}
             <div>
-              <h4 className="font-heading font-bold text-white mb-4">Diensten</h4>
+              <h4 className="font-heading font-bold text-white mb-4">Zakelijk</h4>
+              <ul className="space-y-2 text-slate-400 text-sm">
+                <li><Link to="#" className="hover:text-white">VVE klusservice</Link></li>
+                <li><Link to="#" className="hover:text-white">Horeca klusservice</Link></li>
+                <li><Link to="#" className="hover:text-white">Kantoor klusservice</Link></li>
+                <li><Link to="#" className="hover:text-white">Winkel klusservice</Link></li>
+                <li><Link to="#" className="hover:text-white">Partner worden?</Link></li>
+                <li><Link to="#" className="hover:text-white">Affiliate programma</Link></li>
+              </ul>
+            </div>
+
+            {/* Vakman Info */}
+            <div>
+              <h4 className="font-heading font-bold text-white mb-4">Vakman info</h4>
+              <ul className="space-y-2 text-slate-400 text-sm">
+                <li><Link to="/vakman/register" className="hover:text-white">Word vakman</Link></li>
+                <li><Link to="#" className="hover:text-white">Vakman App</Link></li>
+                <li><Link to="#" className="hover:text-white">Vakman voorwaarden</Link></li>
+                <li><Link to="#" className="hover:text-white">Veelgestelde vragen vakman</Link></li>
+                <li><Link to="/login" className="hover:text-white">Inloggen</Link></li>
+              </ul>
+            </div>
+
+            {/* SpoedDienst24 Info */}
+            <div>
+              <h4 className="font-heading font-bold text-white mb-4">SpoedDienst24 info</h4>
+              <ul className="space-y-2 text-slate-400 text-sm">
+                <li><Link to="#" className="hover:text-white">Over ons</Link></li>
+                <li><Link to="#" className="hover:text-white">Garantie</Link></li>
+                <li><Link to="#" className="hover:text-white">Prijsgidsen</Link></li>
+                <li><Link to="#" className="hover:text-white">Premium lidmaatschap</Link></li>
+                <li><Link to="#" className="hover:text-white">Veelgestelde vragen</Link></li>
+                <li><Link to="#" className="hover:text-white">Blog</Link></li>
+              </ul>
+            </div>
+
+            {/* Contact & Overig */}
+            <div>
+              <h4 className="font-heading font-bold text-white mb-4">Contact & Overig</h4>
+              <ul className="space-y-2 text-slate-400 text-sm">
+                <li><Link to="#" className="hover:text-white">Neem contact op</Link></li>
+                <li><Link to="#" className="hover:text-white">Vacatures</Link></li>
+                <li><Link to="#" className="hover:text-white">Sitemap</Link></li>
+              </ul>
+              <h4 className="font-heading font-bold text-white mt-6 mb-4">Diensten</h4>
               <ul className="space-y-2 text-slate-400 text-sm">
                 <li><Link to="/diensten/elektricien" className="hover:text-white">Elektricien</Link></li>
                 <li><Link to="/diensten/loodgieter" className="hover:text-white">Loodgieter</Link></li>
                 <li><Link to="/diensten/slotenmaker" className="hover:text-white">Slotenmaker</Link></li>
               </ul>
             </div>
-            <div>
-              <h4 className="font-heading font-bold text-white mb-4">Voor Vakmannen</h4>
-              <ul className="space-y-2 text-slate-400 text-sm">
-                <li><Link to="/vakman/register" className="hover:text-white">Word vakman</Link></li>
-                <li><Link to="/login" className="hover:text-white">Inloggen</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-heading font-bold text-white mb-4">Contact</h4>
-              <ul className="space-y-2 text-slate-400 text-sm">
-                <li>0800-1234 (24/7)</li>
-                <li>info@spoedklus.nl</li>
-              </ul>
-            </div>
           </div>
-          <div className="border-t border-slate-800 pt-8 text-center text-slate-500 text-sm">
-            © 2024 SpoedDienst24. Alle rechten voorbehouden.
+
+          {/* Bottom Bar */}
+          <div className="border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+            <p className="text-slate-500 text-sm">
+              © 2024 SpoedDienst24.nl. Alle rechten voorbehouden.
+            </p>
+            <div className="flex gap-6 text-slate-400 text-sm">
+              <Link to="#" className="hover:text-white">Privacybeleid</Link>
+              <Link to="#" className="hover:text-white">Algemene voorwaarden</Link>
+              <Link to="#" className="hover:text-white">Cookiebeleid</Link>
+            </div>
           </div>
         </div>
       </footer>
