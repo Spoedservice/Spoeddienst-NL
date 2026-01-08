@@ -62,6 +62,7 @@ function App() {
           <Route path="/garantie" element={<GarantiePage />} />
           <Route path="/prijzen" element={<PrijsgidsenPage />} />
           <Route path="/premium" element={<PremiumPage />} />
+          <Route path="/premium/success" element={<PremiumSuccessPage />} />
           <Route path="/blog" element={<BlogPage />} />
           <Route path="/vacatures" element={<VacaturesPage />} />
         </Routes>
