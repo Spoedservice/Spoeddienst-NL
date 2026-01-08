@@ -86,6 +86,8 @@ function App() {
           <Route path="/privacy" element={<PrivacyPage />} />
           <Route path="/voorwaarden" element={<VoorwaardenPage />} />
           <Route path="/cookies" element={<CookiePage />} />
+          {/* Review pagina */}
+          <Route path="/review" element={<ReviewPage />} />
         </Routes>
       </BrowserRouter>
       <Toaster position="top-right" />
