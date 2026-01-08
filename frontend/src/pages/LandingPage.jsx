@@ -86,7 +86,7 @@ export default function LandingPage() {
               <div className="w-10 h-10 bg-[#FF4500] rounded-md flex items-center justify-center">
                 <Zap className="w-6 h-6 text-white" />
               </div>
-              <span className="font-heading font-bold text-xl text-slate-900">SpoedKlus</span>
+              <span className="font-heading font-bold text-xl text-slate-900">SpoedDienst24</span>
             </Link>
 
             {/* Desktop Nav */}
@@ -344,7 +344,7 @@ export default function LandingPage() {
               Wat zeggen tevreden klanten?
             </h2>
             <p className="text-slate-600 text-lg">
-              Slimme huiseigenaren kiezen voor SpoedKlus
+              Slimme huiseigenaren kiezen voor SpoedDienst24
             </p>
           </div>
 
@@ -409,7 +409,7 @@ export default function LandingPage() {
                 <div className="w-10 h-10 bg-[#FF4500] rounded-md flex items-center justify-center">
                   <Zap className="w-6 h-6 text-white" />
                 </div>
-                <span className="font-heading font-bold text-xl text-white">SpoedKlus</span>
+                <span className="font-heading font-bold text-xl text-white">SpoedDienst24</span>
               </div>
               <p className="text-slate-400 text-sm">
                 24/7 betrouwbare vakmannen voor al uw spoed en reguliere klussen.
@@ -439,7 +439,7 @@ export default function LandingPage() {
             </div>
           </div>
           <div className="border-t border-slate-800 pt-8 text-center text-slate-500 text-sm">
-            © 2024 SpoedKlus. Alle rechten voorbehouden.
+            © 2024 SpoedDienst24. Alle rechten voorbehouden.
           </div>
         </div>
       </footer>

@@ -69,7 +69,7 @@ export default function ServicePage() {
             <div className="w-8 h-8 bg-[#FF4500] rounded-md flex items-center justify-center">
               <Zap className="w-4 h-4 text-white" />
             </div>
-            <span className="font-heading font-bold text-lg">SpoedKlus</span>
+            <span className="font-heading font-bold text-lg">SpoedDienst24</span>
           </Link>
           <a href="tel:0800-1234" className="flex items-center gap-2 bg-[#FF4500] text-white px-4 py-2 rounded-md font-medium hover:bg-[#CC3700] transition-colors">
             <Phone className="w-4 h-4" />
@@ -283,7 +283,7 @@ export default function ServicePage() {
       {/* Footer */}
       <footer className="py-8 px-4 sm:px-6 lg:px-8 bg-slate-900 text-center">
         <p className="text-slate-500 text-sm">
-          © 2024 SpoedKlus. Alle rechten voorbehouden.
+          © 2024 SpoedDienst24. Alle rechten voorbehouden.
         </p>
       </footer>
     </div>

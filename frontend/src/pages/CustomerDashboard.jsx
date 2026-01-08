@@ -97,7 +97,7 @@ export default function CustomerDashboard() {
             <div className="w-8 h-8 bg-[#FF4500] rounded-md flex items-center justify-center">
               <Zap className="w-4 h-4 text-white" />
             </div>
-            <span className="font-heading font-bold text-lg">SpoedKlus</span>
+            <span className="font-heading font-bold text-lg">SpoedDienst24</span>
           </Link>
           <div className="flex items-center gap-4">
             <span className="text-sm text-slate-600 hidden sm:inline">Hallo, {user?.name}</span>
