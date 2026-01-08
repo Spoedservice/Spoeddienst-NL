@@ -18,9 +18,9 @@ export default function HorecaPage() {
             </div>
             <span className="font-heading font-bold text-lg">SpoedDienst24</span>
           </Link>
-          <a href="tel:0800-1234" className="flex items-center gap-2 bg-[#FF4500] text-white px-4 py-2 rounded-md font-medium hover:bg-[#CC3700]">
+          <a href="tel:085 333 2847" className="flex items-center gap-2 bg-[#FF4500] text-white px-4 py-2 rounded-md font-medium hover:bg-[#CC3700]">
             <Phone className="w-4 h-4" />
-            <span className="hidden sm:inline">0800-1234</span>
+            <span className="hidden sm:inline">085 333 2847</span>
           </a>
         </div>
       </header>
@@ -42,9 +42,9 @@ export default function HorecaPage() {
                 <Button onClick={() => navigate('/boek/elektricien')} className="bg-[#FF4500] hover:bg-[#CC3700] h-12 px-6">
                   Direct een vakman boeken <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
-                <a href="tel:0800-1234">
+                <a href="tel:085 333 2847">
                   <Button variant="outline" className="h-12 px-6 w-full sm:w-auto">
-                    <Phone className="w-4 h-4 mr-2" /> Bel 0800-1234
+                    <Phone className="w-4 h-4 mr-2" /> Bel 085 333 2847
                   </Button>
                 </a>
               </div>
@@ -103,8 +103,8 @@ export default function HorecaPage() {
           <h2 className="font-heading font-bold text-3xl text-white mb-4">Storing in uw horecazaak?</h2>
           <p className="text-white/90 mb-8">Bel ons 24/7 - we staan direct klaar</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="tel:0800-1234" className="inline-flex items-center justify-center gap-2 bg-white text-[#FF4500] px-6 py-3 rounded-md font-bold hover:bg-slate-100">
-              <Phone className="w-5 h-5" /> 0800-1234
+            <a href="tel:085 333 2847" className="inline-flex items-center justify-center gap-2 bg-white text-[#FF4500] px-6 py-3 rounded-md font-bold hover:bg-slate-100">
+              <Phone className="w-5 h-5" /> 085 333 2847
             </a>
             <Button onClick={() => navigate('/boek/loodgieter')} className="bg-slate-900 hover:bg-slate-800 px-6 py-3 h-auto font-bold">
               Direct Boeken

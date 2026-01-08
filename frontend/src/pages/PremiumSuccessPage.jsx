@@ -118,8 +118,8 @@ export default function PremiumSuccessPage() {
                 <Link to="/premium">
                   <Button className="w-full bg-yellow-500 hover:bg-yellow-600">Opnieuw proberen</Button>
                 </Link>
-                <a href="tel:0800-1234">
-                  <Button variant="outline" className="w-full">Bel 0800-1234</Button>
+                <a href="tel:085 333 2847">
+                  <Button variant="outline" className="w-full">Bel 085 333 2847</Button>
                 </a>
               </div>
             </>

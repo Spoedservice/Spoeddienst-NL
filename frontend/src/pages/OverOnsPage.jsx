@@ -96,8 +96,8 @@ export default function OverOnsPage() {
             <Link to="/boek/elektricien">
               <Button className="bg-white text-[#FF4500] hover:bg-slate-100 px-6 py-3 h-auto font-bold">Direct Boeken</Button>
             </Link>
-            <a href="tel:0800-1234">
-              <Button variant="outline" className="border-white text-white hover:bg-white/10 px-6 py-3 h-auto font-bold">Bel 0800-1234</Button>
+            <a href="tel:085 333 2847">
+              <Button variant="outline" className="border-white text-white hover:bg-white/10 px-6 py-3 h-auto font-bold">Bel 085 333 2847</Button>
             </a>
           </div>
         </div>

@@ -62,7 +62,7 @@ const faqs = [
     questions: [
       {
         q: "Waar kan ik terecht met vragen of problemen?",
-        a: "Ons supportteam is bereikbaar via e-mail (vakman@spoeddienst24.nl) en telefoon (0800-1234). We zijn beschikbaar van maandag t/m vrijdag, 8:00 - 18:00 uur."
+        a: "Ons supportteam is bereikbaar via e-mail (vakman@spoeddienst24.nl) en telefoon (085 333 2847). We zijn beschikbaar van maandag t/m vrijdag, 8:00 - 18:00 uur."
       },
       {
         q: "Wat als er een klacht is over mijn werk?",
@@ -172,8 +172,8 @@ export default function VakmanFAQPage() {
             <a href="mailto:vakman@spoeddienst24.nl">
               <Button variant="outline">vakman@spoeddienst24.nl</Button>
             </a>
-            <a href="tel:0800-1234">
-              <Button className="bg-[#FF4500] hover:bg-[#CC3700]">Bel 0800-1234</Button>
+            <a href="tel:085 333 2847">
+              <Button className="bg-[#FF4500] hover:bg-[#CC3700]">Bel 085 333 2847</Button>
             </a>
           </div>
         </div>

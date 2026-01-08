@@ -108,10 +108,10 @@ export default function BookingSuccessPage() {
                     Terug naar home
                   </Button>
                 </Link>
-                <a href="tel:0800-1234">
+                <a href="tel:085 333 2847">
                   <Button variant="outline" className="w-full">
                     <Phone className="w-4 h-4 mr-2" />
-                    Bel ons: 0800-1234
+                    Bel ons: 085 333 2847
                   </Button>
                 </a>
               </div>
@@ -137,10 +137,10 @@ export default function BookingSuccessPage() {
                     Opnieuw proberen
                   </Button>
                 </Link>
-                <a href="tel:0800-1234">
+                <a href="tel:085 333 2847">
                   <Button variant="outline" className="w-full">
                     <Phone className="w-4 h-4 mr-2" />
-                    Bel ons: 0800-1234
+                    Bel ons: 085 333 2847
                   </Button>
                 </a>
               </div>

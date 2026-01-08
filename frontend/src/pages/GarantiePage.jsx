@@ -80,7 +80,7 @@ export default function GarantiePage() {
             </p>
             <ul className="space-y-3 text-slate-700">
               <li><strong>E-mail:</strong> garantie@spoeddienst24.nl</li>
-              <li><strong>Telefoon:</strong> 0800-1234 (24/7 bereikbaar)</li>
+              <li><strong>Telefoon:</strong> 085 333 2847 (24/7 bereikbaar)</li>
               <li><strong>Vermeld:</strong> Je boekingsnummer en een omschrijving van het probleem</li>
             </ul>
             <p className="text-slate-600 mt-6">
@@ -94,8 +94,8 @@ export default function GarantiePage() {
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="font-heading font-bold text-3xl text-white mb-4">Vragen over onze garantie?</h2>
           <p className="text-white/90 mb-8">Neem gerust contact met ons op</p>
-          <a href="tel:0800-1234" className="inline-flex items-center gap-2 bg-white text-[#FF4500] px-6 py-3 rounded-md font-bold hover:bg-slate-100">
-            <Phone className="w-5 h-5" /> 0800-1234
+          <a href="tel:085 333 2847" className="inline-flex items-center gap-2 bg-white text-[#FF4500] px-6 py-3 rounded-md font-bold hover:bg-slate-100">
+            <Phone className="w-5 h-5" /> 085 333 2847
           </a>
         </div>
       </section>

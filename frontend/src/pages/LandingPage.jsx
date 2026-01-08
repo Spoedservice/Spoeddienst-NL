@@ -101,9 +101,9 @@ export default function LandingPage() {
               <Link to="/login">
                 <Button variant="outline" data-testid="login-btn">Inloggen</Button>
               </Link>
-              <a href="tel:0800-1234" className="flex items-center gap-2 bg-[#FF4500] text-white px-4 py-2 rounded-md font-medium hover:bg-[#CC3700] transition-colors">
+              <a href="tel:085 333 2847" className="flex items-center gap-2 bg-[#FF4500] text-white px-4 py-2 rounded-md font-medium hover:bg-[#CC3700] transition-colors">
                 <Phone className="w-4 h-4" />
-                <span>0800-1234</span>
+                <span>085 333 2847</span>
               </a>
             </div>
 
@@ -387,9 +387,9 @@ export default function LandingPage() {
             Bel ons 24/7 voor spoed klussen of boek online
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="tel:0800-1234" className="inline-flex items-center justify-center gap-2 bg-white text-[#FF4500] px-8 py-4 rounded-md font-bold text-lg hover:bg-slate-100 transition-colors">
+            <a href="tel:085 333 2847" className="inline-flex items-center justify-center gap-2 bg-white text-[#FF4500] px-8 py-4 rounded-md font-bold text-lg hover:bg-slate-100 transition-colors">
               <Phone className="w-5 h-5" />
-              0800-1234
+              085 333 2847
             </a>
             <Button 
               onClick={() => navigate('/boek/elektricien?emergency=true')}
@@ -418,7 +418,7 @@ export default function LandingPage() {
                 24/7 betrouwbare vakmannen voor al uw spoed en reguliere klussen.
               </p>
               <div className="mt-4">
-                <p className="text-slate-400 text-sm">0800-1234 (24/7)</p>
+                <p className="text-slate-400 text-sm">085 333 2847 (24/7)</p>
                 <p className="text-slate-400 text-sm">info@spoeddienst24.nl</p>
               </div>
             </div>
@@ -464,7 +464,7 @@ export default function LandingPage() {
             <div>
               <h4 className="font-heading font-bold text-white mb-4">Contact & Overig</h4>
               <ul className="space-y-2 text-slate-400 text-sm">
-                <li><a href="tel:0800-1234" className="hover:text-white">Bel 0800-1234</a></li>
+                <li><a href="tel:085 333 2847" className="hover:text-white">Bel 085 333 2847</a></li>
                 <li><a href="mailto:info@spoeddienst24.nl" className="hover:text-white">info@spoeddienst24.nl</a></li>
                 <li><Link to="/vacatures" className="hover:text-white">Vacatures</Link></li>
               </ul>

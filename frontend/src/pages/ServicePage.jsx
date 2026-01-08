@@ -71,9 +71,9 @@ export default function ServicePage() {
             </div>
             <span className="font-heading font-bold text-lg">SpoedDienst24</span>
           </Link>
-          <a href="tel:0800-1234" className="flex items-center gap-2 bg-[#FF4500] text-white px-4 py-2 rounded-md font-medium hover:bg-[#CC3700] transition-colors">
+          <a href="tel:085 333 2847" className="flex items-center gap-2 bg-[#FF4500] text-white px-4 py-2 rounded-md font-medium hover:bg-[#CC3700] transition-colors">
             <Phone className="w-4 h-4" />
-            <span className="hidden sm:inline">0800-1234</span>
+            <span className="hidden sm:inline">085 333 2847</span>
           </a>
         </div>
       </header>
@@ -266,9 +266,9 @@ export default function ServicePage() {
             Bel ons 24/7 of boek direct online
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="tel:0800-1234" className="inline-flex items-center justify-center gap-2 bg-white text-[#FF4500] px-6 py-3 rounded-md font-bold hover:bg-slate-100 transition-colors">
+            <a href="tel:085 333 2847" className="inline-flex items-center justify-center gap-2 bg-white text-[#FF4500] px-6 py-3 rounded-md font-bold hover:bg-slate-100 transition-colors">
               <Phone className="w-5 h-5" />
-              0800-1234
+              085 333 2847
             </a>
             <Button 
               onClick={() => navigate(`/boek/${slug}?emergency=true`)}

@@ -105,7 +105,7 @@ export default function VakmanVoorwaardenPage() {
             <p className="text-slate-600">
               Voor vragen over deze voorwaarden kun je contact opnemen via:<br />
               E-mail: vakman@spoeddienst24.nl<br />
-              Telefoon: 0800-1234
+              Telefoon: 085 333 2847
             </p>
           </section>
         </article>
