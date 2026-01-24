@@ -97,6 +97,7 @@ function App() {
           <Route path="/vakman/:vakmanId/approve" element={<VakmanApprovePage />} />
           {/* Admin Dashboard */}
           <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/beheer" element={<AdminDashboard />} />
         </Routes>
       </BrowserRouter>
       <Toaster position="top-right" />
