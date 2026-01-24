@@ -920,8 +920,15 @@ async def approve_or_reject_vakman(vakman_id: str, action: str):
             {"id": vakman_id}, 
             {"$set": {"is_approved": True, "is_available": True}}
         )
+        # Send approval email
+        vakman_data = {"_id": 0, "password": 0}
+        vakman_clean = {k: v for k, v in vakman.items() if k not in ["_id", "password"]}
+        await send_vakman_approval_email(vakman_clean)
         return {"status": "success", "message": f"✅ {vakman['name']} is goedgekeurd als vakman!", "action": "approved"}
     elif action == "reject":
+        # Send rejection email before deleting
+        vakman_clean = {k: v for k, v in vakman.items() if k not in ["_id", "password"]}
+        await send_vakman_rejection_email(vakman_clean)
         await db.vakmannen.delete_one({"id": vakman_id})
         return {"status": "success", "message": f"❌ Aanmelding van {vakman['name']} is afgewezen en verwijderd.", "action": "rejected"}
     else:
