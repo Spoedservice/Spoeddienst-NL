@@ -329,7 +329,7 @@ export default function VakmanDashboard() {
               <div className="flex gap-2 flex-wrap">
                 {[
                   { value: "all", label: "Alle" },
-                  { value: "pending", label: "Nieuw" },
+                  { value: "confirmed", label: "Nieuw" },
                   { value: "accepted", label: "Geaccepteerd" },
                   { value: "in_progress", label: "Bezig" },
                   { value: "completed", label: "Voltooid" }
