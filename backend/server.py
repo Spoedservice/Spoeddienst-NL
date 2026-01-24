@@ -1109,6 +1109,22 @@ async def get_vakmannen(service_type: Optional[str] = None):
     vakmannen = await db.vakmannen.find(query, {"_id": 0, "password": 0}).to_list(100)
     return vakmannen
 
+@api_router.get("/vakmannen/available")
+async def get_available_vakmannen(service_type: str):
+    """Get available and approved vakmannen for a specific service type"""
+    query = {
+        "service_type": service_type,
+        "is_approved": True,
+        "is_available": True
+    }
+    
+    vakmannen = await db.vakmannen.find(
+        query, 
+        {"_id": 0, "password": 0}
+    ).sort("rating", -1).to_list(50)
+    
+    return vakmannen
+
 @api_router.get("/vakman/dashboard")
 async def get_vakman_dashboard(current_user: dict = Depends(get_current_user)):
     if current_user["role"] != "vakman":
