@@ -123,10 +123,22 @@ export default function LandingPage() {
             </nav>
 
             <div className="hidden md:flex items-center gap-4">
+              {user?.role === 'admin' && (
+                <Link to="/beheer" className="flex items-center gap-1 text-[#FF4500] hover:text-[#CC3700] font-medium" data-testid="admin-link">
+                  <Settings className="w-4 h-4" />
+                  Beheer
+                </Link>
+              )}
               <Link to="/vakman/register" className="text-slate-600 hover:text-slate-900 font-medium">Word Vakman</Link>
-              <Link to="/login">
-                <Button variant="outline" data-testid="login-btn">Inloggen</Button>
-              </Link>
+              {user ? (
+                <Link to={user.role === 'vakman' ? '/vakman/dashboard' : '/dashboard'}>
+                  <Button variant="outline" data-testid="dashboard-btn">Dashboard</Button>
+                </Link>
+              ) : (
+                <Link to="/login">
+                  <Button variant="outline" data-testid="login-btn">Inloggen</Button>
+                </Link>
+              )}
               <a href="tel:085 333 2847" className="flex items-center gap-2 bg-[#FF4500] text-white px-4 py-2 rounded-md font-medium hover:bg-[#CC3700] transition-colors">
                 <Phone className="w-4 h-4" />
                 <span>085 333 2847</span>
