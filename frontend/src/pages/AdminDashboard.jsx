@@ -558,23 +558,6 @@ export default function AdminDashboard() {
                 </CardContent>
               </Card>
             )}
-                              </Button>
-                              <Button variant="destructive" onClick={() => rejectVakman(vakman.id)}>
-                                <XCircle className="w-4 h-4 mr-2" />
-                                Afwijzen
-                              </Button>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    ))}
-                    {vakmannen.length === 0 && (
-                      <p className="text-center text-slate-500 py-8">Geen vakmannen geregistreerd</p>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-            )}
 
             {/* Reviews Tab */}
             {activeTab === "reviews" && (
