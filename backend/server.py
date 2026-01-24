@@ -1745,6 +1745,49 @@ async def update_booking_status_admin(booking_id: str, status_update: dict, admi
         raise HTTPException(status_code=404, detail="Boeking niet gevonden")
     return {"message": f"Status gewijzigd naar {status}"}
 
+class AssignVakmanRequest(BaseModel):
+    vakman_id: str
+
+@api_router.post("/admin/booking/{booking_id}/assign")
+async def assign_booking_to_vakman(booking_id: str, assign_request: AssignVakmanRequest, admin: dict = Depends(get_admin_user)):
+    """Assign a booking to a specific vakman and send notification email"""
+    
+    # Get the booking
+    booking = await db.bookings.find_one({"id": booking_id}, {"_id": 0})
+    if not booking:
+        raise HTTPException(status_code=404, detail="Boeking niet gevonden")
+    
+    # Get the vakman
+    vakman = await db.vakmannen.find_one({"id": assign_request.vakman_id}, {"_id": 0, "password": 0})
+    if not vakman:
+        raise HTTPException(status_code=404, detail="Vakman niet gevonden")
+    
+    # Update the booking with vakman assignment
+    result = await db.bookings.update_one(
+        {"id": booking_id},
+        {"$set": {
+            "vakman_id": vakman["id"],
+            "vakman_name": vakman["name"],
+            "status": "confirmed"
+        }}
+    )
+    
+    if result.modified_count == 0:
+        raise HTTPException(status_code=500, detail="Kon boeking niet bijwerken")
+    
+    # Update booking data for email
+    booking["vakman_id"] = vakman["id"]
+    booking["vakman_name"] = vakman["name"]
+    
+    # Send notification email to the assigned vakman
+    await send_specific_vakman_notification_email(booking, vakman["id"])
+    
+    return {
+        "message": f"Boeking toegewezen aan {vakman['name']} en notificatie verstuurd",
+        "vakman_name": vakman["name"],
+        "vakman_id": vakman["id"]
+    }
+
 @api_router.get("/admin/financial")
 async def get_financial_stats(period: str = "month", admin: dict = Depends(get_admin_user)):
     """Get financial statistics for admin dashboard"""
