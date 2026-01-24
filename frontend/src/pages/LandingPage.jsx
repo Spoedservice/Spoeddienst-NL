@@ -535,6 +535,7 @@ export default function LandingPage() {
               <Link to="/privacy" className="hover:text-white">Privacybeleid</Link>
               <Link to="/voorwaarden" className="hover:text-white">Algemene voorwaarden</Link>
               <Link to="/cookies" className="hover:text-white">Cookiebeleid</Link>
+              <Link to="/beheer" className="hover:text-white">Beheer</Link>
             </div>
           </div>
         </div>
