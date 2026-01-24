@@ -1,4 +1,4 @@
-# SpoedKlus - Product Requirements Document
+# SpoedDienst24 - Product Requirements Document
 
 ## Original Problem Statement
 Build a platform like Zoofy.nl - a marketplace where customers can book handymen (vakmannen) for jobs. The platform focuses primarily on EMERGENCY services (spoedklussen) for three main categories: Electrician (Elektricien), Plumber (Loodgieter), and Locksmith (Slotenmaker).
@@ -28,6 +28,30 @@ Build a platform like Zoofy.nl - a marketplace where customers can book handymen
 
 ## What's Been Implemented (January 2025)
 
+### Latest Session (24 Jan 2025)
+**Admin Dashboard Enhancements:**
+- [x] Fixed API authentication issues (removed duplicate routes)
+- [x] Added Financial Dashboard tab with:
+  - Period selector (Vandaag/Week/Maand/Jaar)
+  - Totale Omzet, Betaald, Openstaand, Gem. Orderwaarde
+  - Omzet Laatste 7 Dagen chart
+  - Omzet per Dienst breakdown
+  - Betalingsstatus overzicht
+  - Boekingen per Status
+  - CSV Export functionaliteit
+- [x] Added Marketing Dashboard tab with:
+  - Totale Boekingen, Spoed/Regulier breakdown
+  - Conversie Ratio
+  - Dienst Prestaties (boekingen + omzet per dienst)
+  - Top Steden ranking
+  - Populaire Tijdsloten
+
+**Vakman Dashboard Improvements:**
+- [x] Redesigned with 3 tabs: Opdrachten, Agenda, Profiel
+- [x] Opdrachten tab: Booking list with status filters, detail panel with klantgegevens
+- [x] Agenda tab: Week view with navigation, today highlight, booking preview
+- [x] Profiel tab: Profile info, availability toggle, rating display, earnings
+
 ### Backend (FastAPI)
 - User authentication (JWT-based)
 - Vakman registration and management
@@ -35,6 +59,10 @@ Build a platform like Zoofy.nl - a marketplace where customers can book handymen
 - Stripe payment integration
 - Public stats and reviews API
 - Service data endpoints
+- **NEW**: Admin financial statistics API (`/api/admin/financial`)
+- **NEW**: Admin marketing statistics API (`/api/admin/marketing`)
+- **NEW**: CSV export API (`/api/admin/export/bookings`)
+- Email notifications (TransIP SMTP)
 
 ### Frontend (React)
 - Landing page with bento grid services
@@ -43,9 +71,11 @@ Build a platform like Zoofy.nl - a marketplace where customers can book handymen
 - Auth pages (login, register, vakman register)
 - Service detail pages
 - Responsive design with Tailwind CSS
+- **NEW**: Enhanced Admin Dashboard (6 tabs)
+- **NEW**: Enhanced Vakman Dashboard (3 tabs)
 
 ### Database (MongoDB)
-Collections: users, vakmannen, bookings, reviews, payment_transactions
+Collections: users, vakmannen, bookings, reviews, payment_transactions, public_reviews, premium_subscriptions
 
 ## Prioritized Backlog
 
@@ -53,21 +83,25 @@ Collections: users, vakmannen, bookings, reviews, payment_transactions
 - [x] Core booking flow
 - [x] Payment integration
 - [x] User authentication
+- [x] Admin dashboard for managing vakmannen and bookings
+- [x] Financial & Marketing dashboards
+- [x] Vakman dashboard improvements
 
-### P1 (High Priority) - Next
-- [ ] Admin dashboard for managing vakmannen and bookings
-- [ ] Email notifications (booking confirmation, assignment)
+### P1 (High Priority)
+- [x] Email notifications (booking confirmation, vakman registration)
+- [x] Vakman approval workflow in admin
+- [ ] Admin endpoint authentication (currently unprotected)
 - [ ] SMS notifications for emergency bookings
-- [ ] Vakman approval workflow in admin
 
 ### P2 (Medium Priority)
-- [ ] Customer can leave reviews after job completion
+- [x] Customer can leave reviews after job completion
 - [ ] Vakman profile pages with reviews
 - [ ] Search/filter vakmannen by location
-- [ ] Booking calendar view for vakmannen
+- [x] Booking calendar view for vakmannen (Agenda tab)
 - [ ] Invoice generation
 
 ### P3 (Nice to Have)
+- [ ] Belgian version (spoeddienst24.be)
 - [ ] Mobile app (React Native)
 - [ ] Real-time chat between customer and vakman
 - [ ] GPS tracking for vakman arrival
@@ -78,8 +112,30 @@ Collections: users, vakmannen, bookings, reviews, payment_transactions
 - **Frontend**: React, Tailwind CSS, Shadcn/UI
 - **Auth**: JWT tokens
 - **Payments**: Stripe Checkout
+- **Email**: TransIP SMTP via aiosmtplib
+- **Analytics**: Google Analytics, Google Ads
+
+## API Endpoints
+
+### Admin APIs (Currently Unprotected)
+- `GET /api/admin/stats` - Dashboard statistics
+- `GET /api/admin/bookings` - All bookings
+- `GET /api/admin/vakmannen` - All vakmannen
+- `GET /api/admin/reviews` - All reviews
+- `GET /api/admin/financial?period=month` - Financial statistics
+- `GET /api/admin/marketing` - Marketing statistics
+- `GET /api/admin/export/bookings` - CSV export
+- `POST /api/admin/vakman/{id}/approve` - Approve vakman
+- `POST /api/admin/vakman/{id}/reject` - Reject vakman
+- `POST /api/admin/review/{id}/approve` - Approve review
+- `POST /api/admin/review/{id}/reject` - Reject review
+- `PUT /api/admin/booking/{id}/status` - Update booking status
+
+### Test Credentials
+- Vakman: test.vakman@demo.nl / test123
 
 ## Next Tasks
-1. Build admin dashboard for vakman approvals
-2. Implement email notifications
-3. Add customer review system
+1. **P0**: Secure admin endpoints with authentication
+2. **P1**: Implement SMS notifications for emergency bookings
+3. **P2**: Build vakman profile pages with reviews
+4. **P3**: Create Belgian version
