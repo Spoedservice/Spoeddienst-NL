@@ -26,23 +26,38 @@ Een platform voor het boeken van vakmannen (elektricien, loodgieter, slotenmaker
 2. Admin opent dashboard (`/beheer`)
 3. In de Boekingen tab ziet admin alle boekingen met een "Monteur" kolom
 4. Boekingen zonder monteur tonen "⚠️ Wijs toe" dropdown
-5. Admin selecteert een monteur uit de dropdown
-6. Systeem wijst boeking toe + stuurt email naar die specifieke monteur
+5. Admin selecteert een monteur → status wordt "confirmed"
+6. Systeem stuurt email naar die specifieke monteur
+
+### Vakman Workflow (NIEUW)
+1. Vakman ziet opdracht in dashboard met status "Nieuw - Actie vereist"
+2. Vakman bekijkt details (klant, locatie, datum, beschrijving)
+3. Vakman kan:
+   - **Accepteren** → status wordt "accepted", kan dan starten met klus
+   - **Afwijzen** → status wordt "pending", vakman wordt verwijderd, admin krijgt email om opnieuw toe te wijzen
 
 ## Voltooide Features
 
 ### Kernfunctionaliteit
 - [x] Service pagina's (elektricien, loodgieter, slotenmaker)
-- [x] Boekingsflow met 4 stappen (Probleem → Datum → Adres → Contact)
+- [x] Boekingsflow met 4 stappen
 - [x] Spoed vs Regulier prijzen
 - [x] Betaling bij de monteur
 
-### Admin Boeking Toewijzing (NIEUW)
+### Admin Boeking Toewijzing
 - [x] Boekingen komen binnen zonder toegewezen monteur
 - [x] Admin Dashboard met "Monteur" kolom
 - [x] Dropdown om boeking toe te wijzen aan vakman
 - [x] `POST /api/admin/booking/{id}/assign` endpoint
 - [x] Email notificatie naar toegewezen monteur
+
+### Vakman Acceptatie Flow (NIEUW)
+- [x] `POST /api/bookings/{id}/vakman-accept` - Vakman accepteert opdracht
+- [x] `POST /api/bookings/{id}/vakman-reject` - Vakman wijst af
+- [x] Bij afwijzing: vakman verwijderd van boeking, status terug naar "pending"
+- [x] Email naar admin bij afwijzing met verzoek om opnieuw toe te wijzen
+- [x] Vakman Dashboard toont "Nieuw - Actie vereist" badge
+- [x] Accepteren/Afwijzen knoppen in opdracht detail
 
 ### Gebruikersbeheer
 - [x] Klant registratie en login
@@ -54,10 +69,10 @@ Een platform voor het boeken van vakmannen (elektricien, loodgieter, slotenmaker
 
 ### Dashboards
 - [x] Klant dashboard
-- [x] Vakman dashboard (opdrachten, agenda, profiel)
+- [x] Vakman dashboard (opdrachten, agenda, profiel, acceptatie flow)
 - [x] **Admin dashboard (BEVEILIGD)**
   - Overzicht met statistieken
-  - Boekingen beheer + **Monteur toewijzing**
+  - Boekingen beheer + Monteur toewijzing
   - Vakmannen beheer (goedkeuren/afwijzen)
   - Reviews beheer
   - Financieel dashboard
@@ -66,7 +81,8 @@ Een platform voor het boeken van vakmannen (elektricien, loodgieter, slotenmaker
 ### Email Systeem
 - [x] Boekingsbevestiging naar klant
 - [x] Boekingsnotificatie naar admin
-- [x] **Notificatie naar toegewezen monteur** (na admin toewijzing)
+- [x] Notificatie naar toegewezen monteur
+- [x] **Email naar admin bij vakman afwijzing** (NIEUW)
 - [x] Goedkeuring/afwijzing emails voor vakmannen
 - [x] Wachtwoord reset emails
 
@@ -75,18 +91,30 @@ Een platform voor het boeken van vakmannen (elektricien, loodgieter, slotenmaker
 - [x] Admin link alleen zichtbaar voor admin gebruikers
 - [x] JWT token verificatie
 
+## Status Flow
+
+```
+[Klant boekt] → pending (geen vakman)
+      ↓
+[Admin wijst toe] → confirmed (vakman toegewezen, wacht op actie)
+      ↓
+[Vakman accepteert] → accepted → in_progress → completed
+      of
+[Vakman wijst af] → pending (vakman verwijderd, admin moet opnieuw toewijzen)
+```
+
 ## API Endpoints
 
-### Nieuw toegevoegd (deze sessie)
-- `POST /api/admin/booking/{booking_id}/assign` - Wijs boeking toe aan vakman (admin only)
-  - Request: `{"vakman_id": "uuid"}`
-  - Response: `{"message": "...", "vakman_name": "...", "vakman_id": "..."}`
-  - Stuurt email naar toegewezen vakman
+### Vakman Acceptatie (NIEUW)
+- `POST /api/bookings/{id}/vakman-accept` - Vakman accepteert (status → accepted)
+- `POST /api/bookings/{id}/vakman-reject` - Vakman wijst af (status → pending, vakman → null)
 
-### Belangrijke endpoints
-- `POST /api/bookings` - Maakt boeking aan (ZONDER vakman_id)
-- `GET /api/admin/bookings` - Alle boekingen (beveiligd)
-- `GET /api/admin/vakmannen` - Alle vakmannen voor toewijzing (beveiligd)
+### Admin Toewijzing
+- `POST /api/admin/booking/{id}/assign` - Admin wijst toe (status → confirmed)
+
+### Overige
+- `POST /api/bookings` - Nieuwe boeking (status = pending, geen vakman)
+- `GET /api/vakman/dashboard` - Vakman dashboard data
 
 ## Database Schema
 
@@ -94,23 +122,20 @@ Een platform voor het boeken van vakmannen (elektricien, loodgieter, slotenmaker
 ```json
 {
   "id": "uuid",
-  "vakman_id": "uuid | null",  // null tot admin toewijst
+  "vakman_id": "uuid | null",
   "vakman_name": "string | null",
   "service_type": "elektricien|loodgieter|slotenmaker",
-  "is_emergency": "boolean",
-  "customer_name": "string",
-  "customer_email": "string",
-  "customer_phone": "string",
-  "address": "string",
-  "postal_code": "string",
-  "city": "string",
-  "preferred_date": "string",
-  "preferred_time": "string",
-  "description": "string",
-  "price": "float",
-  "status": "pending|confirmed|in_progress|completed|cancelled"
+  "status": "pending|confirmed|accepted|in_progress|completed|cancelled",
+  ...
 }
 ```
+
+**Status betekenis:**
+- `pending` - Wacht op admin toewijzing (of vakman heeft afgewezen)
+- `confirmed` - Admin heeft toegewezen, wacht op vakman acceptatie
+- `accepted` - Vakman heeft geaccepteerd
+- `in_progress` - Vakman is bezig met klus
+- `completed` - Klus afgerond
 
 ## Test Accounts
 - **Admin**: admin@spoeddienst24.nl / Admin2024!
@@ -120,7 +145,7 @@ Een platform voor het boeken van vakmannen (elektricien, loodgieter, slotenmaker
 ## Openstaande Items
 
 ### P1 - Hoog
-- [ ] Google Ads API integratie (Marketing dashboard is nu MOCKED)
+- [ ] Google Ads API integratie (Marketing dashboard is MOCKED)
 
 ### P2 - Medium
 - [ ] Component refactoring (AdminDashboard.jsx ~1400 regels)
@@ -132,6 +157,5 @@ Een platform voor het boeken van vakmannen (elektricien, loodgieter, slotenmaker
 
 ## Laatste Update
 - **Datum**: 24 januari 2025
-- **Sessie**: Admin boeking toewijzing feature voltooid
-- **Verandering**: Klanten kiezen NIET meer zelf een monteur. Admin wijst boekingen toe via dashboard.
-- **Tests**: 100% geslaagd (10 backend, frontend verified)
+- **Sessie**: Vakman Acceptatie Flow voltooid
+- **Features**: Vakman kan opdrachten accepteren of afwijzen, admin krijgt email bij afwijzing
