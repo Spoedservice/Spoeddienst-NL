@@ -325,6 +325,196 @@ async def send_booking_email(booking_data: dict):
         logging.error(f"Failed to send booking email: {str(e)}")
         return False
 
+async def send_customer_confirmation_email(booking_data: dict):
+    """Send booking confirmation email to customer"""
+    try:
+        service_names = {
+            "elektricien": "Elektricien",
+            "loodgieter": "Loodgieter",
+            "slotenmaker": "Slotenmaker"
+        }
+        service_name = service_names.get(booking_data.get("service_type", ""), booking_data.get("service_type", "Onbekend"))
+        customer_email = booking_data.get('customer_email')
+        
+        if not customer_email:
+            logging.warning("No customer email provided")
+            return False
+        
+        html_content = f"""
+        <html>
+        <body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+            <div style="background-color: #FF4500; padding: 20px; text-align: center;">
+                <h1 style="color: white; margin: 0;">⚡ SpoedDienst24</h1>
+                <p style="color: white; margin: 5px 0;">Uw Boeking is Bevestigd!</p>
+            </div>
+            
+            <div style="padding: 20px; background-color: #f8f9fa;">
+                <h2 style="color: #333;">Beste {booking_data.get('customer_name', 'Klant')},</h2>
+                <p style="color: #666; font-size: 16px;">Bedankt voor uw boeking bij SpoedDienst24. Hieronder vindt u de details van uw afspraak.</p>
+                
+                <div style="background-color: white; padding: 20px; border-radius: 10px; border-left: 4px solid #FF4500; margin: 20px 0;">
+                    <h3 style="color: #FF4500; margin-top: 0;">📋 Boekingsdetails</h3>
+                    <table style="width: 100%;">
+                        <tr><td style="padding: 8px 0; color: #666;">Boeking ID:</td><td style="padding: 8px 0; font-weight: bold;">{booking_data.get('id', 'N/A')}</td></tr>
+                        <tr><td style="padding: 8px 0; color: #666;">Dienst:</td><td style="padding: 8px 0; font-weight: bold;">{service_name}</td></tr>
+                        <tr><td style="padding: 8px 0; color: #666;">Prijs:</td><td style="padding: 8px 0; font-weight: bold; color: #FF4500;">€{booking_data.get('price', 0)},-</td></tr>
+                    </table>
+                </div>
+                
+                <div style="background-color: white; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                    <h3 style="color: #333; margin-top: 0;">📅 Afspraak</h3>
+                    <p style="font-size: 18px; margin: 0;"><strong>{booking_data.get('preferred_date', 'N/A')}</strong> om <strong>{booking_data.get('preferred_time', 'N/A')}</strong></p>
+                </div>
+                
+                <div style="background-color: white; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                    <h3 style="color: #333; margin-top: 0;">📍 Locatie</h3>
+                    <p style="margin: 0;">{booking_data.get('address', 'N/A')}<br>{booking_data.get('postal_code', '')} {booking_data.get('city', '')}</p>
+                </div>
+                
+                <div style="background-color: #fff3e6; padding: 15px; border-radius: 10px; margin: 20px 0;">
+                    <h4 style="color: #FF4500; margin-top: 0;">💳 Betaling</h4>
+                    <p style="margin: 0; color: #666;">U betaalt direct aan de monteur na afloop van de klus. Wij accepteren contant en pin.</p>
+                </div>
+                
+                <p style="color: #666;">Heeft u vragen? Neem gerust contact met ons op:</p>
+                <p style="margin: 0;"><strong>📞 Telefoon:</strong> <a href="tel:+31201234567" style="color: #FF4500;">020-123 4567</a></p>
+                <p style="margin: 0;"><strong>✉️ Email:</strong> <a href="mailto:info@spoeddienst24.nl" style="color: #FF4500;">info@spoeddienst24.nl</a></p>
+            </div>
+            
+            <div style="background-color: #333; padding: 15px; text-align: center;">
+                <p style="color: #999; margin: 0; font-size: 12px;">© 2024 SpoedDienst24.nl - 24/7 Vakmannen aan uw deur</p>
+            </div>
+        </body>
+        </html>
+        """
+        
+        message = MIMEMultipart("alternative")
+        message["From"] = SMTP_FROM
+        message["To"] = customer_email
+        message["Subject"] = f"✅ Bevestiging: Uw {service_name} afspraak op {booking_data.get('preferred_date', '')}"
+        
+        html_part = MIMEText(html_content, "html")
+        message.attach(html_part)
+        
+        await aiosmtplib.send(
+            message,
+            hostname=SMTP_HOST,
+            port=SMTP_PORT,
+            username=SMTP_USER,
+            password=SMTP_PASSWORD,
+            use_tls=True
+        )
+        logging.info(f"Customer confirmation email sent to {customer_email}")
+        return True
+    except Exception as e:
+        logging.error(f"Failed to send customer confirmation email: {str(e)}")
+        return False
+
+async def send_vakman_notification_email(booking_data: dict):
+    """Send new job notification to available vakmannen"""
+    try:
+        service_type = booking_data.get("service_type", "")
+        service_names = {
+            "elektricien": "Elektricien",
+            "loodgieter": "Loodgieter",
+            "slotenmaker": "Slotenmaker"
+        }
+        service_name = service_names.get(service_type, service_type)
+        
+        # Find available and approved vakmannen for this service type
+        vakmannen = await db.vakmannen.find({
+            "service_type": service_type,
+            "is_approved": True,
+            "is_available": True
+        }, {"_id": 0}).to_list(50)
+        
+        if not vakmannen:
+            logging.warning(f"No available vakmannen found for {service_type}")
+            return False
+        
+        is_spoed = "🚨 SPOEDKLUS" if booking_data.get('is_emergency') else "Nieuwe Klus"
+        
+        html_content = f"""
+        <html>
+        <body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+            <div style="background-color: {'#FF4500' if booking_data.get('is_emergency') else '#2563eb'}; padding: 20px; text-align: center;">
+                <h1 style="color: white; margin: 0;">⚡ SpoedDienst24</h1>
+                <p style="color: white; margin: 5px 0; font-size: 18px;">{is_spoed}</p>
+            </div>
+            
+            <div style="padding: 20px; background-color: #f8f9fa;">
+                <div style="background-color: {'#fff3e6' if booking_data.get('is_emergency') else '#e6f2ff'}; padding: 20px; border-radius: 10px; border-left: 4px solid {'#FF4500' if booking_data.get('is_emergency') else '#2563eb'}; margin-bottom: 20px;">
+                    <h2 style="color: {'#FF4500' if booking_data.get('is_emergency') else '#2563eb'}; margin-top: 0;">
+                        {'🚨 SPOED - ' if booking_data.get('is_emergency') else ''}Nieuwe {service_name} Klus!
+                    </h2>
+                    <p style="font-size: 24px; font-weight: bold; color: #333; margin: 0;">€{booking_data.get('price', 0)},-</p>
+                </div>
+                
+                <div style="background-color: white; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                    <h3 style="color: #333; margin-top: 0;">📍 Locatie</h3>
+                    <p style="font-size: 16px; margin: 0;"><strong>{booking_data.get('city', 'N/A')}</strong></p>
+                    <p style="color: #666; margin: 5px 0 0 0;">{booking_data.get('address', 'N/A')}, {booking_data.get('postal_code', '')}</p>
+                </div>
+                
+                <div style="background-color: white; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                    <h3 style="color: #333; margin-top: 0;">📅 Gewenste Tijd</h3>
+                    <p style="font-size: 18px; margin: 0;"><strong>{booking_data.get('preferred_date', 'N/A')}</strong> - {booking_data.get('preferred_time', 'N/A')}</p>
+                </div>
+                
+                <div style="background-color: white; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                    <h3 style="color: #333; margin-top: 0;">🔧 Probleemomschrijving</h3>
+                    <p style="color: #666; white-space: pre-wrap;">{booking_data.get('description', 'Geen omschrijving')}</p>
+                </div>
+                
+                <div style="text-align: center; margin: 30px 0;">
+                    <p style="color: #666; margin-bottom: 15px;">Log in op je dashboard om deze klus te accepteren:</p>
+                    <a href="https://spoeddienst24.nl/vakman/dashboard" style="display: inline-block; background-color: #FF4500; color: white; padding: 15px 40px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px;">
+                        Bekijk Klus →
+                    </a>
+                </div>
+            </div>
+            
+            <div style="background-color: #333; padding: 15px; text-align: center;">
+                <p style="color: #999; margin: 0; font-size: 12px;">Je ontvangt dit bericht omdat je beschikbaar bent voor klussen in deze categorie.</p>
+            </div>
+        </body>
+        </html>
+        """
+        
+        emails_sent = 0
+        for vakman in vakmannen:
+            try:
+                vakman_email = vakman.get('email')
+                if not vakman_email:
+                    continue
+                    
+                message = MIMEMultipart("alternative")
+                message["From"] = SMTP_FROM
+                message["To"] = vakman_email
+                message["Subject"] = f"{'🚨 SPOED: ' if booking_data.get('is_emergency') else ''}Nieuwe {service_name} klus in {booking_data.get('city', 'jouw regio')} - €{booking_data.get('price', 0)},-"
+                
+                html_part = MIMEText(html_content, "html")
+                message.attach(html_part)
+                
+                await aiosmtplib.send(
+                    message,
+                    hostname=SMTP_HOST,
+                    port=SMTP_PORT,
+                    username=SMTP_USER,
+                    password=SMTP_PASSWORD,
+                    use_tls=True
+                )
+                emails_sent += 1
+            except Exception as e:
+                logging.error(f"Failed to send email to vakman {vakman.get('email')}: {str(e)}")
+                continue
+        
+        logging.info(f"Vakman notification emails sent to {emails_sent} vakmannen")
+        return emails_sent > 0
+    except Exception as e:
+        logging.error(f"Failed to send vakman notification emails: {str(e)}")
+        return False
+
 # ==================== SERVICE DATA ====================
 
 SERVICES = [
