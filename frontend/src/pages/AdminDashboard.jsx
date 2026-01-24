@@ -34,22 +34,36 @@ export default function AdminDashboard() {
   const fetchAllData = async () => {
     setLoading(true);
     try {
-      const [bookingsRes, vakmannenRes, reviewsRes, statsRes] = await Promise.all([
+      const [bookingsRes, vakmannenRes, reviewsRes, statsRes, financialRes, marketingRes] = await Promise.all([
         axios.get(`${API}/admin/bookings`),
         axios.get(`${API}/admin/vakmannen`),
         axios.get(`${API}/admin/reviews`),
-        axios.get(`${API}/admin/stats`)
+        axios.get(`${API}/admin/stats`),
+        axios.get(`${API}/admin/financial?period=${dateRange}`),
+        axios.get(`${API}/admin/marketing`)
       ]);
       setBookings(bookingsRes.data);
       setVakmannen(vakmannenRes.data);
       setReviews(reviewsRes.data);
       setStats(statsRes.data);
+      setFinancialStats({
+        financial: financialRes.data,
+        marketing: marketingRes.data
+      });
     } catch (error) {
       console.error("Error fetching data:", error);
       toast.error("Fout bij laden van gegevens");
     }
     setLoading(false);
   };
+
+  useEffect(() => {
+    if (activeTab === "financial") {
+      axios.get(`${API}/admin/financial?period=${dateRange}`)
+        .then(res => setFinancialStats(prev => ({ ...prev, financial: res.data })))
+        .catch(err => console.error(err));
+    }
+  }, [dateRange]);
 
   const approveVakman = async (vakmanId) => {
     try {
