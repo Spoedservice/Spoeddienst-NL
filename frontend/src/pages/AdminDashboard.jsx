@@ -195,7 +195,8 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     if (activeTab === "financial") {
-      axios.get(`${API}/admin/financial?period=${dateRange}`)
+      const headers = getAuthHeaders();
+      axios.get(`${API}/admin/financial?period=${dateRange}`, headers)
         .then(res => setFinancialStats(prev => ({ ...prev, financial: res.data })))
         .catch(err => console.error(err));
     }
