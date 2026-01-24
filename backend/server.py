@@ -130,8 +130,6 @@ class BookingCreate(BaseModel):
     customer_name: str
     customer_email: EmailStr
     customer_phone: str
-    assigned_vakman_id: Optional[str] = None
-    assigned_vakman_name: Optional[str] = None
 
 class Booking(BaseModel):
     model_config = ConfigDict(extra="ignore")
