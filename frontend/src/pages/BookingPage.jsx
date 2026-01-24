@@ -227,120 +227,13 @@ export default function BookingPage() {
               </div>
             )}
 
-            {/* Step 2: Choose Vakman */}
+            {/* Step 2: Date & Time */}
             {step === 2 && (
-              <div className="space-y-6" data-testid="step-vakman">
-                <div>
-                  <h2 className="text-xl font-bold text-slate-900 mb-2">Kies uw monteur</h2>
-                  <p className="text-slate-500">Selecteer een beschikbare monteur in uw regio.</p>
-                </div>
-
-                {loadingVakmannen ? (
-                  <div className="text-center py-8">
-                    <div className="animate-spin w-8 h-8 border-4 border-[#FF4500] border-t-transparent rounded-full mx-auto mb-4" />
-                    <p className="text-slate-500">Monteurs laden...</p>
-                  </div>
-                ) : vakmannen.length === 0 ? (
-                  <div className="text-center py-8 bg-yellow-50 rounded-lg">
-                    <AlertTriangle className="w-12 h-12 text-yellow-500 mx-auto mb-4" />
-                    <h3 className="font-bold text-lg text-slate-900 mb-2">Geen monteurs beschikbaar</h3>
-                    <p className="text-slate-600 mb-4">Er zijn momenteel geen monteurs beschikbaar voor deze dienst.</p>
-                    <Button onClick={() => navigate('/')} variant="outline">
-                      Terug naar home
-                    </Button>
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    {vakmannen.map((vakman) => (
-                      <div
-                        key={vakman.id}
-                        onClick={() => setSelectedVakman(vakman)}
-                        className={`p-4 rounded-xl border-2 cursor-pointer transition-all ${
-                          selectedVakman?.id === vakman.id
-                            ? 'border-[#FF4500] bg-orange-50 shadow-md'
-                            : 'border-slate-200 hover:border-slate-300 hover:shadow-sm'
-                        }`}
-                        data-testid={`vakman-${vakman.id}`}
-                      >
-                        <div className="flex items-start gap-4">
-                          {/* Avatar */}
-                          <div className="w-16 h-16 bg-gradient-to-br from-[#FF4500] to-orange-400 rounded-xl flex items-center justify-center text-white text-xl font-bold flex-shrink-0">
-                            {vakman.name?.charAt(0)?.toUpperCase() || 'V'}
-                          </div>
-                          
-                          {/* Info */}
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2 flex-wrap">
-                              <h3 className="font-bold text-lg text-slate-900">{vakman.name}</h3>
-                              {vakman.rating > 0 && (
-                                <div className="flex items-center gap-1 bg-yellow-100 px-2 py-0.5 rounded-full">
-                                  <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
-                                  <span className="text-sm font-medium text-yellow-700">{vakman.rating?.toFixed(1)}</span>
-                                </div>
-                              )}
-                            </div>
-                            
-                            <div className="flex items-center gap-4 mt-2 text-sm text-slate-600">
-                              <span className="flex items-center gap-1">
-                                <MapPin className="w-4 h-4" />
-                                {vakman.location}
-                              </span>
-                              <span className="flex items-center gap-1">
-                                <Star className="w-4 h-4" />
-                                {vakman.total_reviews || 0} reviews
-                              </span>
-                            </div>
-                            
-                            {vakman.description && (
-                              <p className="text-sm text-slate-500 mt-2 line-clamp-2">{vakman.description}</p>
-                            )}
-                          </div>
-                          
-                          {/* Price */}
-                          <div className="text-right flex-shrink-0">
-                            <div className="text-2xl font-bold text-[#FF4500]">
-                              €{isEmergency ? Math.round(vakman.hourly_rate * 1.5) : vakman.hourly_rate}
-                            </div>
-                            <div className="text-xs text-slate-500">per uur</div>
-                            {isEmergency && (
-                              <Badge className="mt-1 bg-[#FF4500]/10 text-[#FF4500] text-xs">Spoed tarief</Badge>
-                            )}
-                          </div>
-                        </div>
-                        
-                        {/* Selected indicator */}
-                        {selectedVakman?.id === vakman.id && (
-                          <div className="mt-3 pt-3 border-t border-orange-200 flex items-center gap-2 text-[#FF4500]">
-                            <CheckCircle className="w-5 h-5" />
-                            <span className="font-medium">Geselecteerd</span>
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
-
-            {/* Step 3: Date & Time */}
-            {step === 3 && (
               <div className="space-y-6" data-testid="step-datetime">
                 <div>
                   <h2 className="text-xl font-bold text-slate-900 mb-2">Kies datum en tijd</h2>
                   <p className="text-slate-500">Wanneer komt het u het beste uit?</p>
                 </div>
-
-                {selectedVakman && (
-                  <div className="bg-slate-50 p-4 rounded-lg flex items-center gap-3">
-                    <div className="w-10 h-10 bg-gradient-to-br from-[#FF4500] to-orange-400 rounded-lg flex items-center justify-center text-white font-bold">
-                      {selectedVakman.name?.charAt(0)?.toUpperCase()}
-                    </div>
-                    <div>
-                      <p className="font-medium text-slate-900">{selectedVakman.name}</p>
-                      <p className="text-sm text-slate-500">{selectedVakman.location}</p>
-                    </div>
-                  </div>
-                )}
 
                 <div className="grid sm:grid-cols-2 gap-6">
                   <div>
@@ -380,8 +273,8 @@ export default function BookingPage() {
               </div>
             )}
 
-            {/* Step 4: Address */}
-            {step === 4 && (
+            {/* Step 3: Address */}
+            {step === 3 && (
               <div className="space-y-6" data-testid="step-address">
                 <div>
                   <h2 className="text-xl font-bold text-slate-900 mb-2">Waar moeten we zijn?</h2>
@@ -431,8 +324,8 @@ export default function BookingPage() {
               </div>
             )}
 
-            {/* Step 5: Contact */}
-            {step === 5 && (
+            {/* Step 4: Contact */}
+            {step === 4 && (
               <div className="space-y-6" data-testid="step-contact">
                 <div>
                   <h2 className="text-xl font-bold text-slate-900 mb-2">Uw gegevens</h2>
@@ -445,8 +338,6 @@ export default function BookingPage() {
                   <div className="grid grid-cols-2 gap-2 text-sm">
                     <span className="text-slate-500">Dienst:</span>
                     <span className="font-medium">{service?.title}</span>
-                    <span className="text-slate-500">Monteur:</span>
-                    <span className="font-medium">{selectedVakman?.name || 'Eerste beschikbare'}</span>
                     <span className="text-slate-500">Datum:</span>
                     <span className="font-medium">{date ? format(date, 'd MMMM yyyy', { locale: nl }) : '-'}</span>
                     <span className="text-slate-500">Tijd:</span>
@@ -523,7 +414,7 @@ export default function BookingPage() {
                 Vorige
               </Button>
               
-              {step < 5 ? (
+              {step < 4 ? (
                 <Button
                   onClick={() => setStep(step + 1)}
                   disabled={!canProceed()}
