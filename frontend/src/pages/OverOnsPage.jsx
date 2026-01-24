@@ -267,9 +267,11 @@ export default function OverOnsPage() {
           <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8">
             {team.map((member, index) => (
               <div key={index} className="bg-slate-50 rounded-xl p-6 border border-slate-200 hover:shadow-lg transition-shadow">
-                <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-[#FF4500] to-[#CC3700] rounded-full mb-4 flex items-center justify-center text-white text-xl sm:text-2xl font-bold">
-                  {member.name.split(' ').map(n => n[0]).join('')}
-                </div>
+                <img 
+                  src={member.image} 
+                  alt={member.name}
+                  className="w-20 h-20 sm:w-24 sm:h-24 rounded-full mb-4 object-cover border-4 border-white shadow-md"
+                />
                 <h3 className="font-bold text-lg text-slate-900 mb-1">{member.name}</h3>
                 <p className="text-sm text-[#FF4500] font-medium mb-3">{member.role}</p>
                 <p className="text-slate-600 text-sm italic">"{member.quote}"</p>
