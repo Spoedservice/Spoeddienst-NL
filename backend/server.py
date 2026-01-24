@@ -939,53 +939,6 @@ async def get_vakman_reviews(vakman_id: str):
     reviews = await db.reviews.find({"vakman_id": vakman_id}, {"_id": 0}).to_list(100)
     return reviews
 
-# ==================== ADMIN ROUTES ====================
-
-@api_router.get("/admin/vakmannen")
-async def admin_get_vakmannen(current_user: dict = Depends(get_current_user)):
-    if current_user["role"] != "admin":
-        raise HTTPException(status_code=403, detail="Not authorized")
-    
-    vakmannen = await db.vakmannen.find({}, {"_id": 0, "password": 0}).to_list(100)
-    return vakmannen
-
-@api_router.put("/admin/vakmannen/{vakman_id}/approve")
-async def approve_vakman(vakman_id: str, current_user: dict = Depends(get_current_user)):
-    if current_user["role"] != "admin":
-        raise HTTPException(status_code=403, detail="Not authorized")
-    
-    await db.vakmannen.update_one({"id": vakman_id}, {"$set": {"is_approved": True}})
-    return {"message": "Vakman approved"}
-
-@api_router.get("/admin/bookings")
-async def admin_get_bookings(current_user: dict = Depends(get_current_user)):
-    if current_user["role"] != "admin":
-        raise HTTPException(status_code=403, detail="Not authorized")
-    
-    bookings = await db.bookings.find({}, {"_id": 0}).to_list(100)
-    return bookings
-
-@api_router.get("/admin/stats")
-async def admin_get_stats(current_user: dict = Depends(get_current_user)):
-    if current_user["role"] != "admin":
-        raise HTTPException(status_code=403, detail="Not authorized")
-    
-    total_bookings = await db.bookings.count_documents({})
-    pending_bookings = await db.bookings.count_documents({"status": "pending"})
-    completed_bookings = await db.bookings.count_documents({"status": "completed"})
-    total_vakmannen = await db.vakmannen.count_documents({})
-    pending_vakmannen = await db.vakmannen.count_documents({"is_approved": False})
-    total_users = await db.users.count_documents({})
-    
-    return {
-        "total_bookings": total_bookings,
-        "pending_bookings": pending_bookings,
-        "completed_bookings": completed_bookings,
-        "total_vakmannen": total_vakmannen,
-        "pending_vakmannen": pending_vakmannen,
-        "total_users": total_users
-    }
-
 # ==================== STATS ROUTES (PUBLIC) ====================
 
 @api_router.get("/stats/public")
