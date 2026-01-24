@@ -40,9 +40,24 @@ export default function OverOnsPage() {
   ];
 
   const team = [
-    { role: "Oprichter & CEO", name: "Linda Kluit", quote: "Hulp moet er zijn wanneer je het nodig hebt" },
-    { role: "Hoofd Vakmannen Netwerk", name: "Ferry Soester", quote: "Kwaliteit begint bij de mensen" },
-    { role: "Customer Success", name: "Marieke van der Hurk", quote: "Elke klant verdient een perfect resultaat" }
+    { 
+      role: "Oprichter & CEO", 
+      name: "Linda Kluit", 
+      quote: "Hulp moet er zijn wanneer je het nodig hebt",
+      image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=400&fit=crop&crop=face"
+    },
+    { 
+      role: "Hoofd Vakmannen Netwerk", 
+      name: "Ferry Soester", 
+      quote: "Kwaliteit begint bij de mensen",
+      image: "https://images.unsplash.com/photo-1651684215020-f7a5b6610f23?w=400&h=400&fit=crop&crop=face"
+    },
+    { 
+      role: "Customer Success", 
+      name: "Marieke van der Hurk", 
+      quote: "Elke klant verdient een perfect resultaat",
+      image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&h=400&fit=crop&crop=face"
+    }
   ];
 
   return (
