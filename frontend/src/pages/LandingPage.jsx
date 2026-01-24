@@ -134,6 +134,7 @@ export default function LandingPage() {
               <Link to="/diensten/elektricien" className="py-2 text-slate-600 hover:text-slate-900">Elektricien</Link>
               <Link to="/diensten/loodgieter" className="py-2 text-slate-600 hover:text-slate-900">Loodgieter</Link>
               <Link to="/diensten/slotenmaker" className="py-2 text-slate-600 hover:text-slate-900">Slotenmaker</Link>
+              <Link to="/over-ons" className="py-2 text-slate-600 hover:text-slate-900">Over Ons</Link>
               <Link to="/vakman/register" className="py-2 text-slate-600 hover:text-slate-900">Word Vakman</Link>
               <Link to="/login" className="py-2 text-slate-600 hover:text-slate-900">Inloggen</Link>
               <a href="tel:085 333 2847" className="flex items-center gap-2 bg-[#FF4500] text-white px-4 py-3 rounded-md font-medium hover:bg-[#CC3700] transition-colors mt-2">
