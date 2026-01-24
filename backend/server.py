@@ -1746,7 +1746,7 @@ async def update_booking_status_admin(booking_id: str, status_update: dict, admi
     return {"message": f"Status gewijzigd naar {status}"}
 
 @api_router.get("/admin/financial")
-async def get_financial_stats(period: str = "month"):
+async def get_financial_stats(period: str = "month", admin: dict = Depends(get_admin_user)):
     """Get financial statistics for admin dashboard"""
     from datetime import timedelta
     
@@ -1844,7 +1844,7 @@ def _booking_in_range(booking, start, end):
         return False
 
 @api_router.get("/admin/marketing")
-async def get_marketing_stats():
+async def get_marketing_stats(admin: dict = Depends(get_admin_user)):
     """Get marketing statistics for admin dashboard"""
     
     # Get all bookings
@@ -1902,7 +1902,7 @@ async def get_marketing_stats():
     }
 
 @api_router.get("/admin/export/bookings")
-async def export_bookings_csv():
+async def export_bookings_csv(admin: dict = Depends(get_admin_user)):
     """Export bookings data as CSV"""
     import io
     import csv
