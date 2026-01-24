@@ -488,11 +488,17 @@ export default function VakmanDashboard() {
 
                     {/* Actions */}
                     <div className="pt-4 border-t space-y-2">
-                      {selectedBooking.status === 'pending' && (
+                      {/* Nieuw toegewezen door admin - vakman moet accepteren of afwijzen */}
+                      {selectedBooking.status === 'confirmed' && (
                         <>
+                          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-3">
+                            <p className="text-sm text-blue-800 font-medium">
+                              🔔 Deze opdracht is aan jou toegewezen. Accepteer of wijs af.
+                            </p>
+                          </div>
                           <Button 
                             className="w-full bg-[#FF4500] hover:bg-[#CC3700]"
-                            onClick={() => handleUpdateStatus(selectedBooking.id, 'accepted')}
+                            onClick={() => handleAcceptBooking(selectedBooking.id)}
                             data-testid={`accept-booking-${selectedBooking.id}`}
                           >
                             <CheckCircle className="w-4 h-4 mr-2" />
@@ -500,9 +506,11 @@ export default function VakmanDashboard() {
                           </Button>
                           <Button 
                             variant="outline"
-                            className="w-full"
-                            onClick={() => handleUpdateStatus(selectedBooking.id, 'cancelled')}
+                            className="w-full border-red-300 text-red-600 hover:bg-red-50"
+                            onClick={() => handleRejectBooking(selectedBooking.id)}
+                            data-testid={`reject-booking-${selectedBooking.id}`}
                           >
+                            <AlertCircle className="w-4 h-4 mr-2" />
                             Afwijzen
                           </Button>
                         </>
