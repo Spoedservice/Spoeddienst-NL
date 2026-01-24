@@ -1,141 +1,144 @@
-# SpoedDienst24 - Product Requirements Document
+# SpoedDienst24.nl - Product Requirements Document
 
-## Original Problem Statement
-Build a platform like Zoofy.nl - a marketplace where customers can book handymen (vakmannen) for jobs. The platform focuses primarily on EMERGENCY services (spoedklussen) for three main categories: Electrician (Elektricien), Plumber (Loodgieter), and Locksmith (Slotenmaker).
-
-## User Personas
-1. **Klant (Customer)** - Homeowners needing urgent or regular home repair services
-2. **Vakman (Handyman)** - Professionals (elektricien, loodgieter, slotenmaker) offering services
-3. **Admin** - Platform administrators managing vakmannen approvals and bookings
-
-## Core Requirements
-### Functional Requirements
-- [x] Landing page with hero, services, how it works, testimonials, stats
-- [x] Three service categories: Elektricien, Loodgieter, Slotenmaker
-- [x] Emergency (spoed) toggle with different pricing
-- [x] 4-step booking flow: Problem → Date/Time → Address → Contact
-- [x] Stripe payment integration
-- [x] Customer registration and login
-- [x] Vakman registration (pending approval)
-- [x] Customer dashboard with booking history
-- [x] Vakman dashboard with job management
-- [x] Service detail pages
-
-### Non-Functional Requirements
-- Dutch language interface
-- Mobile responsive design
-- 24/7 availability for emergency services
-
-## What's Been Implemented (January 2025)
-
-### Latest Session (24 Jan 2025)
-**Admin Dashboard Enhancements:**
-- [x] Fixed API authentication issues (removed duplicate routes)
-- [x] Added Financial Dashboard tab with:
-  - Period selector (Vandaag/Week/Maand/Jaar)
-  - Totale Omzet, Betaald, Openstaand, Gem. Orderwaarde
-  - Omzet Laatste 7 Dagen chart
-  - Omzet per Dienst breakdown
-  - Betalingsstatus overzicht
-  - Boekingen per Status
-  - CSV Export functionaliteit
-- [x] Added Marketing Dashboard tab with:
-  - Totale Boekingen, Spoed/Regulier breakdown
-  - Conversie Ratio
-  - Dienst Prestaties (boekingen + omzet per dienst)
-  - Top Steden ranking
-  - Populaire Tijdsloten
-
-**Vakman Dashboard Improvements:**
-- [x] Redesigned with 3 tabs: Opdrachten, Agenda, Profiel
-- [x] Opdrachten tab: Booking list with status filters, detail panel with klantgegevens
-- [x] Agenda tab: Week view with navigation, today highlight, booking preview
-- [x] Profiel tab: Profile info, availability toggle, rating display, earnings
-
-### Backend (FastAPI)
-- User authentication (JWT-based)
-- Vakman registration and management
-- Booking CRUD operations
-- Stripe payment integration
-- Public stats and reviews API
-- Service data endpoints
-- **NEW**: Admin financial statistics API (`/api/admin/financial`)
-- **NEW**: Admin marketing statistics API (`/api/admin/marketing`)
-- **NEW**: CSV export API (`/api/admin/export/bookings`)
-- Email notifications (TransIP SMTP)
-
-### Frontend (React)
-- Landing page with bento grid services
-- Complete booking flow with stepper
-- Customer & Vakman dashboards
-- Auth pages (login, register, vakman register)
-- Service detail pages
-- Responsive design with Tailwind CSS
-- **NEW**: Enhanced Admin Dashboard (6 tabs)
-- **NEW**: Enhanced Vakman Dashboard (3 tabs)
-
-### Database (MongoDB)
-Collections: users, vakmannen, bookings, reviews, payment_transactions, public_reviews, premium_subscriptions
-
-## Prioritized Backlog
-
-### P0 (Critical) - Completed
-- [x] Core booking flow
-- [x] Payment integration
-- [x] User authentication
-- [x] Admin dashboard for managing vakmannen and bookings
-- [x] Financial & Marketing dashboards
-- [x] Vakman dashboard improvements
-
-### P1 (High Priority)
-- [x] Email notifications (booking confirmation, vakman registration)
-- [x] Vakman approval workflow in admin
-- [ ] Admin endpoint authentication (currently unprotected)
-- [ ] SMS notifications for emergency bookings
-
-### P2 (Medium Priority)
-- [x] Customer can leave reviews after job completion
-- [ ] Vakman profile pages with reviews
-- [ ] Search/filter vakmannen by location
-- [x] Booking calendar view for vakmannen (Agenda tab)
-- [ ] Invoice generation
-
-### P3 (Nice to Have)
-- [ ] Belgian version (spoeddienst24.be)
-- [ ] Mobile app (React Native)
-- [ ] Real-time chat between customer and vakman
-- [ ] GPS tracking for vakman arrival
-- [ ] Multi-language support
+## Project Overzicht
+Een platform voor het boeken van vakmannen (elektricien, loodgieter, slotenmaker) met focus op spoedklussen, vergelijkbaar met zoofy.nl.
 
 ## Tech Stack
-- **Backend**: FastAPI, MongoDB, emergentintegrations (Stripe)
 - **Frontend**: React, Tailwind CSS, Shadcn/UI
-- **Auth**: JWT tokens
-- **Payments**: Stripe Checkout
-- **Email**: TransIP SMTP via aiosmtplib
-- **Analytics**: Google Analytics, Google Ads
+- **Backend**: FastAPI (Python)
+- **Database**: MongoDB
+- **Email**: aiosmtplib met TransIP SMTP
+- **Payments**: Stripe
+- **Authenticatie**: JWT
+
+## Voltooide Features
+
+### Kernfunctionaliteit
+- [x] Service pagina's (elektricien, loodgieter, slotenmaker)
+- [x] Boekingsflow met 5 stappen (Probleem → Monteur → Datum → Adres → Contact)
+- [x] **Kies een monteur feature** - Klant kan specifieke vakman selecteren
+- [x] Spoed vs Regulier prijzen
+- [x] Betaling bij de monteur
+
+### Gebruikersbeheer
+- [x] Klant registratie en login
+- [x] Vakman registratie met KVK/BTW/Verzekering gegevens
+- [x] Dubbele registratie preventie
+- [x] Auto-login na vakman registratie
+- [x] Wachtwoord vergeten flow
+- [x] JWT authenticatie
+
+### Dashboards
+- [x] Klant dashboard
+- [x] Vakman dashboard (opdrachten, agenda, profiel)
+- [x] **Admin dashboard (BEVEILIGD)**
+  - Overzicht met statistieken
+  - Boekingen beheer
+  - Vakmannen beheer (goedkeuren/afwijzen)
+  - Reviews beheer
+  - Financieel dashboard
+  - Marketing dashboard (MOCKED - geen Google Ads integratie)
+
+### Email Systeem
+- [x] Boekingsbevestiging naar klant
+- [x] Boekingsnotificatie naar admin
+- [x] Notificatie naar beschikbare vakmannen
+- [x] **Specifieke vakman notificatie** (als klant een monteur kiest)
+- [x] Goedkeuring/afwijzing emails voor vakmannen
+- [x] Wachtwoord reset emails
+
+### Beveiliging
+- [x] **Admin endpoints beveiligd** met role-based authenticatie
+- [x] Admin link alleen zichtbaar voor admin gebruikers
+- [x] JWT token verificatie
+
+### Content Pagina's
+- [x] Landing page
+- [x] Over ons, Garantie, Prijzen
+- [x] Premium lidmaatschap
+- [x] Zakelijke pagina's (VVE, Horeca, Kantoor, Winkel)
+- [x] Vakman info pagina's
+- [x] Review pagina
+- [x] Juridische pagina's (Privacy, Voorwaarden, Cookies)
 
 ## API Endpoints
 
-### Admin APIs (Currently Unprotected)
-- `GET /api/admin/stats` - Dashboard statistics
-- `GET /api/admin/bookings` - All bookings
-- `GET /api/admin/vakmannen` - All vakmannen
-- `GET /api/admin/reviews` - All reviews
-- `GET /api/admin/financial?period=month` - Financial statistics
-- `GET /api/admin/marketing` - Marketing statistics
-- `GET /api/admin/export/bookings` - CSV export
-- `POST /api/admin/vakman/{id}/approve` - Approve vakman
-- `POST /api/admin/vakman/{id}/reject` - Reject vakman
-- `POST /api/admin/review/{id}/approve` - Approve review
-- `POST /api/admin/review/{id}/reject` - Reject review
-- `PUT /api/admin/booking/{id}/status` - Update booking status
+### Nieuw toegevoegd (deze sessie)
+- `GET /api/vakmannen/available?service_type={type}` - Beschikbare monteurs per dienst
+- Alle `/api/admin/*` endpoints zijn nu beveiligd met `get_admin_user` dependency
 
-### Test Credentials
-- Vakman: test.vakman@demo.nl / test123
+### Belangrijke endpoints
+- `POST /api/bookings` - Accepteert nu `assigned_vakman_id` en `assigned_vakman_name`
+- `POST /api/auth/login` - Retourneert token en user info inclusief role
+- `GET /api/admin/stats` - Admin statistieken (beveiligd)
+- `GET /api/admin/financial` - Financiële data (beveiligd)
+- `GET /api/admin/marketing` - Marketing data (beveiligd)
 
-## Next Tasks
-1. **P0**: Secure admin endpoints with authentication
-2. **P1**: Implement SMS notifications for emergency bookings
-3. **P2**: Build vakman profile pages with reviews
-4. **P3**: Create Belgian version
+## Database Schema
+
+### bookings collectie
+```json
+{
+  "id": "uuid",
+  "vakman_id": "uuid | null",
+  "vakman_name": "string | null",
+  "service_type": "elektricien|loodgieter|slotenmaker",
+  "is_emergency": "boolean",
+  "customer_name": "string",
+  "customer_email": "string",
+  "customer_phone": "string",
+  "address": "string",
+  "postal_code": "string",
+  "city": "string",
+  "preferred_date": "string",
+  "preferred_time": "string",
+  "description": "string",
+  "price": "float",
+  "status": "pending|accepted|in_progress|completed|cancelled",
+  "payment_status": "unpaid|paid"
+}
+```
+
+### vakmannen collectie
+```json
+{
+  "id": "uuid",
+  "email": "string",
+  "name": "string",
+  "phone": "string",
+  "service_type": "string",
+  "location": "string",
+  "hourly_rate": "float",
+  "kvk_nummer": "string",
+  "btw_nummer": "string",
+  "verzekering": "string",
+  "verzekering_maatschappij": "string",
+  "is_approved": "boolean",
+  "is_available": "boolean",
+  "rating": "float",
+  "total_reviews": "int"
+}
+```
+
+## Test Accounts
+- **Admin**: admin@spoeddienst24.nl / Admin2024!
+- **Monteur**: monteur@test.nl / Test1234
+- **Klant**: klant@test.nl / Test1234
+
+## Openstaande Items
+
+### P1 - Hoog
+- [ ] Google Ads API integratie (Marketing dashboard is nu MOCKED)
+
+### P2 - Medium
+- [ ] Component refactoring (AdminDashboard.jsx ~1400 regels)
+- [ ] server.py opsplitsen in modules
+
+### P3 - Laag (Backlog)
+- [ ] Belgische versie (spoeddienst24.be)
+- [ ] Native mobiele app
+
+## Laatste Update
+- **Datum**: 24 januari 2025
+- **Sessie**: "Kies een monteur" feature voltooid, Admin beveiliging toegevoegd
+- **Tests**: 100% geslaagd (22 backend, 4 frontend)
