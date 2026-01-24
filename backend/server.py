@@ -1330,7 +1330,7 @@ async def get_vakman_dashboard(current_user: dict = Depends(get_current_user)):
     stats = {
         "total_jobs": len(bookings),
         "completed_jobs": len([b for b in bookings if b["status"] == "completed"]),
-        "pending_jobs": len([b for b in bookings if b["status"] == "pending"]),
+        "pending_jobs": len([b for b in bookings if b["status"] in ["confirmed", "pending"]]),  # Confirmed = toegewezen, wacht op vakman actie
         "earnings": sum([b["price"] for b in bookings if b["payment_status"] == "paid"])
     }
     
