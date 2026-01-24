@@ -246,7 +246,9 @@ export default function AdminDashboard() {
             { id: "overview", label: "Overzicht", icon: BarChart3 },
             { id: "bookings", label: "Boekingen", icon: Calendar, count: bookings.length },
             { id: "vakmannen", label: "Vakmannen", icon: Users, count: pendingVakmannen.length },
-            { id: "reviews", label: "Reviews", icon: Star, count: pendingReviews.length }
+            { id: "reviews", label: "Reviews", icon: Star, count: pendingReviews.length },
+            { id: "financial", label: "Financieel", icon: Euro },
+            { id: "marketing", label: "Marketing", icon: PieChart }
           ].map(tab => (
             <button
               key={tab.id}
