@@ -66,7 +66,9 @@ class TestVakmanAcceptRejectFlow:
         }
         response = self.session.post(f"{BASE_URL}/api/bookings", json=booking_data)
         if response.status_code in [200, 201]:
-            return response.json()
+            data = response.json()
+            # Booking is returned inside "booking" key
+            return data.get("booking", data)
         return None
     
     def get_vakman_id(self, admin_token):
@@ -84,9 +86,10 @@ class TestVakmanAcceptRejectFlow:
     
     def assign_booking_to_vakman(self, booking_id, vakman_id, admin_token):
         """Admin assigns booking to vakman"""
-        response = self.session.put(
-            f"{BASE_URL}/api/admin/bookings/{booking_id}/assign?vakman_id={vakman_id}",
-            headers={"Authorization": f"Bearer {admin_token}"}
+        response = self.session.post(
+            f"{BASE_URL}/api/admin/booking/{booking_id}/assign",
+            headers={"Authorization": f"Bearer {admin_token}"},
+            json={"vakman_id": vakman_id}
         )
         return response
     
