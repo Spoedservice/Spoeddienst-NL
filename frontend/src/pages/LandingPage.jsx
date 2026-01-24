@@ -61,21 +61,24 @@ export default function LandingPage() {
     e.preventDefault();
     const query = searchQuery.toLowerCase().trim();
     
+    // Build URL with emergency param only if true
+    const emergencyParam = isEmergency ? '?emergency=true' : '';
+    
     // If empty or no specific match, go to services selection page
     if (!query) {
-      navigate(`/diensten?emergency=${isEmergency}`);
+      navigate(`/diensten${emergencyParam}`);
       return;
     }
     
     if (query.includes("elektr") || query.includes("stroom") || query.includes("lamp") || query.includes("schakelaar") || query.includes("stopcontact")) {
-      navigate(`/boek/elektricien?emergency=${isEmergency}`);
+      navigate(`/boek/elektricien${emergencyParam}`);
     } else if (query.includes("lood") || query.includes("lek") || query.includes("kraan") || query.includes("water") || query.includes("afvoer") || query.includes("toilet")) {
-      navigate(`/boek/loodgieter?emergency=${isEmergency}`);
+      navigate(`/boek/loodgieter${emergencyParam}`);
     } else if (query.includes("slot") || query.includes("deur") || query.includes("buiten") || query.includes("sleutel") || query.includes("inbraak")) {
-      navigate(`/boek/slotenmaker?emergency=${isEmergency}`);
+      navigate(`/boek/slotenmaker${emergencyParam}`);
     } else {
       // If no match found, show all services to choose from
-      navigate(`/diensten?emergency=${isEmergency}`);
+      navigate(`/diensten${emergencyParam}`);
     }
   };
 
