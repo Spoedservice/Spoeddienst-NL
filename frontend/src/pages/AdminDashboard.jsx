@@ -1091,189 +1091,250 @@ export default function AdminDashboard() {
             {/* Marketing Tab */}
             {activeTab === "marketing" && (
               <div className="space-y-6">
-                {/* Quick Campaign Buttons */}
-                <div className="grid md:grid-cols-2 gap-4">
-                  <Card className="border-2 border-dashed border-orange-300 bg-gradient-to-br from-orange-50 to-red-50 hover:border-orange-400 transition-all cursor-pointer group" onClick={() => quickCreateCampaign('NL')}>
-                    <CardContent className="p-6 text-center">
-                      <div className="w-16 h-16 bg-gradient-to-br from-[#FF4500] to-orange-500 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-                        <span className="text-3xl">🇳🇱</span>
+                {/* Google Ads Connection */}
+                <Card className={`border-2 ${googleAdsConnected ? 'border-green-300 bg-green-50' : 'border-dashed border-slate-300'}`}>
+                  <CardContent className="p-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-4">
+                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${googleAdsConnected ? 'bg-green-100' : 'bg-slate-100'}`}>
+                          <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none">
+                            <path d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z" fill="#4285F4"/>
+                          </svg>
+                        </div>
+                        <div>
+                          <h3 className="font-bold text-slate-900">Google Ads</h3>
+                          <p className="text-sm text-slate-500">
+                            {googleAdsConnected ? `Gekoppeld: ${googleAdsId}` : 'Koppel je Google Ads account'}
+                          </p>
+                        </div>
                       </div>
-                      <h3 className="font-bold text-xl text-slate-900 mb-2">Campagne Nederland</h3>
-                      <p className="text-slate-600 text-sm mb-4">Start direct een campagne voor de top 5 Nederlandse steden</p>
-                      <Button className="bg-[#FF4500] hover:bg-[#CC3700] w-full">
-                        <Sparkles className="w-4 h-4 mr-2" />
-                        1-Klik Starten
-                      </Button>
-                    </CardContent>
-                  </Card>
+                      {googleAdsConnected ? (
+                        <div className="flex gap-2">
+                          <Badge className="bg-green-100 text-green-800">Verbonden</Badge>
+                          <Button variant="outline" size="sm" onClick={disconnectGoogleAds}>Ontkoppelen</Button>
+                        </div>
+                      ) : (
+                        <Button onClick={() => setShowGoogleAdsModal(true)} className="bg-blue-600 hover:bg-blue-700">
+                          <ExternalLink className="w-4 h-4 mr-2" />
+                          Koppelen
+                        </Button>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
 
-                  <Card className="border-2 border-dashed border-yellow-300 bg-gradient-to-br from-yellow-50 to-red-50 hover:border-yellow-400 transition-all cursor-pointer group" onClick={() => quickCreateCampaign('BE')}>
-                    <CardContent className="p-6 text-center">
-                      <div className="w-16 h-16 bg-gradient-to-br from-yellow-500 to-red-500 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-                        <span className="text-3xl">🇧🇪</span>
-                      </div>
-                      <h3 className="font-bold text-xl text-slate-900 mb-2">Campagne België</h3>
-                      <p className="text-slate-600 text-sm mb-4">Start direct een campagne voor de top 5 Belgische steden</p>
-                      <Button className="bg-yellow-500 hover:bg-yellow-600 w-full">
-                        <Sparkles className="w-4 h-4 mr-2" />
-                        1-Klik Starten
-                      </Button>
-                    </CardContent>
-                  </Card>
+                {/* Country Tabs */}
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setSelectedCountryTab("NL")}
+                    className={`flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all ${
+                      selectedCountryTab === "NL" 
+                        ? "bg-gradient-to-r from-[#FF4500] to-orange-500 text-white shadow-lg" 
+                        : "bg-white text-slate-600 hover:bg-slate-50 border"
+                    }`}
+                  >
+                    <span className="text-xl">🇳🇱</span>
+                    Nederland
+                    <Badge className={selectedCountryTab === "NL" ? "bg-white/20 text-white" : "bg-slate-100"}>
+                      {getTotalStats("NL").activeCities}/{nlCities.length}
+                    </Badge>
+                  </button>
+                  <button
+                    onClick={() => setSelectedCountryTab("BE")}
+                    className={`flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all ${
+                      selectedCountryTab === "BE" 
+                        ? "bg-gradient-to-r from-yellow-500 to-red-500 text-white shadow-lg" 
+                        : "bg-white text-slate-600 hover:bg-slate-50 border"
+                    }`}
+                  >
+                    <span className="text-xl">🇧🇪</span>
+                    België
+                    <Badge className={selectedCountryTab === "BE" ? "bg-white/20 text-white" : "bg-slate-100"}>
+                      {getTotalStats("BE").activeCities}/{beCities.length}
+                    </Badge>
+                  </button>
                 </div>
 
-                {/* Campaign Stats */}
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                  <Card className="border-0 shadow-sm">
-                    <CardContent className="p-4">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="text-slate-500 text-sm">Actieve Campagnes</p>
-                          <p className="text-2xl font-bold text-green-600">{campaigns.filter(c => c.status === 'active').length}</p>
-                        </div>
-                        <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
-                          <Play className="w-6 h-6 text-green-600" />
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
+                {/* Country Stats */}
+                {(() => {
+                  const stats = getTotalStats(selectedCountryTab);
+                  return (
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                      <Card className="border-0 shadow-sm">
+                        <CardContent className="p-4">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <p className="text-slate-500 text-sm">Actieve Steden</p>
+                              <p className="text-2xl font-bold text-green-600">{stats.activeCities}/{stats.totalCities}</p>
+                            </div>
+                            <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                              <MapPin className="w-6 h-6 text-green-600" />
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
 
-                  <Card className="border-0 shadow-sm">
-                    <CardContent className="p-4">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="text-slate-500 text-sm">Totaal Impressies</p>
-                          <p className="text-2xl font-bold text-blue-600">{campaigns.reduce((sum, c) => sum + c.impressions, 0).toLocaleString()}</p>
-                        </div>
-                        <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                          <Eye className="w-6 h-6 text-blue-600" />
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
+                      <Card className="border-0 shadow-sm">
+                        <CardContent className="p-4">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <p className="text-slate-500 text-sm">Impressies</p>
+                              <p className="text-2xl font-bold text-blue-600">{stats.impressions.toLocaleString()}</p>
+                            </div>
+                            <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                              <Eye className="w-6 h-6 text-blue-600" />
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
 
-                  <Card className="border-0 shadow-sm">
-                    <CardContent className="p-4">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="text-slate-500 text-sm">Totaal Clicks</p>
-                          <p className="text-2xl font-bold text-purple-600">{campaigns.reduce((sum, c) => sum + c.clicks, 0).toLocaleString()}</p>
-                        </div>
-                        <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
-                          <Target className="w-6 h-6 text-purple-600" />
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
+                      <Card className="border-0 shadow-sm">
+                        <CardContent className="p-4">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <p className="text-slate-500 text-sm">Clicks</p>
+                              <p className="text-2xl font-bold text-purple-600">{stats.clicks.toLocaleString()}</p>
+                            </div>
+                            <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
+                              <Target className="w-6 h-6 text-purple-600" />
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
 
-                  <Card className="border-0 shadow-sm">
-                    <CardContent className="p-4">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="text-slate-500 text-sm">Conversies</p>
-                          <p className="text-2xl font-bold text-[#FF4500]">{campaigns.reduce((sum, c) => sum + c.conversions, 0)}</p>
-                        </div>
-                        <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center">
-                          <TrendingUp className="w-6 h-6 text-[#FF4500]" />
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
+                      <Card className="border-0 shadow-sm">
+                        <CardContent className="p-4">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <p className="text-slate-500 text-sm">Conversies</p>
+                              <p className="text-2xl font-bold text-[#FF4500]">{stats.conversions}</p>
+                            </div>
+                            <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center">
+                              <TrendingUp className="w-6 h-6 text-[#FF4500]" />
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </div>
+                  );
+                })()}
 
-                {/* Active Campaigns List */}
+                {/* City Campaigns */}
                 <Card className="border-0 shadow-sm">
                   <CardHeader className="pb-3">
                     <div className="flex items-center justify-between">
                       <CardTitle className="text-lg flex items-center gap-2">
-                        <Megaphone className="w-5 h-5 text-[#FF4500]" />
-                        Mijn Campagnes
+                        <Flag className="w-5 h-5 text-[#FF4500]" />
+                        Stad Campagnes - {selectedCountryTab === "NL" ? "Nederland" : "België"}
                       </CardTitle>
-                      <Button variant="outline" size="sm" onClick={() => setShowCampaignCreator(true)}>
-                        + Aangepaste Campagne
-                      </Button>
+                      <div className="flex gap-2">
+                        <Button 
+                          size="sm" 
+                          className="bg-green-600 hover:bg-green-700"
+                          onClick={() => activateAllCities(selectedCountryTab)}
+                        >
+                          <Play className="w-4 h-4 mr-1" />
+                          Alle Aan
+                        </Button>
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          onClick={() => deactivateAllCities(selectedCountryTab)}
+                        >
+                          <Pause className="w-4 h-4 mr-1" />
+                          Alle Uit
+                        </Button>
+                      </div>
                     </div>
                   </CardHeader>
                   <CardContent>
-                    {campaigns.length === 0 ? (
-                      <div className="text-center py-12">
-                        <Megaphone className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-                        <h3 className="font-bold text-lg text-slate-900 mb-2">Geen campagnes</h3>
-                        <p className="text-slate-500 mb-4">Maak je eerste campagne met één klik!</p>
-                      </div>
-                    ) : (
-                      <div className="space-y-3">
-                        {campaigns.map((campaign) => (
-                          <div key={campaign.id} className={`p-4 rounded-lg border ${campaign.status === 'active' ? 'bg-green-50 border-green-200' : 'bg-slate-50 border-slate-200'}`}>
-                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                              <div className="flex items-center gap-3">
-                                <span className="text-2xl">{campaign.country === 'NL' ? '🇳🇱' : '🇧🇪'}</span>
+                    <div className="grid gap-3">
+                      {(selectedCountryTab === "NL" ? nlCities : beCities).map((city, idx) => {
+                        const key = `${selectedCountryTab}_${city.name}`;
+                        const campaign = cityCampaigns[key] || { active: false, budget: 10, impressions: 0, clicks: 0, conversions: 0 };
+                        
+                        return (
+                          <div 
+                            key={idx}
+                            className={`p-4 rounded-lg border-2 transition-all ${
+                              campaign.active 
+                                ? 'border-green-300 bg-green-50' 
+                                : 'border-slate-200 bg-white'
+                            }`}
+                          >
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-4">
+                                {/* Toggle */}
+                                <button
+                                  onClick={() => toggleCityCampaign(selectedCountryTab, city.name)}
+                                  className={`relative w-14 h-8 rounded-full transition-colors ${
+                                    campaign.active ? 'bg-green-500' : 'bg-slate-300'
+                                  }`}
+                                >
+                                  <div className={`absolute top-1 w-6 h-6 rounded-full bg-white shadow transition-transform ${
+                                    campaign.active ? 'translate-x-7' : 'translate-x-1'
+                                  }`} />
+                                </button>
+                                
                                 <div>
                                   <div className="flex items-center gap-2">
-                                    <h4 className="font-bold text-slate-900">{campaign.name}</h4>
-                                    <Badge className={campaign.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-slate-100 text-slate-600'}>
-                                      {campaign.status === 'active' ? 'Actief' : 'Gepauzeerd'}
+                                    <h4 className="font-bold text-slate-900">{city.name}</h4>
+                                    <Badge variant="outline" className="text-xs">
+                                      {(city.population / 1000).toFixed(0)}k inwoners
                                     </Badge>
                                   </div>
-                                  <div className="flex flex-wrap gap-2 mt-1">
-                                    {campaign.cities.slice(0, 3).map((city, idx) => (
-                                      <span key={idx} className="text-xs bg-white px-2 py-0.5 rounded border">{city}</span>
-                                    ))}
-                                    {campaign.cities.length > 3 && (
-                                      <span className="text-xs text-slate-500">+{campaign.cities.length - 3} meer</span>
-                                    )}
+                                  {campaign.active && (
+                                    <p className="text-xs text-green-600 mt-1">Campagne actief</p>
+                                  )}
+                                </div>
+                              </div>
+
+                              {campaign.active && (
+                                <div className="flex items-center gap-6">
+                                  <div className="text-center">
+                                    <p className="text-xs text-slate-500">Impressies</p>
+                                    <p className="font-bold text-blue-600">{campaign.impressions}</p>
+                                  </div>
+                                  <div className="text-center">
+                                    <p className="text-xs text-slate-500">Clicks</p>
+                                    <p className="font-bold text-purple-600">{campaign.clicks}</p>
+                                  </div>
+                                  <div className="text-center">
+                                    <p className="text-xs text-slate-500">Conv.</p>
+                                    <p className="font-bold text-green-600">{campaign.conversions}</p>
+                                  </div>
+                                  <div className="flex items-center gap-2">
+                                    <span className="text-sm text-slate-500">€</span>
+                                    <input
+                                      type="number"
+                                      value={campaign.budget}
+                                      onChange={(e) => updateCityBudget(selectedCountryTab, city.name, e.target.value)}
+                                      className="w-16 px-2 py-1 border rounded text-center"
+                                      min="5"
+                                      max="500"
+                                    />
+                                    <span className="text-xs text-slate-500">/dag</span>
                                   </div>
                                 </div>
-                              </div>
-                              <div className="flex items-center gap-6">
-                                <div className="text-center">
-                                  <p className="text-xs text-slate-500">Impressies</p>
-                                  <p className="font-bold">{campaign.impressions.toLocaleString()}</p>
-                                </div>
-                                <div className="text-center">
-                                  <p className="text-xs text-slate-500">Clicks</p>
-                                  <p className="font-bold">{campaign.clicks}</p>
-                                </div>
-                                <div className="text-center">
-                                  <p className="text-xs text-slate-500">Conv.</p>
-                                  <p className="font-bold text-green-600">{campaign.conversions}</p>
-                                </div>
-                                <div className="flex gap-2">
-                                  <Button 
-                                    variant="outline" 
-                                    size="sm"
-                                    onClick={() => toggleCampaignStatus(campaign.id)}
-                                  >
-                                    {campaign.status === 'active' ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
-                                  </Button>
-                                  <Button 
-                                    variant="outline" 
-                                    size="sm"
-                                    className="text-red-600 hover:bg-red-50"
-                                    onClick={() => deleteCampaign(campaign.id)}
-                                  >
-                                    <XCircle className="w-4 h-4" />
-                                  </Button>
-                                </div>
-                              </div>
+                              )}
                             </div>
                           </div>
-                        ))}
-                      </div>
-                    )}
+                        );
+                      })}
+                    </div>
                   </CardContent>
                 </Card>
 
-                {/* Ad Text Generator */}
+                {/* Ad Templates */}
                 <Card className="border-0 shadow-sm">
                   <CardHeader className="pb-3">
                     <CardTitle className="text-lg flex items-center gap-2">
                       <FileText className="w-5 h-5 text-[#FF4500]" />
-                      Advertentie Tekst Generator
+                      Advertentie Templates
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="grid md:grid-cols-3 gap-4 mb-6">
+                    <div className="grid md:grid-cols-3 gap-4">
                       {Object.entries(campaignTemplates).map(([key, template]) => (
                         <div 
                           key={key}
@@ -1285,110 +1346,76 @@ export default function AdminDashboard() {
                           }`}
                         >
                           <h4 className="font-bold text-slate-900 mb-1">{template.name}</h4>
-                          <p className="text-xs text-slate-500">{template.description}</p>
+                          <p className="text-xs text-slate-500 mb-3">{template.description}</p>
+                          {selectedTemplate === key && (
+                            <div className="space-y-2 pt-3 border-t">
+                              {template.headlines.slice(0, 2).map((h, i) => (
+                                <div key={i} className="flex items-center justify-between text-xs bg-white p-2 rounded">
+                                  <span className="truncate flex-1">{h}</span>
+                                  <Button variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={(e) => { e.stopPropagation(); copyAdText(h, 'Elektricien', 'Amsterdam'); }}>
+                                    <Copy className="w-3 h-3" />
+                                  </Button>
+                                </div>
+                              ))}
+                            </div>
+                          )}
                         </div>
                       ))}
                     </div>
-
-                    {selectedTemplate && (
-                      <div className="space-y-4">
-                        <h4 className="font-medium text-slate-700">Voorbeeld Headlines:</h4>
-                        <div className="grid gap-3">
-                          {campaignTemplates[selectedTemplate].headlines.map((headline, idx) => (
-                            <div key={idx} className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
-                              <span className="text-sm">{headline}</span>
-                              <div className="flex gap-2">
-                                <Button 
-                                  variant="ghost" 
-                                  size="sm"
-                                  onClick={() => copyAdText(headline, 'Elektricien', 'Amsterdam')}
-                                >
-                                  <Copy className="w-4 h-4" />
-                                </Button>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                        
-                        <h4 className="font-medium text-slate-700 mt-4">Keywords:</h4>
-                        <div className="flex flex-wrap gap-2">
-                          {campaignTemplates[selectedTemplate].keywords.map((keyword, idx) => (
-                            <Badge key={idx} variant="outline" className="cursor-pointer hover:bg-slate-100" onClick={() => copyAdText(keyword, 'elektricien', 'amsterdam')}>
-                              {keyword}
-                            </Badge>
-                          ))}
-                        </div>
-                      </div>
-                    )}
                   </CardContent>
                 </Card>
+              </div>
+            )}
 
-                {/* Performance by Country */}
-                <div className="grid lg:grid-cols-2 gap-6">
-                  <Card className="border-0 shadow-sm">
-                    <CardHeader className="pb-3">
-                      <CardTitle className="text-lg">Dienst Prestaties</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-4">
-                        {financialStats.marketing?.service_performance?.map((service, idx) => (
-                          <div key={idx} className="p-4 bg-slate-50 rounded-lg">
-                            <div className="flex items-center justify-between mb-2">
-                              <div className="flex items-center gap-3">
-                                <span className="text-2xl">
-                                  {service.service === "elektricien" ? "⚡" : service.service === "loodgieter" ? "💧" : "🔑"}
-                                </span>
-                                <span className="font-bold capitalize">{service.service}</span>
-                              </div>
-                            </div>
-                            <div className="grid grid-cols-2 gap-4 text-sm">
-                              <div>
-                                <p className="text-slate-500">Boekingen</p>
-                                <p className="font-bold text-lg">{service.bookings}</p>
-                              </div>
-                              <div>
-                                <p className="text-slate-500">Omzet</p>
-                                <p className="font-bold text-lg text-green-600">€{service.revenue}</p>
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </CardContent>
-                  </Card>
+            {/* Google Ads Modal */}
+            {showGoogleAdsModal && (
+              <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+                <Card className="w-full max-w-md">
+                  <CardHeader>
+                    <div className="flex items-center justify-between">
+                      <CardTitle className="flex items-center gap-2">
+                        <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none">
+                          <path d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z" fill="#4285F4"/>
+                        </svg>
+                        Google Ads Koppelen
+                      </CardTitle>
+                      <Button variant="ghost" size="sm" onClick={() => setShowGoogleAdsModal(false)}>
+                        <XCircle className="w-5 h-5" />
+                      </Button>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Google Ads Klant-ID</label>
+                      <Input 
+                        value={googleAdsId}
+                        onChange={(e) => setGoogleAdsId(e.target.value)}
+                        placeholder="123-456-7890"
+                      />
+                      <p className="text-xs text-slate-500 mt-1">
+                        Te vinden in je Google Ads account rechtsboven
+                      </p>
+                    </div>
+                    
+                    <div className="bg-blue-50 p-3 rounded-lg text-sm text-blue-800">
+                      <p className="font-medium mb-1">Hoe te koppelen:</p>
+                      <ol className="list-decimal list-inside space-y-1 text-xs">
+                        <li>Log in op ads.google.com</li>
+                        <li>Kopieer je Klant-ID (rechtsboven)</li>
+                        <li>Plak het hierboven</li>
+                      </ol>
+                    </div>
 
-                  <Card className="border-0 shadow-sm">
-                    <CardHeader className="pb-3">
-                      <CardTitle className="text-lg">Top Steden</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-3">
-                        {Object.entries(financialStats.marketing?.top_cities || {}).map(([city, count], idx) => (
-                          <div key={idx} className="flex items-center gap-3">
-                            <div className="w-8 h-8 bg-[#FF4500] rounded-full flex items-center justify-center text-white font-bold text-sm">
-                              {idx + 1}
-                            </div>
-                            <div className="flex-1">
-                              <div className="flex justify-between items-center">
-                                <span className="font-medium">{city}</span>
-                                <span className="text-sm text-slate-500">{count} boekingen</span>
-                              </div>
-                              <div className="w-full bg-slate-100 rounded-full h-2 mt-1">
-                                <div 
-                                  className="bg-[#FF4500] h-2 rounded-full"
-                                  style={{ width: `${(count / Math.max(...Object.values(financialStats.marketing?.top_cities || {1: 1}))) * 100}%` }}
-                                />
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                        {Object.keys(financialStats.marketing?.top_cities || {}).length === 0 && (
-                          <p className="text-center text-slate-500 py-4">Geen gegevens</p>
-                        )}
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
+                    <div className="flex gap-3 pt-4">
+                      <Button variant="outline" className="flex-1" onClick={() => setShowGoogleAdsModal(false)}>
+                        Annuleren
+                      </Button>
+                      <Button className="flex-1 bg-blue-600 hover:bg-blue-700" onClick={connectGoogleAds}>
+                        Koppelen
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
               </div>
             )}
 
