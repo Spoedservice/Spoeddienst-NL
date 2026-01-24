@@ -102,6 +102,7 @@ export default function LandingPage() {
               <Link to="/diensten/elektricien" className="text-slate-600 hover:text-slate-900 font-medium">Elektricien</Link>
               <Link to="/diensten/loodgieter" className="text-slate-600 hover:text-slate-900 font-medium">Loodgieter</Link>
               <Link to="/diensten/slotenmaker" className="text-slate-600 hover:text-slate-900 font-medium">Slotenmaker</Link>
+              <Link to="/over-ons" className="text-slate-600 hover:text-slate-900 font-medium">Over Ons</Link>
             </nav>
 
             <div className="hidden md:flex items-center gap-4">
