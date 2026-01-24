@@ -21,9 +21,11 @@ export default function AdminDashboard() {
   const [vakmannen, setVakmannen] = useState([]);
   const [reviews, setReviews] = useState([]);
   const [stats, setStats] = useState({});
+  const [financialStats, setFinancialStats] = useState({});
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
+  const [dateRange, setDateRange] = useState("month");
 
   useEffect(() => {
     fetchAllData();
