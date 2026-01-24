@@ -577,6 +577,370 @@ export default function AdminDashboard() {
                 </CardContent>
               </Card>
             )}
+
+            {/* Financial Tab */}
+            {activeTab === "financial" && (
+              <div className="space-y-6">
+                {/* Period Selector & Export */}
+                <div className="flex flex-col sm:flex-row justify-between gap-4">
+                  <div className="flex gap-2">
+                    {["day", "week", "month", "year"].map(period => (
+                      <button
+                        key={period}
+                        onClick={() => setDateRange(period)}
+                        className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                          dateRange === period 
+                            ? "bg-[#FF4500] text-white" 
+                            : "bg-white text-slate-600 hover:bg-slate-50"
+                        }`}
+                      >
+                        {period === "day" ? "Vandaag" : period === "week" ? "Week" : period === "month" ? "Maand" : "Jaar"}
+                      </button>
+                    ))}
+                  </div>
+                  <Button onClick={exportBookings} className="bg-green-600 hover:bg-green-700">
+                    <Download className="w-4 h-4 mr-2" />
+                    Exporteer CSV
+                  </Button>
+                </div>
+
+                {/* Financial Stats Cards */}
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                  <Card className="border-0 shadow-sm">
+                    <CardContent className="p-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-slate-500 text-sm">Totale Omzet</p>
+                          <p className="text-2xl font-bold text-green-600">€{financialStats.financial?.total_revenue || 0}</p>
+                        </div>
+                        <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                          <Euro className="w-6 h-6 text-green-600" />
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="border-0 shadow-sm">
+                    <CardContent className="p-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-slate-500 text-sm">Betaald</p>
+                          <p className="text-2xl font-bold text-blue-600">€{financialStats.financial?.paid_revenue || 0}</p>
+                        </div>
+                        <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                          <CreditCard className="w-6 h-6 text-blue-600" />
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="border-0 shadow-sm">
+                    <CardContent className="p-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-slate-500 text-sm">Openstaand</p>
+                          <p className="text-2xl font-bold text-orange-600">€{financialStats.financial?.pending_revenue || 0}</p>
+                        </div>
+                        <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center">
+                          <Receipt className="w-6 h-6 text-orange-600" />
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="border-0 shadow-sm">
+                    <CardContent className="p-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-slate-500 text-sm">Gem. Orderwaarde</p>
+                          <p className="text-2xl font-bold text-purple-600">€{financialStats.financial?.average_order_value || 0}</p>
+                        </div>
+                        <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
+                          <TrendingUp className="w-6 h-6 text-purple-600" />
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                <div className="grid lg:grid-cols-2 gap-6">
+                  {/* Daily Revenue Chart */}
+                  <Card className="border-0 shadow-sm">
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-lg">Omzet Laatste 7 Dagen</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-3">
+                        {financialStats.financial?.daily_revenue?.map((day, idx) => (
+                          <div key={idx} className="flex items-center gap-3">
+                            <span className="text-sm text-slate-500 w-12">{day.date}</span>
+                            <div className="flex-1 bg-slate-100 rounded-full h-6 overflow-hidden">
+                              <div 
+                                className="bg-gradient-to-r from-[#FF4500] to-orange-400 h-full rounded-full flex items-center justify-end pr-2"
+                                style={{ width: `${Math.max(10, (day.revenue / Math.max(...(financialStats.financial?.daily_revenue?.map(d => d.revenue) || [1]))) * 100)}%` }}
+                              >
+                                <span className="text-xs text-white font-medium">€{day.revenue}</span>
+                              </div>
+                            </div>
+                            <span className="text-xs text-slate-400 w-16">{day.bookings} boek.</span>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Revenue by Service */}
+                  <Card className="border-0 shadow-sm">
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-lg">Omzet per Dienst</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        {Object.entries(financialStats.financial?.revenue_by_service || {}).map(([service, revenue], idx) => (
+                          <div key={idx} className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
+                            <div className="flex items-center gap-3">
+                              <span className="text-2xl">
+                                {service === "elektricien" ? "⚡" : service === "loodgieter" ? "💧" : "🔑"}
+                              </span>
+                              <span className="font-medium capitalize">{service}</span>
+                            </div>
+                            <span className="font-bold text-green-600">€{revenue.toFixed(2)}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Payment Status */}
+                  <Card className="border-0 shadow-sm">
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-lg">Betalingsstatus</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between p-4 bg-green-50 rounded-lg border border-green-200">
+                          <div className="flex items-center gap-3">
+                            <CheckCircle className="w-6 h-6 text-green-600" />
+                            <span className="font-medium">Betaald</span>
+                          </div>
+                          <span className="text-2xl font-bold text-green-600">{financialStats.financial?.payment_status?.paid || 0}</span>
+                        </div>
+                        <div className="flex items-center justify-between p-4 bg-yellow-50 rounded-lg border border-yellow-200">
+                          <div className="flex items-center gap-3">
+                            <Clock className="w-6 h-6 text-yellow-600" />
+                            <span className="font-medium">Openstaand</span>
+                          </div>
+                          <span className="text-2xl font-bold text-yellow-600">{financialStats.financial?.payment_status?.unpaid || 0}</span>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Bookings by Status */}
+                  <Card className="border-0 shadow-sm">
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-lg">Boekingen per Status</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-2">
+                        {Object.entries(financialStats.financial?.bookings_by_status || {}).map(([status, count], idx) => (
+                          <div key={idx} className="flex items-center justify-between p-2 bg-slate-50 rounded">
+                            <span className="text-sm capitalize">{status.replace("_", " ")}</span>
+                            <Badge variant="outline">{count}</Badge>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
+            )}
+
+            {/* Marketing Tab */}
+            {activeTab === "marketing" && (
+              <div className="space-y-6">
+                {/* Marketing Stats Cards */}
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                  <Card className="border-0 shadow-sm">
+                    <CardContent className="p-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-slate-500 text-sm">Totale Boekingen</p>
+                          <p className="text-2xl font-bold text-slate-900">{financialStats.marketing?.total_bookings || 0}</p>
+                        </div>
+                        <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                          <Calendar className="w-6 h-6 text-blue-600" />
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="border-0 shadow-sm">
+                    <CardContent className="p-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-slate-500 text-sm">Spoed Boekingen</p>
+                          <p className="text-2xl font-bold text-red-600">{financialStats.marketing?.emergency_vs_regular?.emergency || 0}</p>
+                        </div>
+                        <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
+                          <AlertCircle className="w-6 h-6 text-red-600" />
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="border-0 shadow-sm">
+                    <CardContent className="p-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-slate-500 text-sm">Conversie Ratio</p>
+                          <p className="text-2xl font-bold text-green-600">{financialStats.marketing?.conversion_rate || 0}%</p>
+                        </div>
+                        <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                          <Target className="w-6 h-6 text-green-600" />
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="border-0 shadow-sm">
+                    <CardContent className="p-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-slate-500 text-sm">Reguliere Boekingen</p>
+                          <p className="text-2xl font-bold text-slate-900">{financialStats.marketing?.emergency_vs_regular?.regular || 0}</p>
+                        </div>
+                        <div className="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center">
+                          <Calendar className="w-6 h-6 text-slate-600" />
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                <div className="grid lg:grid-cols-2 gap-6">
+                  {/* Service Performance */}
+                  <Card className="border-0 shadow-sm">
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-lg">Dienst Prestaties</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        {financialStats.marketing?.service_performance?.map((service, idx) => (
+                          <div key={idx} className="p-4 bg-slate-50 rounded-lg">
+                            <div className="flex items-center justify-between mb-2">
+                              <div className="flex items-center gap-3">
+                                <span className="text-2xl">
+                                  {service.service === "elektricien" ? "⚡" : service.service === "loodgieter" ? "💧" : "🔑"}
+                                </span>
+                                <span className="font-bold capitalize">{service.service}</span>
+                              </div>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4 text-sm">
+                              <div>
+                                <p className="text-slate-500">Boekingen</p>
+                                <p className="font-bold text-lg">{service.bookings}</p>
+                              </div>
+                              <div>
+                                <p className="text-slate-500">Omzet</p>
+                                <p className="font-bold text-lg text-green-600">€{service.revenue}</p>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Top Cities */}
+                  <Card className="border-0 shadow-sm">
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-lg">Top Steden</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-3">
+                        {Object.entries(financialStats.marketing?.top_cities || {}).map(([city, count], idx) => (
+                          <div key={idx} className="flex items-center gap-3">
+                            <div className="w-8 h-8 bg-[#FF4500] rounded-full flex items-center justify-center text-white font-bold text-sm">
+                              {idx + 1}
+                            </div>
+                            <div className="flex-1">
+                              <div className="flex justify-between items-center">
+                                <span className="font-medium">{city}</span>
+                                <span className="text-sm text-slate-500">{count} boekingen</span>
+                              </div>
+                              <div className="w-full bg-slate-100 rounded-full h-2 mt-1">
+                                <div 
+                                  className="bg-[#FF4500] h-2 rounded-full"
+                                  style={{ width: `${(count / Math.max(...Object.values(financialStats.marketing?.top_cities || {1: 1}))) * 100}%` }}
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                        {Object.keys(financialStats.marketing?.top_cities || {}).length === 0 && (
+                          <p className="text-center text-slate-500 py-4">Geen gegevens</p>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Emergency vs Regular */}
+                  <Card className="border-0 shadow-sm">
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-lg">Spoed vs Regulier</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="flex items-center justify-center gap-8 py-4">
+                        <div className="text-center">
+                          <div className="w-24 h-24 bg-red-100 rounded-full flex items-center justify-center mb-2">
+                            <span className="text-3xl font-bold text-red-600">
+                              {financialStats.marketing?.emergency_vs_regular?.emergency || 0}
+                            </span>
+                          </div>
+                          <p className="text-sm text-slate-600">Spoed</p>
+                        </div>
+                        <div className="text-4xl text-slate-300">vs</div>
+                        <div className="text-center">
+                          <div className="w-24 h-24 bg-blue-100 rounded-full flex items-center justify-center mb-2">
+                            <span className="text-3xl font-bold text-blue-600">
+                              {financialStats.marketing?.emergency_vs_regular?.regular || 0}
+                            </span>
+                          </div>
+                          <p className="text-sm text-slate-600">Regulier</p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Popular Time Slots */}
+                  <Card className="border-0 shadow-sm">
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-lg">Populaire Tijdsloten</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-2">
+                        {Object.entries(financialStats.marketing?.time_slots || {})
+                          .sort(([,a], [,b]) => b - a)
+                          .slice(0, 5)
+                          .map(([slot, count], idx) => (
+                            <div key={idx} className="flex items-center justify-between p-2 bg-slate-50 rounded">
+                              <div className="flex items-center gap-2">
+                                <Clock className="w-4 h-4 text-slate-400" />
+                                <span className="text-sm">{slot}</span>
+                              </div>
+                              <Badge variant="outline">{count}</Badge>
+                            </div>
+                          ))}
+                        {Object.keys(financialStats.marketing?.time_slots || {}).length === 0 && (
+                          <p className="text-center text-slate-500 py-4">Geen gegevens</p>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
+            )}
           </>
         )}
       </div>
