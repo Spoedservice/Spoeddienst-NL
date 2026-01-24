@@ -95,6 +95,11 @@ export default function LoginPage() {
                   required
                   data-testid="login-password"
                 />
+                <div className="text-right mt-1">
+                  <Link to="/wachtwoord-vergeten" className="text-sm text-[#FF4500] hover:underline">
+                    Wachtwoord vergeten?
+                  </Link>
+                </div>
               </div>
               <Button 
                 type="submit" 
