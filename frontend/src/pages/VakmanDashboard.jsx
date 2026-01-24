@@ -101,6 +101,36 @@ export default function VakmanDashboard() {
     }
   };
 
+  const handleAcceptBooking = async (bookingId) => {
+    const token = localStorage.getItem('token');
+    try {
+      await axios.post(`${API}/bookings/${bookingId}/vakman-accept`, {}, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      fetchDashboard(token);
+      toast.success("Opdracht geaccepteerd!");
+      setSelectedBooking(null);
+    } catch (error) {
+      console.error("Error accepting booking:", error);
+      toast.error(error.response?.data?.detail || "Kon opdracht niet accepteren");
+    }
+  };
+
+  const handleRejectBooking = async (bookingId) => {
+    const token = localStorage.getItem('token');
+    try {
+      await axios.post(`${API}/bookings/${bookingId}/vakman-reject`, {}, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      fetchDashboard(token);
+      toast.success("Opdracht afgewezen. Admin is op de hoogte gesteld.");
+      setSelectedBooking(null);
+    } catch (error) {
+      console.error("Error rejecting booking:", error);
+      toast.error(error.response?.data?.detail || "Kon opdracht niet afwijzen");
+    }
+  };
+
   const handleUpdateStatus = async (bookingId, newStatus) => {
     const token = localStorage.getItem('token');
     try {
