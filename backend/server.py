@@ -515,6 +515,173 @@ async def send_vakman_notification_email(booking_data: dict):
         logging.error(f"Failed to send vakman notification emails: {str(e)}")
         return False
 
+async def send_vakman_approval_email(vakman_data: dict):
+    """Send approval confirmation email to vakman"""
+    try:
+        vakman_email = vakman_data.get('email')
+        if not vakman_email:
+            return False
+        
+        service_names = {
+            "elektricien": "Elektricien",
+            "loodgieter": "Loodgieter",
+            "slotenmaker": "Slotenmaker"
+        }
+        service_name = service_names.get(vakman_data.get("service_type", ""), vakman_data.get("service_type", ""))
+        
+        html_content = f"""
+        <html>
+        <body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+            <div style="background-color: #22c55e; padding: 30px; text-align: center;">
+                <h1 style="color: white; margin: 0; font-size: 28px;">🎉 Gefeliciteerd!</h1>
+                <p style="color: white; margin: 10px 0 0 0; font-size: 18px;">Je account is goedgekeurd!</p>
+            </div>
+            
+            <div style="padding: 30px; background-color: #f8f9fa;">
+                <h2 style="color: #333; margin-top: 0;">Beste {vakman_data.get('name', 'Vakman')},</h2>
+                
+                <p style="color: #666; font-size: 16px; line-height: 1.6;">
+                    Geweldig nieuws! Je aanmelding als <strong>{service_name}</strong> bij SpoedDienst24 is goedgekeurd. 
+                    Je kunt nu direct aan de slag en klussen ontvangen in jouw regio.
+                </p>
+                
+                <div style="background-color: #dcfce7; padding: 20px; border-radius: 10px; border-left: 4px solid #22c55e; margin: 25px 0;">
+                    <h3 style="color: #22c55e; margin-top: 0;">✅ Wat kun je nu doen?</h3>
+                    <ul style="color: #666; margin: 0; padding-left: 20px;">
+                        <li style="margin-bottom: 8px;">Log in op je vakman dashboard</li>
+                        <li style="margin-bottom: 8px;">Zet je beschikbaarheid aan</li>
+                        <li style="margin-bottom: 8px;">Ontvang direct nieuwe klussen</li>
+                        <li style="margin-bottom: 8px;">Accepteer opdrachten en verdien geld</li>
+                    </ul>
+                </div>
+                
+                <div style="text-align: center; margin: 30px 0;">
+                    <a href="https://spoeddienst24.nl/login" style="display: inline-block; background-color: #FF4500; color: white; padding: 15px 50px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 18px;">
+                        Naar mijn Dashboard →
+                    </a>
+                </div>
+                
+                <div style="background-color: white; padding: 20px; border-radius: 10px; margin: 25px 0;">
+                    <h3 style="color: #333; margin-top: 0;">📋 Je Profiel</h3>
+                    <table style="width: 100%;">
+                        <tr><td style="padding: 8px 0; color: #666;">Naam:</td><td style="padding: 8px 0; font-weight: bold;">{vakman_data.get('name', 'N/A')}</td></tr>
+                        <tr><td style="padding: 8px 0; color: #666;">Vakgebied:</td><td style="padding: 8px 0; font-weight: bold;">{service_name}</td></tr>
+                        <tr><td style="padding: 8px 0; color: #666;">Werkgebied:</td><td style="padding: 8px 0; font-weight: bold;">{vakman_data.get('location', 'N/A')}</td></tr>
+                        <tr><td style="padding: 8px 0; color: #666;">Uurtarief:</td><td style="padding: 8px 0; font-weight: bold;">€{vakman_data.get('hourly_rate', 0)},-</td></tr>
+                    </table>
+                </div>
+                
+                <p style="color: #666;">Succes met je eerste klussen!</p>
+                <p style="color: #666; margin: 0;">Met vriendelijke groet,<br><strong>Team SpoedDienst24</strong></p>
+            </div>
+            
+            <div style="background-color: #333; padding: 20px; text-align: center;">
+                <p style="color: #999; margin: 0; font-size: 12px;">© 2024 SpoedDienst24.nl - 24/7 Vakmannen aan uw deur</p>
+            </div>
+        </body>
+        </html>
+        """
+        
+        message = MIMEMultipart("alternative")
+        message["From"] = SMTP_FROM
+        message["To"] = vakman_email
+        message["Subject"] = "🎉 Gefeliciteerd! Je SpoedDienst24 account is goedgekeurd"
+        
+        html_part = MIMEText(html_content, "html")
+        message.attach(html_part)
+        
+        await aiosmtplib.send(
+            message,
+            hostname=SMTP_HOST,
+            port=SMTP_PORT,
+            username=SMTP_USER,
+            password=SMTP_PASSWORD,
+            use_tls=True
+        )
+        logging.info(f"Approval email sent to vakman {vakman_email}")
+        return True
+    except Exception as e:
+        logging.error(f"Failed to send approval email: {str(e)}")
+        return False
+
+async def send_vakman_rejection_email(vakman_data: dict):
+    """Send rejection notification email to vakman"""
+    try:
+        vakman_email = vakman_data.get('email')
+        if not vakman_email:
+            return False
+        
+        html_content = f"""
+        <html>
+        <body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+            <div style="background-color: #64748b; padding: 30px; text-align: center;">
+                <h1 style="color: white; margin: 0;">⚡ SpoedDienst24</h1>
+            </div>
+            
+            <div style="padding: 30px; background-color: #f8f9fa;">
+                <h2 style="color: #333; margin-top: 0;">Beste {vakman_data.get('name', 'Vakman')},</h2>
+                
+                <p style="color: #666; font-size: 16px; line-height: 1.6;">
+                    Bedankt voor je interesse in SpoedDienst24. Helaas kunnen we je aanmelding op dit moment niet goedkeuren.
+                </p>
+                
+                <div style="background-color: #fef2f2; padding: 20px; border-radius: 10px; border-left: 4px solid #ef4444; margin: 25px 0;">
+                    <h3 style="color: #ef4444; margin-top: 0;">Mogelijke redenen</h3>
+                    <ul style="color: #666; margin: 0; padding-left: 20px;">
+                        <li style="margin-bottom: 8px;">Onvolledige bedrijfsgegevens (KVK/BTW)</li>
+                        <li style="margin-bottom: 8px;">Ontbrekende verzekeringsinformatie</li>
+                        <li style="margin-bottom: 8px;">Werkgebied buiten ons servicegebied</li>
+                    </ul>
+                </div>
+                
+                <p style="color: #666; font-size: 16px; line-height: 1.6;">
+                    Je kunt je opnieuw aanmelden met volledige gegevens. Heb je vragen? Neem dan contact met ons op.
+                </p>
+                
+                <div style="text-align: center; margin: 30px 0;">
+                    <a href="https://spoeddienst24.nl/vakman/register" style="display: inline-block; background-color: #FF4500; color: white; padding: 15px 40px; text-decoration: none; border-radius: 8px; font-weight: bold;">
+                        Opnieuw Aanmelden
+                    </a>
+                </div>
+                
+                <p style="color: #666;">
+                    <strong>Contact:</strong><br>
+                    📧 info@spoeddienst24.nl<br>
+                    📞 020-123 4567
+                </p>
+                
+                <p style="color: #666; margin: 0;">Met vriendelijke groet,<br><strong>Team SpoedDienst24</strong></p>
+            </div>
+            
+            <div style="background-color: #333; padding: 20px; text-align: center;">
+                <p style="color: #999; margin: 0; font-size: 12px;">© 2024 SpoedDienst24.nl</p>
+            </div>
+        </body>
+        </html>
+        """
+        
+        message = MIMEMultipart("alternative")
+        message["From"] = SMTP_FROM
+        message["To"] = vakman_email
+        message["Subject"] = "SpoedDienst24 - Update over je aanmelding"
+        
+        html_part = MIMEText(html_content, "html")
+        message.attach(html_part)
+        
+        await aiosmtplib.send(
+            message,
+            hostname=SMTP_HOST,
+            port=SMTP_PORT,
+            username=SMTP_USER,
+            password=SMTP_PASSWORD,
+            use_tls=True
+        )
+        logging.info(f"Rejection email sent to vakman {vakman_email}")
+        return True
+    except Exception as e:
+        logging.error(f"Failed to send rejection email: {str(e)}")
+        return False
+
 # ==================== SERVICE DATA ====================
 
 SERVICES = [
