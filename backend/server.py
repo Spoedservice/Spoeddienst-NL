@@ -1002,6 +1002,101 @@ async def get_public_stats():
         "avg_rating": round(avg_rating, 1)
     }
 
+# ==================== ADMIN DASHBOARD ROUTES (PUBLIC FOR NOW) ====================
+
+@api_router.get("/admin/bookings")
+async def get_all_bookings():
+    """Get all bookings for admin dashboard"""
+    bookings = await db.bookings.find({}, {"_id": 0}).sort("created_at", -1).to_list(500)
+    return bookings
+
+@api_router.get("/admin/vakmannen")
+async def get_all_vakmannen():
+    """Get all vakmannen for admin dashboard"""
+    vakmannen = await db.vakmannen.find({}, {"_id": 0, "password": 0}).sort("created_at", -1).to_list(500)
+    return vakmannen
+
+@api_router.get("/admin/reviews")
+async def get_all_reviews():
+    """Get all reviews for admin dashboard"""
+    reviews = await db.public_reviews.find({}, {"_id": 0}).sort("created_at", -1).to_list(500)
+    return reviews
+
+@api_router.get("/admin/stats")
+async def get_admin_stats():
+    """Get statistics for admin dashboard"""
+    total_bookings = await db.bookings.count_documents({})
+    active_vakmannen = await db.vakmannen.count_documents({"is_approved": True})
+    pending_vakmannen = await db.vakmannen.count_documents({"is_approved": False})
+    total_reviews = await db.public_reviews.count_documents({})
+    pending_reviews = await db.public_reviews.count_documents({"status": "pending"})
+    
+    # Calculate estimated revenue
+    bookings = await db.bookings.find({}, {"_id": 0, "price": 1}).to_list(1000)
+    total_revenue = sum([b.get("price", 0) for b in bookings])
+    
+    return {
+        "total_bookings": total_bookings,
+        "active_vakmannen": active_vakmannen,
+        "pending_vakmannen": pending_vakmannen,
+        "total_reviews": total_reviews,
+        "pending_reviews": pending_reviews,
+        "total_revenue": round(total_revenue, 2)
+    }
+
+@api_router.post("/admin/vakman/{vakman_id}/approve")
+async def approve_vakman_admin(vakman_id: str):
+    """Approve a vakman registration"""
+    result = await db.vakmannen.update_one(
+        {"id": vakman_id}, 
+        {"$set": {"is_approved": True, "is_available": True}}
+    )
+    if result.modified_count == 0:
+        raise HTTPException(status_code=404, detail="Vakman niet gevonden")
+    return {"message": "Vakman goedgekeurd"}
+
+@api_router.post("/admin/vakman/{vakman_id}/reject")
+async def reject_vakman_admin(vakman_id: str):
+    """Reject and delete a vakman registration"""
+    result = await db.vakmannen.delete_one({"id": vakman_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Vakman niet gevonden")
+    return {"message": "Vakman afgewezen"}
+
+@api_router.post("/admin/review/{review_id}/approve")
+async def approve_review_admin(review_id: str):
+    """Approve a review"""
+    result = await db.public_reviews.update_one(
+        {"id": review_id}, 
+        {"$set": {"status": "approved"}}
+    )
+    if result.modified_count == 0:
+        raise HTTPException(status_code=404, detail="Review niet gevonden")
+    return {"message": "Review goedgekeurd"}
+
+@api_router.post("/admin/review/{review_id}/reject")
+async def reject_review_admin(review_id: str):
+    """Reject and delete a review"""
+    result = await db.public_reviews.delete_one({"id": review_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Review niet gevonden")
+    return {"message": "Review verwijderd"}
+
+@api_router.put("/admin/booking/{booking_id}/status")
+async def update_booking_status_admin(booking_id: str, status_update: dict):
+    """Update booking status"""
+    status = status_update.get("status")
+    if status not in ["pending", "confirmed", "in_progress", "completed", "cancelled"]:
+        raise HTTPException(status_code=400, detail="Ongeldige status")
+    
+    result = await db.bookings.update_one(
+        {"id": booking_id}, 
+        {"$set": {"status": status}}
+    )
+    if result.modified_count == 0:
+        raise HTTPException(status_code=404, detail="Boeking niet gevonden")
+    return {"message": f"Status gewijzigd naar {status}"}
+
 # ==================== PREMIUM SUBSCRIPTION ROUTES ====================
 
 # Bankgegevens voor premium betalingen
