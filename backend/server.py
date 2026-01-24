@@ -79,6 +79,10 @@ class VakmanCreate(UserBase):
     description: str
     hourly_rate: float
     location: str
+    kvk_nummer: str  # KVK nummer
+    btw_nummer: Optional[str] = ""  # BTW nummer (optioneel voor kleine ondernemers)
+    verzekering: str  # Type verzekering
+    verzekering_maatschappij: Optional[str] = ""  # Verzekeringsmaatschappij
 
 class Vakman(UserBase):
     model_config = ConfigDict(extra="ignore")
@@ -88,6 +92,10 @@ class Vakman(UserBase):
     description: str
     hourly_rate: float
     location: str
+    kvk_nummer: str = ""
+    btw_nummer: str = ""
+    verzekering: str = ""
+    verzekering_maatschappij: str = ""
     is_approved: bool = False
     is_available: bool = True
     rating: float = 0.0
