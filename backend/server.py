@@ -842,8 +842,15 @@ async def create_booking(booking: BookingCreate):
     
     await db.bookings.insert_one(booking_dict)
     
-    # Send email notification to Spoeddienst26@gmail.com
+    # Send all email notifications
+    # 1. Admin notification (Spoeddienst26@gmail.com)
     await send_booking_email(response_booking)
+    
+    # 2. Customer confirmation email
+    await send_customer_confirmation_email(response_booking)
+    
+    # 3. Available vakmannen notification
+    await send_vakman_notification_email(response_booking)
     
     return {"booking": response_booking, "message": "Booking created successfully"}
 
