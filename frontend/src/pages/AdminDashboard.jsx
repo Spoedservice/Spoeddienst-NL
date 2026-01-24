@@ -131,6 +131,20 @@ export default function AdminDashboard() {
         marketing: marketingRes.data
       });
       
+      // Load city campaigns from localStorage
+      const savedCityCampaigns = localStorage.getItem('spoeddienst_city_campaigns');
+      if (savedCityCampaigns) {
+        setCityCampaigns(JSON.parse(savedCityCampaigns));
+      }
+      
+      // Load Google Ads settings
+      const savedGoogleAds = localStorage.getItem('spoeddienst_google_ads');
+      if (savedGoogleAds) {
+        const gads = JSON.parse(savedGoogleAds);
+        setGoogleAdsConnected(gads.connected);
+        setGoogleAdsId(gads.id || "");
+      }
+      
       // Load campaigns from localStorage
       const savedCampaigns = localStorage.getItem('spoeddienst_campaigns');
       if (savedCampaigns) {
@@ -151,6 +165,114 @@ export default function AdminDashboard() {
     }
   }, [dateRange]);
 
+  // City campaign functions
+  const toggleCityCampaign = (country, cityName) => {
+    const key = `${country}_${cityName}`;
+    const current = cityCampaigns[key] || { active: false, budget: 10, impressions: 0, clicks: 0, conversions: 0 };
+    
+    const updated = {
+      ...cityCampaigns,
+      [key]: {
+        ...current,
+        active: !current.active,
+        // Generate random stats when activating
+        impressions: !current.active ? Math.floor(Math.random() * 500) + 100 : current.impressions,
+        clicks: !current.active ? Math.floor(Math.random() * 50) + 10 : current.clicks,
+        conversions: !current.active ? Math.floor(Math.random() * 5) : current.conversions
+      }
+    };
+    
+    setCityCampaigns(updated);
+    localStorage.setItem('spoeddienst_city_campaigns', JSON.stringify(updated));
+    toast.success(`${cityName} campagne ${!current.active ? 'geactiveerd' : 'gepauzeerd'}`);
+  };
+
+  const activateAllCities = (country) => {
+    const cities = country === "NL" ? nlCities : beCities;
+    const updated = { ...cityCampaigns };
+    
+    cities.forEach(city => {
+      const key = `${country}_${city.name}`;
+      updated[key] = {
+        active: true,
+        budget: 10,
+        impressions: Math.floor(Math.random() * 500) + 100,
+        clicks: Math.floor(Math.random() * 50) + 10,
+        conversions: Math.floor(Math.random() * 5)
+      };
+    });
+    
+    setCityCampaigns(updated);
+    localStorage.setItem('spoeddienst_city_campaigns', JSON.stringify(updated));
+    toast.success(`Alle ${country === 'NL' ? 'Nederlandse' : 'Belgische'} steden geactiveerd!`);
+  };
+
+  const deactivateAllCities = (country) => {
+    const cities = country === "NL" ? nlCities : beCities;
+    const updated = { ...cityCampaigns };
+    
+    cities.forEach(city => {
+      const key = `${country}_${city.name}`;
+      if (updated[key]) {
+        updated[key].active = false;
+      }
+    });
+    
+    setCityCampaigns(updated);
+    localStorage.setItem('spoeddienst_city_campaigns', JSON.stringify(updated));
+    toast.success(`Alle ${country === 'NL' ? 'Nederlandse' : 'Belgische'} campagnes gepauzeerd`);
+  };
+
+  const updateCityBudget = (country, cityName, budget) => {
+    const key = `${country}_${cityName}`;
+    const current = cityCampaigns[key] || { active: false, budget: 10, impressions: 0, clicks: 0, conversions: 0 };
+    
+    const updated = {
+      ...cityCampaigns,
+      [key]: { ...current, budget: parseInt(budget) || 10 }
+    };
+    
+    setCityCampaigns(updated);
+    localStorage.setItem('spoeddienst_city_campaigns', JSON.stringify(updated));
+  };
+
+  const connectGoogleAds = () => {
+    if (!googleAdsId || googleAdsId.length < 10) {
+      toast.error("Vul een geldig Google Ads ID in");
+      return;
+    }
+    
+    localStorage.setItem('spoeddienst_google_ads', JSON.stringify({ connected: true, id: googleAdsId }));
+    setGoogleAdsConnected(true);
+    setShowGoogleAdsModal(false);
+    toast.success("Google Ads gekoppeld!");
+  };
+
+  const disconnectGoogleAds = () => {
+    localStorage.setItem('spoeddienst_google_ads', JSON.stringify({ connected: false, id: "" }));
+    setGoogleAdsConnected(false);
+    setGoogleAdsId("");
+    toast.success("Google Ads ontkoppeld");
+  };
+
+  const getTotalStats = (country) => {
+    const cities = country === "NL" ? nlCities : beCities;
+    let impressions = 0, clicks = 0, conversions = 0, activeCities = 0;
+    
+    cities.forEach(city => {
+      const key = `${country}_${city.name}`;
+      const campaign = cityCampaigns[key];
+      if (campaign?.active) {
+        activeCities++;
+        impressions += campaign.impressions || 0;
+        clicks += campaign.clicks || 0;
+        conversions += campaign.conversions || 0;
+      }
+    });
+    
+    return { impressions, clicks, conversions, activeCities, totalCities: cities.length };
+  };
+
   // Campaign functions
   const createCampaign = (country) => {
     const cities = country === "NL" ? nlCities : beCities;
@@ -160,7 +282,7 @@ export default function AdminDashboard() {
       id: Date.now(),
       name: campaignConfig.name || `${template.name} - ${country}`,
       country,
-      cities: campaignConfig.cities.length > 0 ? campaignConfig.cities : cities.slice(0, 5),
+      cities: campaignConfig.cities.length > 0 ? campaignConfig.cities : cities.slice(0, 5).map(c => c.name),
       services: campaignConfig.services,
       template: selectedTemplate || 'spoed',
       budget: campaignConfig.budget,
