@@ -198,7 +198,7 @@ async def get_current_user(request: Request):
         raise HTTPException(status_code=401, detail="Invalid token")
 
 async def send_booking_email(booking_data: dict):
-    """Send booking notification email to info@spoeddienst24.nl"""
+    """Send booking notification email to Spoeddienst26@gmail.com"""
     try:
         service_names = {
             "elektricien": "Elektricien",
@@ -408,7 +408,7 @@ async def get_me(current_user: dict = Depends(get_current_user)):
 # ==================== VAKMAN ROUTES ====================
 
 async def send_vakman_registration_email(vakman_data: dict, base_url: str):
-    """Send vakman registration email to info@spoeddienst24.nl for approval"""
+    """Send vakman registration email to Spoeddienst26@gmail.com for approval"""
     try:
         service_names = {
             "elektricien": "Elektricien",
@@ -640,7 +640,7 @@ async def create_booking(booking: BookingCreate):
     
     await db.bookings.insert_one(booking_dict)
     
-    # Send email notification to info@spoeddienst24.nl
+    # Send email notification to Spoeddienst26@gmail.com
     await send_booking_email(response_booking)
     
     return {"booking": response_booking, "message": "Booking created successfully"}
@@ -792,7 +792,7 @@ class PublicReviewCreate(BaseModel):
     comment: str
 
 async def send_review_email(review_data: dict):
-    """Send review notification email to info@spoeddienst24.nl for approval"""
+    """Send review notification email to Spoeddienst26@gmail.com for approval"""
     try:
         stars = "⭐" * review_data.get("rating", 5)
         
