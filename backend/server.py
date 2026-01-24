@@ -628,6 +628,95 @@ async def send_specific_vakman_notification_email(booking_data: dict, vakman_id:
         logging.error(f"Failed to send specific vakman notification email: {str(e)}")
         return False
 
+async def send_vakman_rejection_notification_email(booking_data: dict, vakman_name: str):
+    """Send notification to admin when a vakman rejects an assigned booking"""
+    try:
+        service_names = {
+            "elektricien": "Elektricien",
+            "loodgieter": "Loodgieter",
+            "slotenmaker": "Slotenmaker"
+        }
+        service_name = service_names.get(booking_data.get("service_type", ""), booking_data.get("service_type", ""))
+        
+        html_content = f"""
+        <html>
+        <body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+            <div style="background-color: #FF4500; padding: 20px; text-align: center;">
+                <h1 style="color: white; margin: 0;">⚠️ Opdracht Afgewezen</h1>
+                <p style="color: white; margin: 5px 0 0 0;">Een vakman heeft een opdracht afgewezen</p>
+            </div>
+            
+            <div style="padding: 20px; background-color: #fef2f2;">
+                <div style="background-color: #fee2e2; padding: 15px; border-radius: 10px; border-left: 4px solid #ef4444; margin-bottom: 20px;">
+                    <h3 style="color: #991b1b; margin: 0 0 10px 0;">❌ {vakman_name} heeft deze opdracht afgewezen</h3>
+                    <p style="color: #991b1b; margin: 0;">Deze boeking moet opnieuw worden toegewezen aan een andere vakman.</p>
+                </div>
+                
+                <h3 style="color: #333; margin-top: 20px;">📋 Boekingsdetails</h3>
+                
+                <table style="width: 100%; border-collapse: collapse; margin: 15px 0;">
+                    <tr>
+                        <td style="padding: 10px; border-bottom: 1px solid #ddd; color: #666;"><strong>Dienst:</strong></td>
+                        <td style="padding: 10px; border-bottom: 1px solid #ddd;">{service_name} {'🚨 SPOED' if booking_data.get('is_emergency') else ''}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border-bottom: 1px solid #ddd; color: #666;"><strong>Klant:</strong></td>
+                        <td style="padding: 10px; border-bottom: 1px solid #ddd;">{booking_data.get('customer_name', 'N/A')}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border-bottom: 1px solid #ddd; color: #666;"><strong>Telefoon:</strong></td>
+                        <td style="padding: 10px; border-bottom: 1px solid #ddd;"><a href="tel:{booking_data.get('customer_phone', '')}">{booking_data.get('customer_phone', 'N/A')}</a></td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border-bottom: 1px solid #ddd; color: #666;"><strong>Locatie:</strong></td>
+                        <td style="padding: 10px; border-bottom: 1px solid #ddd;">{booking_data.get('address', 'N/A')}, {booking_data.get('postal_code', '')} {booking_data.get('city', '')}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border-bottom: 1px solid #ddd; color: #666;"><strong>Datum:</strong></td>
+                        <td style="padding: 10px; border-bottom: 1px solid #ddd;">{booking_data.get('preferred_date', 'N/A')} - {booking_data.get('preferred_time', 'N/A')}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border-bottom: 1px solid #ddd; color: #666;"><strong>Prijs:</strong></td>
+                        <td style="padding: 10px; border-bottom: 1px solid #ddd;">€{booking_data.get('price', 0)},-</td>
+                    </tr>
+                </table>
+                
+                <div style="text-align: center; margin: 30px 0;">
+                    <a href="{FRONTEND_URL}/beheer" style="display: inline-block; background-color: #FF4500; color: white; padding: 15px 40px; text-decoration: none; border-radius: 8px; font-weight: bold;">
+                        Ga naar Admin Dashboard →
+                    </a>
+                </div>
+            </div>
+            
+            <div style="background-color: #333; padding: 15px; text-align: center;">
+                <p style="color: #999; margin: 0; font-size: 12px;">SpoedDienst24 - Admin Notificatie</p>
+            </div>
+        </body>
+        </html>
+        """
+        
+        message = MIMEMultipart("alternative")
+        message["From"] = SMTP_FROM
+        message["To"] = ADMIN_EMAIL
+        message["Subject"] = f"⚠️ Opdracht afgewezen door {vakman_name} - {booking_data.get('city', '')} - Actie vereist"
+        
+        html_part = MIMEText(html_content, "html")
+        message.attach(html_part)
+        
+        await aiosmtplib.send(
+            message,
+            hostname=SMTP_HOST,
+            port=SMTP_PORT,
+            username=SMTP_USER,
+            password=SMTP_PASSWORD,
+            use_tls=True
+        )
+        logging.info(f"Vakman rejection notification sent to admin for booking in {booking_data.get('city', 'unknown')}")
+        return True
+    except Exception as e:
+        logging.error(f"Failed to send vakman rejection notification: {str(e)}")
+        return False
+
 async def send_vakman_approval_email(vakman_data: dict):
     """Send approval confirmation email to vakman"""
     try:
