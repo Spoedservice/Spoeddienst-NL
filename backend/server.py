@@ -1050,6 +1050,185 @@ async def update_booking_status_admin(booking_id: str, status_update: dict):
         raise HTTPException(status_code=404, detail="Boeking niet gevonden")
     return {"message": f"Status gewijzigd naar {status}"}
 
+@api_router.get("/admin/financial")
+async def get_financial_stats(period: str = "month"):
+    """Get financial statistics for admin dashboard"""
+    from datetime import timedelta
+    
+    # Calculate date range
+    now = datetime.now(timezone.utc)
+    if period == "day":
+        start_date = now - timedelta(days=1)
+    elif period == "week":
+        start_date = now - timedelta(weeks=1)
+    elif period == "month":
+        start_date = now - timedelta(days=30)
+    elif period == "year":
+        start_date = now - timedelta(days=365)
+    else:
+        start_date = now - timedelta(days=30)
+    
+    # Get all bookings
+    all_bookings = await db.bookings.find({}, {"_id": 0}).to_list(1000)
+    
+    # Filter by date (handle both string and datetime formats)
+    filtered_bookings = []
+    for b in all_bookings:
+        try:
+            created = b.get("created_at", "")
+            if isinstance(created, str):
+                booking_date = datetime.fromisoformat(created.replace("Z", "+00:00"))
+            else:
+                booking_date = created
+            if booking_date >= start_date:
+                filtered_bookings.append(b)
+        except:
+            filtered_bookings.append(b)  # Include if date parsing fails
+    
+    # Calculate statistics
+    total_revenue = sum([b.get("price", 0) for b in filtered_bookings])
+    paid_revenue = sum([b.get("price", 0) for b in filtered_bookings if b.get("payment_status") == "paid"])
+    pending_revenue = sum([b.get("price", 0) for b in filtered_bookings if b.get("payment_status") != "paid"])
+    
+    # Revenue by service type
+    revenue_by_service = {}
+    for b in filtered_bookings:
+        service = b.get("service_type", "other")
+        revenue_by_service[service] = revenue_by_service.get(service, 0) + b.get("price", 0)
+    
+    # Bookings by status
+    bookings_by_status = {}
+    for b in filtered_bookings:
+        status = b.get("status", "pending")
+        bookings_by_status[status] = bookings_by_status.get(status, 0) + 1
+    
+    # Daily revenue for chart (last 7 days)
+    daily_revenue = []
+    for i in range(7):
+        day = now - timedelta(days=6-i)
+        day_start = day.replace(hour=0, minute=0, second=0, microsecond=0)
+        day_end = day_start + timedelta(days=1)
+        
+        day_bookings = [b for b in all_bookings if _booking_in_range(b, day_start, day_end)]
+        day_total = sum([b.get("price", 0) for b in day_bookings])
+        daily_revenue.append({
+            "date": day_start.strftime("%d/%m"),
+            "revenue": day_total,
+            "bookings": len(day_bookings)
+        })
+    
+    # Payment status breakdown
+    payment_status = {
+        "paid": len([b for b in filtered_bookings if b.get("payment_status") == "paid"]),
+        "unpaid": len([b for b in filtered_bookings if b.get("payment_status") != "paid"])
+    }
+    
+    return {
+        "period": period,
+        "total_revenue": round(total_revenue, 2),
+        "paid_revenue": round(paid_revenue, 2),
+        "pending_revenue": round(pending_revenue, 2),
+        "total_bookings": len(filtered_bookings),
+        "revenue_by_service": revenue_by_service,
+        "bookings_by_status": bookings_by_status,
+        "daily_revenue": daily_revenue,
+        "payment_status": payment_status,
+        "average_order_value": round(total_revenue / len(filtered_bookings), 2) if filtered_bookings else 0
+    }
+
+def _booking_in_range(booking, start, end):
+    """Helper to check if booking is in date range"""
+    try:
+        created = booking.get("created_at", "")
+        if isinstance(created, str):
+            booking_date = datetime.fromisoformat(created.replace("Z", "+00:00"))
+        else:
+            booking_date = created
+        return start <= booking_date < end
+    except:
+        return False
+
+@api_router.get("/admin/marketing")
+async def get_marketing_stats():
+    """Get marketing statistics for admin dashboard"""
+    
+    # Get all bookings
+    all_bookings = await db.bookings.find({}, {"_id": 0}).to_list(1000)
+    
+    # Bookings by service (for pie chart)
+    bookings_by_service = {}
+    for b in all_bookings:
+        service = b.get("service_type", "other")
+        bookings_by_service[service] = bookings_by_service.get(service, 0) + 1
+    
+    # Emergency vs regular bookings
+    emergency_bookings = len([b for b in all_bookings if b.get("is_emergency")])
+    regular_bookings = len(all_bookings) - emergency_bookings
+    
+    # Bookings by city (top 5)
+    bookings_by_city = {}
+    for b in all_bookings:
+        city = b.get("city", "Onbekend")
+        if city:
+            bookings_by_city[city] = bookings_by_city.get(city, 0) + 1
+    top_cities = sorted(bookings_by_city.items(), key=lambda x: x[1], reverse=True)[:5]
+    
+    # Conversion rate simulation (pending → completed)
+    completed = len([b for b in all_bookings if b.get("status") == "completed"])
+    conversion_rate = (completed / len(all_bookings) * 100) if all_bookings else 0
+    
+    # Time slot popularity
+    time_slots = {}
+    for b in all_bookings:
+        time = b.get("preferred_time", "Onbekend")
+        time_slots[time] = time_slots.get(time, 0) + 1
+    
+    # Revenue by service for chart
+    revenue_by_service = {}
+    for b in all_bookings:
+        service = b.get("service_type", "other")
+        revenue_by_service[service] = revenue_by_service.get(service, 0) + b.get("price", 0)
+    
+    return {
+        "total_bookings": len(all_bookings),
+        "bookings_by_service": bookings_by_service,
+        "emergency_vs_regular": {
+            "emergency": emergency_bookings,
+            "regular": regular_bookings
+        },
+        "top_cities": dict(top_cities),
+        "conversion_rate": round(conversion_rate, 1),
+        "time_slots": time_slots,
+        "revenue_by_service": revenue_by_service,
+        "service_performance": [
+            {"service": k, "bookings": bookings_by_service.get(k, 0), "revenue": round(v, 2)}
+            for k, v in revenue_by_service.items()
+        ]
+    }
+
+@api_router.get("/admin/export/bookings")
+async def export_bookings_csv():
+    """Export bookings data as CSV"""
+    import io
+    import csv
+    from fastapi.responses import StreamingResponse
+    
+    bookings = await db.bookings.find({}, {"_id": 0}).to_list(1000)
+    
+    # Create CSV
+    output = io.StringIO()
+    if bookings:
+        writer = csv.DictWriter(output, fieldnames=bookings[0].keys())
+        writer.writeheader()
+        writer.writerows(bookings)
+    
+    output.seek(0)
+    return StreamingResponse(
+        iter([output.getvalue()]),
+        media_type="text/csv",
+        headers={"Content-Disposition": "attachment; filename=boekingen_export.csv"}
+    )
+
 # ==================== PREMIUM SUBSCRIPTION ROUTES ====================
 
 # Bankgegevens voor premium betalingen
