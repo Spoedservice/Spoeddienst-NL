@@ -4,7 +4,8 @@ import axios from "axios";
 import { 
   Zap, Users, Calendar, Star, TrendingUp, Clock, CheckCircle, XCircle, 
   Eye, Phone, Mail, MapPin, AlertCircle, Filter, Search, RefreshCw,
-  ChevronDown, ChevronUp, BarChart3, DollarSign
+  ChevronDown, ChevronUp, BarChart3, DollarSign, Download, FileText,
+  PieChart, Target, TrendingDown, CreditCard, Euro, Receipt
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
