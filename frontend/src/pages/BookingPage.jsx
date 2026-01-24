@@ -43,9 +43,6 @@ export default function BookingPage() {
   const [isEmergency, setIsEmergency] = useState(searchParams.get('emergency') === 'true');
   const [date, setDate] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [vakmannen, setVakmannen] = useState([]);
-  const [selectedVakman, setSelectedVakman] = useState(null);
-  const [loadingVakmannen, setLoadingVakmannen] = useState(false);
   
   const [formData, setFormData] = useState({
     description: "",
@@ -61,7 +58,6 @@ export default function BookingPage() {
   useEffect(() => {
     if (serviceType) {
       fetchService();
-      fetchVakmannen();
     }
   }, [serviceType]);
 
@@ -72,18 +68,6 @@ export default function BookingPage() {
     } catch (error) {
       console.error("Error fetching service:", error);
       toast.error("Dienst niet gevonden");
-    }
-  };
-
-  const fetchVakmannen = async () => {
-    setLoadingVakmannen(true);
-    try {
-      const response = await axios.get(`${API}/vakmannen/available?service_type=${serviceType}`);
-      setVakmannen(response.data);
-    } catch (error) {
-      console.error("Error fetching vakmannen:", error);
-    } finally {
-      setLoadingVakmannen(false);
     }
   };
 
@@ -105,14 +89,12 @@ export default function BookingPage() {
         preferred_time: formData.preferred_time,
         customer_name: formData.customer_name,
         customer_email: formData.customer_email,
-        customer_phone: formData.customer_phone,
-        assigned_vakman_id: selectedVakman?.id || null,
-        assigned_vakman_name: selectedVakman?.name || null
+        customer_phone: formData.customer_phone
       };
 
       const response = await axios.post(`${API}/bookings`, bookingData);
       
-      toast.success("Boeking succesvol ontvangen!");
+      toast.success("Boeking succesvol ontvangen! Wij nemen zo snel mogelijk contact met u op.");
       navigate(`/booking/success?booking_id=${response.data.booking.id}`);
     } catch (error) {
       console.error("Error creating booking:", error);
@@ -123,21 +105,17 @@ export default function BookingPage() {
   };
 
   const ServiceIcon = iconMap[serviceType] || Zap;
-  const price = selectedVakman 
-    ? (isEmergency ? selectedVakman.hourly_rate * 1.5 : selectedVakman.hourly_rate)
-    : (service ? (isEmergency ? service.emergency_price : service.base_price) : 0);
+  const price = service ? (isEmergency ? service.emergency_price : service.base_price) : 0;
 
   const canProceed = () => {
     switch (step) {
       case 1:
         return formData.description.length > 10;
       case 2:
-        return selectedVakman !== null;
-      case 3:
         return date && formData.preferred_time;
-      case 4:
+      case 3:
         return formData.address && formData.postal_code && formData.city;
-      case 5:
+      case 4:
         return formData.customer_name && formData.customer_email && formData.customer_phone;
       default:
         return false;
@@ -146,10 +124,9 @@ export default function BookingPage() {
 
   const steps = [
     { num: 1, label: "Probleem" },
-    { num: 2, label: "Monteur" },
-    { num: 3, label: "Datum" },
-    { num: 4, label: "Adres" },
-    { num: 5, label: "Contact" }
+    { num: 2, label: "Datum" },
+    { num: 3, label: "Adres" },
+    { num: 4, label: "Contact" }
   ];
 
   return (
