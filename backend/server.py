@@ -213,6 +213,13 @@ async def get_current_user(request: Request):
     except jwt.InvalidTokenError:
         raise HTTPException(status_code=401, detail="Invalid token")
 
+async def get_admin_user(request: Request):
+    """Verify user is authenticated AND has admin role"""
+    user = await get_current_user(request)
+    if user.get("role") != "admin":
+        raise HTTPException(status_code=403, detail="Admin access required")
+    return user
+
 async def send_booking_email(booking_data: dict):
     """Send booking notification email to Spoeddienst26@gmail.com"""
     try:
