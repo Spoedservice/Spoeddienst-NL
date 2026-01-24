@@ -130,12 +130,15 @@ class BookingCreate(BaseModel):
     customer_name: str
     customer_email: EmailStr
     customer_phone: str
+    assigned_vakman_id: Optional[str] = None
+    assigned_vakman_name: Optional[str] = None
 
 class Booking(BaseModel):
     model_config = ConfigDict(extra="ignore")
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     customer_id: Optional[str] = None
     vakman_id: Optional[str] = None
+    vakman_name: Optional[str] = None
     service_type: str
     is_emergency: bool
     description: str
