@@ -115,6 +115,11 @@ export default function AdminDashboard() {
     }
   };
 
+  const exportBookings = () => {
+    window.open(`${API}/admin/export/bookings`, '_blank');
+    toast.success("Export gestart");
+  };
+
   const getStatusBadge = (status) => {
     const statusConfig = {
       pending: { color: "bg-yellow-100 text-yellow-800", label: "In afwachting" },
