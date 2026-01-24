@@ -294,7 +294,7 @@ export default function VakmanDashboard() {
         {/* Tabs */}
         <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
           {[
-            { id: "opdrachten", label: "Opdrachten", icon: ListTodo, count: bookings.filter(b => b.status === 'pending').length },
+            { id: "opdrachten", label: "Opdrachten", icon: ListTodo, count: bookings.filter(b => b.status === 'confirmed').length },
             { id: "agenda", label: "Agenda", icon: CalendarDays },
             { id: "profiel", label: "Profiel", icon: User }
           ].map(tab => (
