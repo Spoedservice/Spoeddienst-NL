@@ -557,7 +557,7 @@ async def send_vakman_approval_email(vakman_data: dict):
                 </div>
                 
                 <div style="text-align: center; margin: 30px 0;">
-                    <a href="https://spoeddienst24.nl/login" style="display: inline-block; background-color: #FF4500; color: white; padding: 15px 50px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 18px;">
+                    <a href="{FRONTEND_URL}/login" style="display: inline-block; background-color: #FF4500; color: white; padding: 15px 50px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 18px;">
                         Naar mijn Dashboard →
                     </a>
                 </div>
@@ -640,7 +640,7 @@ async def send_vakman_rejection_email(vakman_data: dict):
                 </p>
                 
                 <div style="text-align: center; margin: 30px 0;">
-                    <a href="https://spoeddienst24.nl/vakman/register" style="display: inline-block; background-color: #FF4500; color: white; padding: 15px 40px; text-decoration: none; border-radius: 8px; font-weight: bold;">
+                    <a href="{FRONTEND_URL}/vakman/register" style="display: inline-block; background-color: #FF4500; color: white; padding: 15px 40px; text-decoration: none; border-radius: 8px; font-weight: bold;">
                         Opnieuw Aanmelden
                     </a>
                 </div>
@@ -858,7 +858,7 @@ async def send_password_reset_email(user_data: dict, reset_token: str):
         user_email = user_data.get('email')
         user_name = user_data.get('name', 'Gebruiker')
         
-        reset_url = f"https://spoeddienst24.nl/reset-wachtwoord?token={reset_token}"
+        reset_url = f"{FRONTEND_URL}/reset-wachtwoord?token={reset_token}"
         
         html_content = f"""
         <html>
