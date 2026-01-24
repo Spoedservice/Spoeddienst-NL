@@ -76,7 +76,7 @@ export default function VakmanRegisterPage() {
     try {
       const response = await axios.post(`${API}/vakman/register`, {
         name: formData.name,
-        email: formData.email,
+        email: formData.email.toLowerCase().trim(),
         phone: formData.phone,
         password: formData.password,
         service_type: formData.service_type,
@@ -89,14 +89,30 @@ export default function VakmanRegisterPage() {
         verzekering_maatschappij: formData.verzekering_maatschappij
       });
       
+      // Store token and user data - user is now logged in
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('user', JSON.stringify(response.data.user));
       
-      toast.success("Aanmelding succesvol! Je account wordt binnenkort goedgekeurd.");
+      toast.success("Welkom! Je bent succesvol geregistreerd. Je account wordt binnenkort goedgekeurd.");
+      
+      // Navigate directly to vakman dashboard - user is already logged in
       navigate('/vakman/dashboard');
     } catch (error) {
       console.error("Register error:", error);
-      toast.error(error.response?.data?.detail || "Registratie mislukt");
+      const errorMessage = error.response?.data?.detail || "Registratie mislukt. Probeer het opnieuw.";
+      
+      // Check if it's a duplicate email error
+      if (errorMessage.includes("al geregistreerd")) {
+        toast.error(errorMessage, {
+          duration: 5000,
+          action: {
+            label: "Inloggen",
+            onClick: () => navigate('/login')
+          }
+        });
+      } else {
+        toast.error(errorMessage);
+      }
     } finally {
       setLoading(false);
     }
