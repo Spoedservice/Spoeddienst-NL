@@ -770,6 +770,157 @@ async def get_me(current_user: dict = Depends(get_current_user)):
         raise HTTPException(status_code=404, detail="User not found")
     return user
 
+class ForgotPasswordRequest(BaseModel):
+    email: str
+
+class ResetPasswordRequest(BaseModel):
+    token: str
+    new_password: str
+
+@api_router.post("/auth/forgot-password")
+async def forgot_password(request: ForgotPasswordRequest):
+    """Send password reset email"""
+    email = request.email.lower().strip()
+    
+    # Check in both users and vakmannen collections
+    user = await db.users.find_one({"email": email}, {"_id": 0})
+    user_type = "user"
+    
+    if not user:
+        user = await db.vakmannen.find_one({"email": email}, {"_id": 0})
+        user_type = "vakman"
+    
+    if not user:
+        # Don't reveal if email exists or not for security
+        return {"message": "Als dit e-mailadres bij ons bekend is, ontvang je een reset link."}
+    
+    # Create reset token (valid for 1 hour)
+    reset_token = str(uuid.uuid4())
+    expires_at = datetime.now(timezone.utc) + timedelta(hours=1)
+    
+    # Store reset token in database
+    await db.password_resets.insert_one({
+        "email": email,
+        "token": reset_token,
+        "user_type": user_type,
+        "expires_at": expires_at.isoformat(),
+        "used": False
+    })
+    
+    # Send reset email
+    await send_password_reset_email(user, reset_token)
+    
+    return {"message": "Als dit e-mailadres bij ons bekend is, ontvang je een reset link."}
+
+@api_router.post("/auth/reset-password")
+async def reset_password(request: ResetPasswordRequest):
+    """Reset password with token"""
+    # Find valid reset token
+    reset_record = await db.password_resets.find_one({
+        "token": request.token,
+        "used": False
+    })
+    
+    if not reset_record:
+        raise HTTPException(status_code=400, detail="Ongeldige of verlopen reset link")
+    
+    # Check if token is expired
+    expires_at = datetime.fromisoformat(reset_record["expires_at"].replace("Z", "+00:00"))
+    if datetime.now(timezone.utc) > expires_at:
+        raise HTTPException(status_code=400, detail="Reset link is verlopen")
+    
+    # Update password in the right collection
+    hashed_password = hash_password(request.new_password)
+    
+    if reset_record["user_type"] == "vakman":
+        await db.vakmannen.update_one(
+            {"email": reset_record["email"]},
+            {"$set": {"password": hashed_password}}
+        )
+    else:
+        await db.users.update_one(
+            {"email": reset_record["email"]},
+            {"$set": {"password": hashed_password}}
+        )
+    
+    # Mark token as used
+    await db.password_resets.update_one(
+        {"token": request.token},
+        {"$set": {"used": True}}
+    )
+    
+    return {"message": "Wachtwoord succesvol gewijzigd"}
+
+async def send_password_reset_email(user_data: dict, reset_token: str):
+    """Send password reset email to user"""
+    try:
+        user_email = user_data.get('email')
+        user_name = user_data.get('name', 'Gebruiker')
+        
+        reset_url = f"https://spoeddienst24.nl/reset-wachtwoord?token={reset_token}"
+        
+        html_content = f"""
+        <html>
+        <body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+            <div style="background-color: #FF4500; padding: 20px; text-align: center;">
+                <h1 style="color: white; margin: 0;">⚡ SpoedDienst24</h1>
+                <p style="color: white; margin: 5px 0;">Wachtwoord Reset</p>
+            </div>
+            
+            <div style="padding: 30px; background-color: #f8f9fa;">
+                <h2 style="color: #333; margin-top: 0;">Beste {user_name},</h2>
+                
+                <p style="color: #666; font-size: 16px; line-height: 1.6;">
+                    Je hebt aangegeven je wachtwoord te willen resetten. Klik op de onderstaande knop om een nieuw wachtwoord in te stellen.
+                </p>
+                
+                <div style="text-align: center; margin: 30px 0;">
+                    <a href="{reset_url}" style="display: inline-block; background-color: #FF4500; color: white; padding: 15px 50px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 18px;">
+                        Wachtwoord Resetten
+                    </a>
+                </div>
+                
+                <div style="background-color: #fff3e6; padding: 15px; border-radius: 8px; margin: 20px 0;">
+                    <p style="color: #92400e; margin: 0; font-size: 14px;">
+                        <strong>⚠️ Let op:</strong> Deze link is 1 uur geldig. Heb je deze email niet aangevraagd? Dan kun je deze negeren.
+                    </p>
+                </div>
+                
+                <p style="color: #999; font-size: 12px; margin-top: 30px;">
+                    Werkt de knop niet? Kopieer dan deze link:<br>
+                    <a href="{reset_url}" style="color: #FF4500; word-break: break-all;">{reset_url}</a>
+                </p>
+            </div>
+            
+            <div style="background-color: #333; padding: 15px; text-align: center;">
+                <p style="color: #999; margin: 0; font-size: 12px;">© 2024 SpoedDienst24.nl</p>
+            </div>
+        </body>
+        </html>
+        """
+        
+        message = MIMEMultipart("alternative")
+        message["From"] = SMTP_FROM
+        message["To"] = user_email
+        message["Subject"] = "🔐 Wachtwoord resetten - SpoedDienst24"
+        
+        html_part = MIMEText(html_content, "html")
+        message.attach(html_part)
+        
+        await aiosmtplib.send(
+            message,
+            hostname=SMTP_HOST,
+            port=SMTP_PORT,
+            username=SMTP_USER,
+            password=SMTP_PASSWORD,
+            use_tls=True
+        )
+        logging.info(f"Password reset email sent to {user_email}")
+        return True
+    except Exception as e:
+        logging.error(f"Failed to send password reset email: {str(e)}")
+        return False
+
 # ==================== VAKMAN ROUTES ====================
 
 async def send_vakman_registration_email(vakman_data: dict, base_url: str):
