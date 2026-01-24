@@ -1345,6 +1345,54 @@ async def update_booking_status(booking_id: str, status: str, current_user: dict
     await db.bookings.update_one({"id": booking_id}, {"$set": {"status": status}})
     return {"message": "Status updated"}
 
+@api_router.post("/bookings/{booking_id}/vakman-accept")
+async def vakman_accept_booking(booking_id: str, current_user: dict = Depends(get_current_user)):
+    """Vakman accepts an assigned booking"""
+    if current_user["role"] != "vakman":
+        raise HTTPException(status_code=403, detail="Only vakman can accept bookings")
+    
+    booking = await db.bookings.find_one({"id": booking_id}, {"_id": 0})
+    if not booking:
+        raise HTTPException(status_code=404, detail="Boeking niet gevonden")
+    
+    if booking.get("vakman_id") != current_user["user_id"]:
+        raise HTTPException(status_code=403, detail="Deze boeking is niet aan jou toegewezen")
+    
+    await db.bookings.update_one(
+        {"id": booking_id}, 
+        {"$set": {"status": "accepted"}}
+    )
+    
+    return {"message": "Opdracht geaccepteerd"}
+
+@api_router.post("/bookings/{booking_id}/vakman-reject")
+async def vakman_reject_booking(booking_id: str, current_user: dict = Depends(get_current_user)):
+    """Vakman rejects an assigned booking - notifies admin to reassign"""
+    if current_user["role"] != "vakman":
+        raise HTTPException(status_code=403, detail="Only vakman can reject bookings")
+    
+    booking = await db.bookings.find_one({"id": booking_id}, {"_id": 0})
+    if not booking:
+        raise HTTPException(status_code=404, detail="Boeking niet gevonden")
+    
+    if booking.get("vakman_id") != current_user["user_id"]:
+        raise HTTPException(status_code=403, detail="Deze boeking is niet aan jou toegewezen")
+    
+    # Get vakman name for email
+    vakman = await db.vakmannen.find_one({"id": current_user["user_id"]}, {"_id": 0, "name": 1})
+    vakman_name = vakman.get("name", "Vakman") if vakman else "Vakman"
+    
+    # Reset the booking - remove vakman assignment so admin can reassign
+    await db.bookings.update_one(
+        {"id": booking_id}, 
+        {"$set": {"vakman_id": None, "vakman_name": None, "status": "pending"}}
+    )
+    
+    # Send notification to admin
+    await send_vakman_rejection_notification_email(booking, vakman_name)
+    
+    return {"message": "Opdracht afgewezen. Admin is op de hoogte gesteld."}
+
 @api_router.put("/bookings/{booking_id}/assign")
 async def assign_vakman(booking_id: str, vakman_id: str, current_user: dict = Depends(get_current_user)):
     await db.bookings.update_one({"id": booking_id}, {"$set": {"vakman_id": vakman_id, "status": "accepted"}})
