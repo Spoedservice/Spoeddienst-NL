@@ -403,7 +403,7 @@ export default function AdminDashboard() {
 
   const approveVakman = async (vakmanId) => {
     try {
-      await axios.post(`${API}/admin/vakman/${vakmanId}/approve`);
+      await axios.post(`${API}/admin/vakman/${vakmanId}/approve`, {}, getAuthHeaders());
       toast.success("Vakman goedgekeurd!");
       fetchAllData();
     } catch (error) {
@@ -413,7 +413,7 @@ export default function AdminDashboard() {
 
   const rejectVakman = async (vakmanId) => {
     try {
-      await axios.post(`${API}/admin/vakman/${vakmanId}/reject`);
+      await axios.post(`${API}/admin/vakman/${vakmanId}/reject`, {}, getAuthHeaders());
       toast.success("Vakman afgewezen");
       fetchAllData();
     } catch (error) {
@@ -423,7 +423,7 @@ export default function AdminDashboard() {
 
   const approveReview = async (reviewId) => {
     try {
-      await axios.post(`${API}/admin/review/${reviewId}/approve`);
+      await axios.post(`${API}/admin/review/${reviewId}/approve`, {}, getAuthHeaders());
       toast.success("Review goedgekeurd!");
       fetchAllData();
     } catch (error) {
@@ -433,7 +433,7 @@ export default function AdminDashboard() {
 
   const rejectReview = async (reviewId) => {
     try {
-      await axios.post(`${API}/admin/review/${reviewId}/reject`);
+      await axios.post(`${API}/admin/review/${reviewId}/reject`, {}, getAuthHeaders());
       toast.success("Review verwijderd");
       fetchAllData();
     } catch (error) {
@@ -443,7 +443,7 @@ export default function AdminDashboard() {
 
   const updateBookingStatus = async (bookingId, status) => {
     try {
-      await axios.put(`${API}/admin/booking/${bookingId}/status`, { status });
+      await axios.put(`${API}/admin/booking/${bookingId}/status`, { status }, getAuthHeaders());
       toast.success(`Status gewijzigd naar ${status}`);
       fetchAllData();
     } catch (error) {
@@ -452,7 +452,8 @@ export default function AdminDashboard() {
   };
 
   const exportBookings = () => {
-    window.open(`${API}/admin/export/bookings`, '_blank');
+    const token = localStorage.getItem('token');
+    window.open(`${API}/admin/export/bookings?token=${token}`, '_blank');
     toast.success("Export gestart");
   };
 
