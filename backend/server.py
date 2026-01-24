@@ -295,7 +295,7 @@ async def send_booking_email(booking_data: dict):
         # Create message
         message = MIMEMultipart("alternative")
         message["From"] = SMTP_FROM
-        message["To"] = "info@spoeddienst24.nl"
+        message["To"] = "Spoeddienst26@gmail.com"
         message["Subject"] = f"{'🚨 SPOED - ' if booking_data.get('is_emergency') else ''}Nieuwe Boeking: {service_name} - {booking_data.get('customer_name', 'Klant')}"
         
         # Add HTML content
@@ -485,7 +485,7 @@ SpoedDienst24
         
         message = MIMEMultipart("alternative")
         message["From"] = f"SpoedDienst24 <{SMTP_FROM}>"
-        message["To"] = "info@spoeddienst24.nl"
+        message["To"] = "Spoeddienst26@gmail.com"
         message["Subject"] = f"Vakman Aanmelding: {vakman_data.get('name', 'Vakman')} ({service_name})"
         message["Reply-To"] = SMTP_FROM
         
@@ -847,7 +847,7 @@ async def send_review_email(review_data: dict):
         
         message = MIMEMultipart("alternative")
         message["From"] = SMTP_FROM
-        message["To"] = "info@spoeddienst24.nl"
+        message["To"] = "Spoeddienst26@gmail.com"
         message["Subject"] = f"⭐ Nieuwe Review: {review_data.get('rating', 5)} sterren van {review_data.get('customer_name', 'Klant')}"
         
         html_part = MIMEText(html_content, "html")
