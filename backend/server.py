@@ -1032,12 +1032,21 @@ SpoedDienst24
 
 @api_router.post("/vakman/register")
 async def register_vakman(vakman: VakmanCreate, request: Request):
-    existing = await db.vakmannen.find_one({"email": vakman.email})
-    if existing:
-        raise HTTPException(status_code=400, detail="Email already registered")
+    # Normalize email
+    email = vakman.email.lower().strip()
+    
+    # Check if email already exists in vakmannen
+    existing_vakman = await db.vakmannen.find_one({"email": email})
+    if existing_vakman:
+        raise HTTPException(status_code=400, detail="Dit e-mailadres is al geregistreerd als vakman. Probeer in te loggen of gebruik een ander e-mailadres.")
+    
+    # Also check in users collection
+    existing_user = await db.users.find_one({"email": email})
+    if existing_user:
+        raise HTTPException(status_code=400, detail="Dit e-mailadres is al geregistreerd. Gebruik een ander e-mailadres.")
     
     vakman_obj = Vakman(
-        email=vakman.email,
+        email=email,
         name=vakman.name,
         phone=vakman.phone,
         service_type=vakman.service_type,
@@ -1058,11 +1067,9 @@ async def register_vakman(vakman: VakmanCreate, request: Request):
     
     # Send email notification for approval
     base_url = str(request.base_url).rstrip('/')
-    # Use the frontend URL for the approval links
-    frontend_url = os.environ.get('FRONTEND_URL', base_url.replace(':8001', ':3000'))
     await send_vakman_registration_email(vakman_dict, base_url)
     
-    return {"token": token, "user": {"id": vakman_obj.id, "email": vakman_obj.email, "name": vakman_obj.name, "role": "vakman", "is_approved": False}}
+    return {"token": token, "user": {"id": vakman_obj.id, "email": email, "name": vakman_obj.name, "role": "vakman", "is_approved": False}}
 
 @api_router.get("/vakman/{vakman_id}/approve")
 async def approve_or_reject_vakman(vakman_id: str, action: str):
