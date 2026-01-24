@@ -1187,6 +1187,8 @@ async def create_booking(booking: BookingCreate):
         customer_name=booking.customer_name,
         customer_email=booking.customer_email,
         customer_phone=booking.customer_phone,
+        vakman_id=booking.assigned_vakman_id,
+        vakman_name=booking.assigned_vakman_name,
         price=price
     )
     
@@ -1205,8 +1207,11 @@ async def create_booking(booking: BookingCreate):
     # 2. Customer confirmation email
     await send_customer_confirmation_email(response_booking)
     
-    # 3. Available vakmannen notification
-    await send_vakman_notification_email(response_booking)
+    # 3. Vakman notification - send to specific vakman if selected, else all available
+    if booking.assigned_vakman_id:
+        await send_specific_vakman_notification_email(response_booking, booking.assigned_vakman_id)
+    else:
+        await send_vakman_notification_email(response_booking)
     
     return {"booking": response_booking, "message": "Booking created successfully"}
 
