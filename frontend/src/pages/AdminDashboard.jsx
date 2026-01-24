@@ -748,6 +748,7 @@ export default function AdminDashboard() {
                           <th className="text-left py-3 px-2 text-sm font-medium text-slate-500">Contact</th>
                           <th className="text-left py-3 px-2 text-sm font-medium text-slate-500">Locatie</th>
                           <th className="text-left py-3 px-2 text-sm font-medium text-slate-500">Datum</th>
+                          <th className="text-left py-3 px-2 text-sm font-medium text-slate-500">Monteur</th>
                           <th className="text-left py-3 px-2 text-sm font-medium text-slate-500">Status</th>
                           <th className="text-left py-3 px-2 text-sm font-medium text-slate-500">Actie</th>
                         </tr>
@@ -784,6 +785,32 @@ export default function AdminDashboard() {
                               </div>
                             </td>
                             <td className="py-3 px-2 text-sm">{booking.preferred_date}</td>
+                            <td className="py-3 px-2">
+                              {booking.vakman_name ? (
+                                <div className="flex items-center gap-2">
+                                  <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
+                                    {booking.vakman_name.charAt(0).toUpperCase()}
+                                  </div>
+                                  <span className="text-sm font-medium text-green-700">{booking.vakman_name}</span>
+                                </div>
+                              ) : (
+                                <select
+                                  className="border border-orange-300 rounded px-2 py-1 text-xs bg-orange-50"
+                                  value=""
+                                  onChange={(e) => {
+                                    if (e.target.value) {
+                                      assignBookingToVakman(booking.id, e.target.value);
+                                    }
+                                  }}
+                                  data-testid={`assign-vakman-${booking.id}`}
+                                >
+                                  <option value="">⚠️ Wijs toe</option>
+                                  {vakmannen.filter(v => v.is_approved && v.service_type === booking.service_type).map(v => (
+                                    <option key={v.id} value={v.id}>{v.name} ({v.location})</option>
+                                  ))}
+                                </select>
+                              )}
+                            </td>
                             <td className="py-3 px-2">{getStatusBadge(booking.status)}</td>
                             <td className="py-3 px-2">
                               <select 
