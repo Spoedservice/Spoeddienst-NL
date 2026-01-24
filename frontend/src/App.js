@@ -65,6 +65,8 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/vakman/register" element={<VakmanRegisterPage />} />
+          <Route path="/wachtwoord-vergeten" element={<WachtwoordVergetenPage />} />
+          <Route path="/reset-wachtwoord" element={<ResetWachtwoordPage />} />
           <Route path="/dashboard" element={<CustomerDashboard />} />
           <Route path="/vakman/dashboard" element={<VakmanDashboard />} />
           {/* Zakelijke pagina's */}
