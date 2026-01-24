@@ -47,6 +47,7 @@ import CookiePage from "@/pages/CookiePage";
 import ReviewPage from "@/pages/ReviewPage";
 import DienstenSelectiePage from "@/pages/DienstenSelectiePage";
 import VakmanApprovePage from "@/pages/VakmanApprovePage";
+import AdminDashboard from "@/pages/AdminDashboard";
 
 function App() {
   return (
