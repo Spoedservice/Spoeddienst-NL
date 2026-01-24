@@ -1902,11 +1902,30 @@ async def get_marketing_stats(admin: dict = Depends(get_admin_user)):
     }
 
 @api_router.get("/admin/export/bookings")
-async def export_bookings_csv(admin: dict = Depends(get_admin_user)):
+async def export_bookings_csv(token: Optional[str] = None, request: Request = None):
     """Export bookings data as CSV"""
     import io
     import csv
     from fastapi.responses import StreamingResponse
+    
+    # Support both header and query param auth for download links
+    auth_token = token
+    if not auth_token:
+        auth_header = request.headers.get("Authorization")
+        if auth_header and auth_header.startswith("Bearer "):
+            auth_token = auth_header.split(" ")[1]
+    
+    if not auth_token:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    
+    try:
+        payload = jwt.decode(auth_token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+        if payload.get("role") != "admin":
+            raise HTTPException(status_code=403, detail="Admin access required")
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail="Token expired")
+    except jwt.InvalidTokenError:
+        raise HTTPException(status_code=401, detail="Invalid token")
     
     bookings = await db.bookings.find({}, {"_id": 0}).to_list(1000)
     
