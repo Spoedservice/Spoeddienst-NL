@@ -469,7 +469,7 @@ async def send_vakman_notification_email(booking_data: dict):
                 
                 <div style="text-align: center; margin: 30px 0;">
                     <p style="color: #666; margin-bottom: 15px;">Log in op je dashboard om deze klus te accepteren:</p>
-                    <a href="https://spoeddienst24.nl/vakman/dashboard" style="display: inline-block; background-color: #FF4500; color: white; padding: 15px 40px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px;">
+                    <a href="{FRONTEND_URL}/vakman/dashboard" style="display: inline-block; background-color: #FF4500; color: white; padding: 15px 40px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px;">
                         Bekijk Klus →
                     </a>
                 </div>
