@@ -1632,28 +1632,28 @@ async def get_public_stats():
         "avg_rating": round(avg_rating, 1)
     }
 
-# ==================== ADMIN DASHBOARD ROUTES (PUBLIC FOR NOW) ====================
+# ==================== ADMIN DASHBOARD ROUTES (SECURED) ====================
 
 @api_router.get("/admin/bookings")
-async def get_all_bookings():
+async def get_all_bookings(admin: dict = Depends(get_admin_user)):
     """Get all bookings for admin dashboard"""
     bookings = await db.bookings.find({}, {"_id": 0}).sort("created_at", -1).to_list(500)
     return bookings
 
 @api_router.get("/admin/vakmannen")
-async def get_all_vakmannen():
+async def get_all_vakmannen(admin: dict = Depends(get_admin_user)):
     """Get all vakmannen for admin dashboard"""
     vakmannen = await db.vakmannen.find({}, {"_id": 0, "password": 0}).sort("created_at", -1).to_list(500)
     return vakmannen
 
 @api_router.get("/admin/reviews")
-async def get_all_reviews():
+async def get_all_reviews(admin: dict = Depends(get_admin_user)):
     """Get all reviews for admin dashboard"""
     reviews = await db.public_reviews.find({}, {"_id": 0}).sort("created_at", -1).to_list(500)
     return reviews
 
 @api_router.get("/admin/stats")
-async def get_admin_stats():
+async def get_admin_stats(admin: dict = Depends(get_admin_user)):
     """Get statistics for admin dashboard"""
     total_bookings = await db.bookings.count_documents({})
     active_vakmannen = await db.vakmannen.count_documents({"is_approved": True})
@@ -1675,7 +1675,7 @@ async def get_admin_stats():
     }
 
 @api_router.post("/admin/vakman/{vakman_id}/approve")
-async def approve_vakman_admin(vakman_id: str):
+async def approve_vakman_admin(vakman_id: str, admin: dict = Depends(get_admin_user)):
     """Approve a vakman registration"""
     # First get the vakman data for the email
     vakman = await db.vakmannen.find_one({"id": vakman_id}, {"_id": 0, "password": 0})
@@ -1695,7 +1695,7 @@ async def approve_vakman_admin(vakman_id: str):
     return {"message": "Vakman goedgekeurd en email verstuurd"}
 
 @api_router.post("/admin/vakman/{vakman_id}/reject")
-async def reject_vakman_admin(vakman_id: str):
+async def reject_vakman_admin(vakman_id: str, admin: dict = Depends(get_admin_user)):
     """Reject and delete a vakman registration"""
     # First get the vakman data for the email
     vakman = await db.vakmannen.find_one({"id": vakman_id}, {"_id": 0, "password": 0})
@@ -1712,7 +1712,7 @@ async def reject_vakman_admin(vakman_id: str):
     return {"message": "Vakman afgewezen en email verstuurd"}
 
 @api_router.post("/admin/review/{review_id}/approve")
-async def approve_review_admin(review_id: str):
+async def approve_review_admin(review_id: str, admin: dict = Depends(get_admin_user)):
     """Approve a review"""
     result = await db.public_reviews.update_one(
         {"id": review_id}, 
@@ -1723,7 +1723,7 @@ async def approve_review_admin(review_id: str):
     return {"message": "Review goedgekeurd"}
 
 @api_router.post("/admin/review/{review_id}/reject")
-async def reject_review_admin(review_id: str):
+async def reject_review_admin(review_id: str, admin: dict = Depends(get_admin_user)):
     """Reject and delete a review"""
     result = await db.public_reviews.delete_one({"id": review_id})
     if result.deleted_count == 0:
@@ -1731,7 +1731,7 @@ async def reject_review_admin(review_id: str):
     return {"message": "Review verwijderd"}
 
 @api_router.put("/admin/booking/{booking_id}/status")
-async def update_booking_status_admin(booking_id: str, status_update: dict):
+async def update_booking_status_admin(booking_id: str, status_update: dict, admin: dict = Depends(get_admin_user)):
     """Update booking status"""
     status = status_update.get("status")
     if status not in ["pending", "confirmed", "in_progress", "completed", "cancelled"]:
