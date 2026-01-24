@@ -451,6 +451,16 @@ export default function AdminDashboard() {
     }
   };
 
+  const assignBookingToVakman = async (bookingId, vakmanId) => {
+    try {
+      const response = await axios.post(`${API}/admin/booking/${bookingId}/assign`, { vakman_id: vakmanId }, getAuthHeaders());
+      toast.success(response.data.message);
+      fetchAllData();
+    } catch (error) {
+      toast.error("Fout bij toewijzen van boeking");
+    }
+  };
+
   const exportBookings = () => {
     const token = localStorage.getItem('token');
     window.open(`${API}/admin/export/bookings?token=${token}`, '_blank');
