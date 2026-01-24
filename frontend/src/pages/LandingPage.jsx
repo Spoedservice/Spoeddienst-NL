@@ -165,7 +165,17 @@ export default function LandingPage() {
               <Link to="/diensten/slotenmaker" className="py-2 text-slate-600 hover:text-slate-900">Slotenmaker</Link>
               <Link to="/over-ons" className="py-2 text-slate-600 hover:text-slate-900">Over Ons</Link>
               <Link to="/vakman/register" className="py-2 text-slate-600 hover:text-slate-900">Word Vakman</Link>
-              <Link to="/login" className="py-2 text-slate-600 hover:text-slate-900">Inloggen</Link>
+              {user?.role === 'admin' && (
+                <Link to="/beheer" className="py-2 text-[#FF4500] hover:text-[#CC3700] font-medium flex items-center gap-2">
+                  <Settings className="w-4 h-4" />
+                  Admin Beheer
+                </Link>
+              )}
+              {user ? (
+                <Link to={user.role === 'vakman' ? '/vakman/dashboard' : '/dashboard'} className="py-2 text-slate-600 hover:text-slate-900">Dashboard</Link>
+              ) : (
+                <Link to="/login" className="py-2 text-slate-600 hover:text-slate-900">Inloggen</Link>
+              )}
               <a href="tel:085 333 2847" className="flex items-center gap-2 bg-[#FF4500] text-white px-4 py-3 rounded-md font-medium hover:bg-[#CC3700] transition-colors mt-2">
                 <Phone className="w-4 h-4" />
                 <span>085 333 2847</span>
