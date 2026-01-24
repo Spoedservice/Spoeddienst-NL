@@ -25,13 +25,6 @@ export default function LandingPage() {
   const [isEmergency, setIsEmergency] = useState(false);
   const [user, setUser] = useState(null);
 
-  useEffect(() => {
-    fetchServices();
-    fetchStats();
-    fetchReviews();
-    checkAuth();
-  }, []);
-
   const checkAuth = () => {
     const token = localStorage.getItem('token');
     const userData = localStorage.getItem('user');
@@ -70,6 +63,13 @@ export default function LandingPage() {
       console.error("Error fetching reviews:", error);
     }
   };
+
+  useEffect(() => {
+    fetchServices();
+    fetchStats();
+    fetchReviews();
+    checkAuth();
+  }, []);
 
   const handleSearch = (e) => {
     e.preventDefault();
