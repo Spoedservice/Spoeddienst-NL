@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { Zap, Droplets, Key, Phone, Clock, Shield, Star, CheckCircle, Menu, X, ArrowRight } from "lucide-react";
+import { Zap, Droplets, Key, Phone, Clock, Shield, Star, CheckCircle, Menu, X, ArrowRight, Settings } from "lucide-react";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
@@ -23,12 +23,26 @@ export default function LandingPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isEmergency, setIsEmergency] = useState(false);
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     fetchServices();
     fetchStats();
     fetchReviews();
+    checkAuth();
   }, []);
+
+  const checkAuth = () => {
+    const token = localStorage.getItem('token');
+    const userData = localStorage.getItem('user');
+    if (token && userData) {
+      try {
+        setUser(JSON.parse(userData));
+      } catch (e) {
+        console.error("Error parsing user data:", e);
+      }
+    }
+  };
 
   const fetchServices = async () => {
     try {
