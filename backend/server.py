@@ -523,6 +523,106 @@ async def send_vakman_notification_email(booking_data: dict):
         logging.error(f"Failed to send vakman notification emails: {str(e)}")
         return False
 
+async def send_specific_vakman_notification_email(booking_data: dict, vakman_id: str):
+    """Send new job notification to a specific selected vakman"""
+    try:
+        # Find the specific vakman
+        vakman = await db.vakmannen.find_one({"id": vakman_id}, {"_id": 0, "password": 0})
+        if not vakman:
+            logging.warning(f"Vakman with id {vakman_id} not found")
+            return False
+        
+        vakman_email = vakman.get('email')
+        if not vakman_email:
+            logging.warning(f"No email for vakman {vakman_id}")
+            return False
+        
+        service_type = booking_data.get("service_type", "")
+        service_names = {
+            "elektricien": "Elektricien",
+            "loodgieter": "Loodgieter",
+            "slotenmaker": "Slotenmaker"
+        }
+        service_name = service_names.get(service_type, service_type)
+        
+        is_spoed = "🚨 SPOEDKLUS - DIRECT VOOR U" if booking_data.get('is_emergency') else "Nieuwe Klus - Direct voor u"
+        
+        html_content = f"""
+        <html>
+        <body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+            <div style="background-color: {'#FF4500' if booking_data.get('is_emergency') else '#22c55e'}; padding: 20px; text-align: center;">
+                <h1 style="color: white; margin: 0;">⚡ SpoedDienst24</h1>
+                <p style="color: white; margin: 5px 0; font-size: 18px;">{is_spoed}</p>
+            </div>
+            
+            <div style="padding: 20px; background-color: #f8f9fa;">
+                <div style="background-color: #dcfce7; padding: 20px; border-radius: 10px; border-left: 4px solid #22c55e; margin-bottom: 20px;">
+                    <h2 style="color: #22c55e; margin-top: 0;">
+                        ✅ De klant heeft u specifiek geselecteerd!
+                    </h2>
+                    <p style="font-size: 24px; font-weight: bold; color: #333; margin: 0;">€{booking_data.get('price', 0)},-</p>
+                </div>
+                
+                <div style="background-color: white; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                    <h3 style="color: #333; margin-top: 0;">📍 Locatie</h3>
+                    <p style="font-size: 16px; margin: 0;"><strong>{booking_data.get('city', 'N/A')}</strong></p>
+                    <p style="color: #666; margin: 5px 0 0 0;">{booking_data.get('address', 'N/A')}, {booking_data.get('postal_code', '')}</p>
+                </div>
+                
+                <div style="background-color: white; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                    <h3 style="color: #333; margin-top: 0;">📅 Gewenste Tijd</h3>
+                    <p style="font-size: 18px; margin: 0;"><strong>{booking_data.get('preferred_date', 'N/A')}</strong> - {booking_data.get('preferred_time', 'N/A')}</p>
+                </div>
+                
+                <div style="background-color: white; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                    <h3 style="color: #333; margin-top: 0;">🔧 Probleemomschrijving</h3>
+                    <p style="color: #666; white-space: pre-wrap;">{booking_data.get('description', 'Geen omschrijving')}</p>
+                </div>
+                
+                <div style="background-color: white; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                    <h3 style="color: #333; margin-top: 0;">👤 Klantgegevens</h3>
+                    <p style="margin: 5px 0;"><strong>Naam:</strong> {booking_data.get('customer_name', 'N/A')}</p>
+                    <p style="margin: 5px 0;"><strong>Telefoon:</strong> <a href="tel:{booking_data.get('customer_phone', '')}">{booking_data.get('customer_phone', 'N/A')}</a></p>
+                    <p style="margin: 5px 0;"><strong>Email:</strong> <a href="mailto:{booking_data.get('customer_email', '')}">{booking_data.get('customer_email', 'N/A')}</a></p>
+                </div>
+                
+                <div style="text-align: center; margin: 30px 0;">
+                    <p style="color: #666; margin-bottom: 15px;">Log in op je dashboard om deze klus te accepteren:</p>
+                    <a href="{FRONTEND_URL}/vakman/dashboard" style="display: inline-block; background-color: #FF4500; color: white; padding: 15px 40px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px;">
+                        Bekijk Klus →
+                    </a>
+                </div>
+            </div>
+            
+            <div style="background-color: #333; padding: 15px; text-align: center;">
+                <p style="color: #999; margin: 0; font-size: 12px;">Deze klus is specifiek aan u toegewezen door de klant.</p>
+            </div>
+        </body>
+        </html>
+        """
+        
+        message = MIMEMultipart("alternative")
+        message["From"] = SMTP_FROM
+        message["To"] = vakman_email
+        message["Subject"] = f"{'🚨 SPOED: ' if booking_data.get('is_emergency') else '✅ '}Klant heeft u gekozen! {service_name} klus in {booking_data.get('city', 'jouw regio')} - €{booking_data.get('price', 0)},-"
+        
+        html_part = MIMEText(html_content, "html")
+        message.attach(html_part)
+        
+        await aiosmtplib.send(
+            message,
+            hostname=SMTP_HOST,
+            port=SMTP_PORT,
+            username=SMTP_USER,
+            password=SMTP_PASSWORD,
+            use_tls=True
+        )
+        logging.info(f"Specific vakman notification email sent to {vakman_email}")
+        return True
+    except Exception as e:
+        logging.error(f"Failed to send specific vakman notification email: {str(e)}")
+        return False
+
 async def send_vakman_approval_email(vakman_data: dict):
     """Send approval confirmation email to vakman"""
     try:
