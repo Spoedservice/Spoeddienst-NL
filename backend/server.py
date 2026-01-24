@@ -530,7 +530,11 @@ async def register_vakman(vakman: VakmanCreate, request: Request):
         service_type=vakman.service_type,
         description=vakman.description,
         hourly_rate=vakman.hourly_rate,
-        location=vakman.location
+        location=vakman.location,
+        kvk_nummer=vakman.kvk_nummer,
+        btw_nummer=vakman.btw_nummer or "",
+        verzekering=vakman.verzekering,
+        verzekering_maatschappij=vakman.verzekering_maatschappij or ""
     )
     vakman_dict = vakman_obj.model_dump()
     vakman_dict["password"] = hash_password(vakman.password)
