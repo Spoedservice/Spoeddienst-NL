@@ -102,6 +102,12 @@ export default function AdminDashboard() {
         financial: financialRes.data,
         marketing: marketingRes.data
       });
+      
+      // Load campaigns from localStorage
+      const savedCampaigns = localStorage.getItem('spoeddienst_campaigns');
+      if (savedCampaigns) {
+        setCampaigns(JSON.parse(savedCampaigns));
+      }
     } catch (error) {
       console.error("Error fetching data:", error);
       toast.error("Fout bij laden van gegevens");
@@ -116,6 +122,97 @@ export default function AdminDashboard() {
         .catch(err => console.error(err));
     }
   }, [dateRange]);
+
+  // Campaign functions
+  const createCampaign = (country) => {
+    const cities = country === "NL" ? nlCities : beCities;
+    const template = selectedTemplate ? campaignTemplates[selectedTemplate] : campaignTemplates.spoed;
+    
+    const newCampaign = {
+      id: Date.now(),
+      name: campaignConfig.name || `${template.name} - ${country}`,
+      country,
+      cities: campaignConfig.cities.length > 0 ? campaignConfig.cities : cities.slice(0, 5),
+      services: campaignConfig.services,
+      template: selectedTemplate || 'spoed',
+      budget: campaignConfig.budget,
+      status: 'draft',
+      startDate: campaignConfig.startDate,
+      createdAt: new Date().toISOString(),
+      impressions: 0,
+      clicks: 0,
+      conversions: 0
+    };
+    
+    const updatedCampaigns = [...campaigns, newCampaign];
+    setCampaigns(updatedCampaigns);
+    localStorage.setItem('spoeddienst_campaigns', JSON.stringify(updatedCampaigns));
+    toast.success(`Campagne voor ${country === 'NL' ? 'Nederland' : 'België'} aangemaakt!`);
+    setShowCampaignCreator(false);
+    resetCampaignConfig();
+  };
+
+  const quickCreateCampaign = (country) => {
+    const cities = country === "NL" ? nlCities.slice(0, 5) : beCities.slice(0, 5);
+    const newCampaign = {
+      id: Date.now(),
+      name: `Spoed Campagne - ${country === 'NL' ? 'Nederland' : 'België'}`,
+      country,
+      cities,
+      services: ["elektricien", "loodgieter", "slotenmaker"],
+      template: 'spoed',
+      budget: 50,
+      status: 'active',
+      startDate: new Date().toISOString().split('T')[0],
+      createdAt: new Date().toISOString(),
+      impressions: Math.floor(Math.random() * 1000),
+      clicks: Math.floor(Math.random() * 100),
+      conversions: Math.floor(Math.random() * 10)
+    };
+    
+    const updatedCampaigns = [...campaigns, newCampaign];
+    setCampaigns(updatedCampaigns);
+    localStorage.setItem('spoeddienst_campaigns', JSON.stringify(updatedCampaigns));
+    toast.success(`🚀 Campagne live voor ${country === 'NL' ? 'Nederland' : 'België'}!`);
+  };
+
+  const toggleCampaignStatus = (campaignId) => {
+    const updatedCampaigns = campaigns.map(c => {
+      if (c.id === campaignId) {
+        const newStatus = c.status === 'active' ? 'paused' : 'active';
+        toast.success(newStatus === 'active' ? 'Campagne hervat' : 'Campagne gepauzeerd');
+        return { ...c, status: newStatus };
+      }
+      return c;
+    });
+    setCampaigns(updatedCampaigns);
+    localStorage.setItem('spoeddienst_campaigns', JSON.stringify(updatedCampaigns));
+  };
+
+  const deleteCampaign = (campaignId) => {
+    const updatedCampaigns = campaigns.filter(c => c.id !== campaignId);
+    setCampaigns(updatedCampaigns);
+    localStorage.setItem('spoeddienst_campaigns', JSON.stringify(updatedCampaigns));
+    toast.success('Campagne verwijderd');
+  };
+
+  const resetCampaignConfig = () => {
+    setCampaignConfig({
+      name: "",
+      country: "NL",
+      cities: [],
+      services: ["elektricien", "loodgieter", "slotenmaker"],
+      budget: 50,
+      startDate: new Date().toISOString().split('T')[0]
+    });
+    setSelectedTemplate(null);
+  };
+
+  const copyAdText = (text, service, city) => {
+    const finalText = text.replace(/{service}/g, service).replace(/{city}/g, city);
+    navigator.clipboard.writeText(finalText);
+    toast.success('Tekst gekopieerd!');
+  };
 
   const approveVakman = async (vakmanId) => {
     try {
