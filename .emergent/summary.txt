@@ -1,204 +1,156 @@
 <analysis>**original_problem_statement:**
-De gebruiker wil een website bouwen die vergelijkbaar is met . De applicatie moet SpoedDienst24.nl heten.
+De gebruiker wil een website bouwen genaamd SpoedDienst24.nl, vergelijkbaar met .
 
-Belangrijkste vereisten:
-- Klanten moeten diensten kunnen boeken, met een speciale focus op spoedklussen voor elektriciens, loodgieters en slotenmakers.
-- Vakmensen moeten zich kunnen registreren.
-- Er moet een betalingssysteem zijn (oorspronkelijk online, later gewijzigd naar betalen bij de monteur).
-- Een Premium lidmaatschap-pagina met online betalingsmogelijkheid via Stripe en bankoverschrijving.
-- Diverse informatieve pagina's (VVE, Kantoor, Over ons, etc.).
-- Een review-systeem waar klanten reviews kunnen achterlaten.
-- De website moet mobielvriendelijk zijn.
-- Een admin-dashboard voor het beheren van de site.
+**PRODUCT REQUIREMENTS:**
+-   Klanten moeten diensten kunnen boeken, met een focus op spoedklussen.
+-   Vakmensen moeten zich kunnen registreren. De registratie moet velden voor KVK, BTW en verzekering bevatten.
+-   Een betalingssysteem (nu betalen bij de monteur).
+-   Een Premium lidmaatschap-pagina met online betalingsmogelijkheid.
+-   Een review-systeem.
+-   Een admin-dashboard voor het beheren van de site, inclusief geavanceerde financiële en marketing dashboards. Het marketing dashboard moet campagnebeheer per stad mogelijk maken.
+-   Een dashboard voor vakmannen om opdrachten te beheren, met een agenda-overzicht.
+-   Email-bevestigingen voor boekingen (naar klant, admin, monteur) en voor de goedkeuring/afwijzing van vakmannen.
+-   Een Wachtwoord vergeten functie voor alle gebruikers.
+-   Dubbele registratie met hetzelfde e-mailadres moet worden voorkomen.
+-   Na registratie moet de vakman direct ingelogd zijn en naar zijn dashboard worden geleid.
+-   Klanten moeten tijdens het boeken een specifieke monteur kunnen kiezen.
 
 **User's preferred language**: Dutch. The next agent MUST respond in Dutch.
 
 **what currently exists?**
-Een uitgebreide full-stack applicatie gebouwd met React, FastAPI en MongoDB. De applicatie heet SpoedDienst24.nl en is grotendeels feature-compleet.
+Een uitgebreide full-stack applicatie (React, FastAPI, MongoDB). De meeste kernfunctionaliteiten zijn geïmplementeerd, inclusief gebruikersauthenticatie, een basis-boekingsflow, diverse contentpagina's, en een admin- en vakman-dashboard.
 
-Bestaande features:
-- **Frontend**: Volledig responsieve landingspagina, boekingsflow, gebruikersauthenticatie, Over Ons pagina, juridische pagina's (Privacy, Voorwaarden, Cookies), en een Premium lidmaatschap pagina met Stripe.
-- **Backend**: API's voor gebruikers, boekingen, diensten, reviews en statistieken.
-- **Email Notificaties**: Geautomatiseerde e-mails voor nieuwe boekingen, review-inzendingen en vakman-registraties worden verstuurd naar  via TransIP SMTP.
-- **Vakman Beheer**: Een systeem waarbij nieuwe vakman-registraties een e-mail triggeren naar de admin met goedkeur- en afkeurlinks.
-- **Admin Dashboard (in opbouw)**: Een basis admin-dashboard pagina is aangemaakt op .
-- **3rd Party Integraties**: Stripe (betalingen), TransIP (SMTP), Google Analytics & Google Ads.
+In deze sessie zijn de volgende features toegevoegd of sterk uitgebreid:
+-   **Geavanceerde Dashboards**: Er is een functioneel Admin Dashboard () met Financieel (omzet, export) en Marketing (campagnebeheer per stad voor NL/BE) tabs. De data voor campagnes is momenteel nog gesimuleerd in de frontend.
+-   **Vakman Dashboard**: Volledig vernieuwd met tabs voor opdrachten, een agendaview en een profielpagina.
+-   **Vakman Registratie & Details**: Het registratieformulier vereist nu KVK, BTW en verzekeringsgegevens. Dubbele registratie wordt geblokkeerd en na aanmelding wordt de gebruiker direct ingelogd en doorgestuurd. Deze extra details zijn zichtbaar in het admin dashboard.
+-   **Email Notificaties**: Een compleet systeem voor email-bevestigingen is gebouwd voor nieuwe boekingen, en voor het goed- of afkeuren van vakman-aanmeldingen.
+-   **Wachtwoord Reset**: Een volledige Wachtwoord Vergeten flow is geïmplementeerd.
+-   **Deployment Prep**: De backend is voorbereid voor deployment door hardcoded URLs te verwijderen en het health-check endpoint te repareren. Er zijn testaccounts voor alle rollen aangemaakt.
 
 **Last working item**:
--   **Last item agent was working**: De agent was bezig met het bouwen van het Admin Dashboard. Na het aanmaken van de frontend-pagina en de bijbehorende API-endpoints, liep de agent tegen authenticatiefouten (). De agent ontdekte dat dit werd veroorzaakt door dubbele route-definities in  (nieuwe, onbeveiligde admin-routes conflicteerden met oudere, beveiligde routes met hetzelfde pad). De agent identificeerde de dubbele routes en stond op het punt de oude te verwijderen toen de gebruiker een nieuwe instructie gaf.
+-   **Last item agent was working**: Implementeren van de feature waarbij een klant een specifieke monteur kan kiezen tijdens het boekingsproces. De agent heeft de frontend-pagina  bijgewerkt met een nieuwe stap voor de selectie, en stond op het punt om de benodigde backend-API's te bouwen.
 -   **Status**: IN PROGRESS
 -   **Agent Testing Done**: N
--   **Which testing method agent to use?** backend testing agent
+-   **Which testing method agent to use?** both
 -   **User Testing Done**: N
 
 **All Pending/In progress Issue list**:
--   **Issue 1 (P0)**: Admin Dashboard is niet functioneel door API-authenticatieproblemen.
--   **Issue 2 (P1)**: De gebruiker wil een verbeterd dashboard voor vakmannen.
-
-**Issues Detail**:
--   **Issue 1**:
-    -   **Description**: Het Admin Dashboard op  kan geen data ophalen omdat de API-calls () falen met een Not authenticated error.
-    -   **Attempted fixes**: De agent heeft de oorzaak correct geïdentificeerd: conflicterende, dubbele routes in .
-    -   **Next debug checklist**:
-        1.  Gebruik  in  om alle admin-gerelateerde routes te vinden (e.g., @api_router.get("/admin/vakmannen")
-@api_router.put("/admin/vakmannen/{vakman_id}/approve")
-@api_router.get("/admin/bookings")
-@api_router.get("/admin/stats")
-@api_router.get("/admin/bookings")
-@api_router.get("/admin/vakmannen")
-@api_router.get("/admin/reviews")
-@api_router.get("/admin/stats")
-@api_router.post("/admin/vakman/{vakman_id}/approve")
-@api_router.post("/admin/vakman/{vakman_id}/reject")
-@api_router.post("/admin/review/{review_id}/approve")
-@api_router.post("/admin/review/{review_id}/reject")
-@api_router.put("/admin/booking/{booking_id}/status")).
-        2.  Verwijder de oude, beveiligde admin-routes die het conflict veroorzaken. Zorg ervoor dat de nieuwe routes behouden blijven.
-        3.  Herstart de backend-server met backend: stopped
-backend: started.
-        4.  Test de admin endpoints (, , etc.) met  om te bevestigen dat ze nu data retourneren.
-        5.  Maak een screenshot van  om te verifiëren dat het dashboard correct laadt.
-        6.  **Belangrijk**: Plan het toevoegen van authenticatie aan deze admin-routes als een volgende stap.
-    -   **Why fix this issue and what will be achieved with the fix?** Dit maakt het dashboard functioneel, zodat de admin boekingen, vakmannen en reviews kan beheren.
-    -   **Status**: IN PROGRESS
-    -   **Is recurring issue?** N
-    -   **Should Test frontend/backend/both after fix?** Both
-
--   **Issue 2**:
-    -   **Description**: De gebruiker heeft gevraagd om een dashboard voor vakmannen te bouwen of te verbeteren met specifieke functionaliteit.
-    -   **Attempted fixes**: Geen, de focus lag op het admin-dashboard.
-    -   **Next debug checklist**:
-        1.  Bekijk de gebruikersvereisten: Opdrachten accepteren/weigeren, Status updaten, Klantgegevens zien.
-        2.  Pas  aan om deze functies te implementeren.
-        3.  Maak nieuwe backend-endpoints om de status van opdrachten bij te werken (bijv. ).
-        4.  Test de nieuwe functionaliteit end-to-end.
-    -   **Why fix this issue and what will be achieved with the fix?** Dit geeft vakmannen de tools om hun werk via het platform te beheren, wat essentieel is voor de operatie.
-    -   **Status**: NOT STARTED
-    -   **Is recurring issue?** N
-    -   **Should Test frontend/backend/both after fix?** Both
+Er zijn geen openstaande *bugs*. De focus ligt op het afronden van de huidige taak en het implementeren van nieuwe features.
 
 **In progress Task List**:
--   **Task 1**: Admin Dashboard Functioneel Maken
-    -   **Where to resume**: In , verwijder de conflicterende admin-routes. De agent had ze al geïdentificeerd.
-    -   **What will be achieved with this?** Een werkend Admin Dashboard dat basisstatistieken, boekingen en vakmannen toont.
+-   **Task 1 (P0)**: Voltooi de Kies een monteur feature.
+    -   **Where to resume**: De frontend-pagina () is al aangepast. De volgende stappen zijn in de backend ():
+        1.  Maak een nieuw API-endpoint  dat een lijst van beschikbare, goedgekeurde vakmannen voor een specifieke dienst retourneert (inclusief naam, foto, rating, etc.).
+        2.  Pas het bestaande  endpoint aan om een optionele  te accepteren.
+        3.  Als een  is meegestuurd, moet de boekingsnotificatie-email alleen naar die specifieke vakman worden gestuurd, in plaats van naar alle beschikbare vakmannen.
+    -   **What will be achieved with this?** Klanten krijgen meer controle door zelf een vakman te kunnen selecteren op basis van diens profiel, wat de gebruikerservaring verbetert.
     -   **Status**: IN PROGRESS
     -   **Should Test frontend/backend/both after fix?** Both
-    -   **Blocked on something**: Nee
 
 **Upcoming and Future Tasks**
 - **Upcoming Tasks**:
-    - **P0**: Beveilig het Admin Dashboard zodat alleen ingelogde admins er toegang toe hebben.
-    - **P1**: Implementeer het verbeterde Vakman Dashboard met de door de gebruiker gevraagde features (opdrachten accepteren/weigeren, status updaten).
+    - **P0: Beveilig het Admin Dashboard (KRITIEK)**: De admin-endpoints ( en ) zijn momenteel niet beveiligd. Voeg een role-based check toe zodat alleen gebruikers met de  rol toegang hebben. Gebruik de  dependency en verifieer de rol.
+    - **P1: Implementeer Google Ads Integratie**: De huidige marketing-dashboard is een UI-placeholder. Bouw de daadwerkelijke integratie om campagnes aan te maken en te beheren via de Google Ads API.
+    - **P2: Link naar Admin Dashboard in Navigatie**: Voeg een link naar  toe in de navigatiebalk die alleen zichtbaar is als een ingelogde gebruiker de rol 'admin' heeft.
 - **Future Tasks**:
-    - **P2**: Bouw de meer geavanceerde management dashboards (Financieel, Marketing) zoals gespecificeerd door de gebruiker.
     - **P3**: Creëer een aparte versie van de website voor de Belgische markt ().
     - **P4**: Ontwikkel een native mobiele app voor iOS en Android.
 
 **Completed work in this session**
-- **Mobiele Responsiviteit**: De volledige website, inclusief de landingspagina en boekingsflow, is mobielvriendelijk gemaakt en getest.
-- **Review Systeem**: Een bug verholpen waardoor reviews niet zichtbaar waren (door de volgorde van FastAPI-routes aan te passen). Een functie toegevoegd waarbij nieuwe reviews eerst per e-mail worden verstuurd voor goedkeuring.
-- **Email Systeem**: SMTP (TransIP) geïntegreerd voor het versturen van e-mails voor nieuwe boekingen, vakman-registraties en review-inzendingen naar .
-- **Vakman Goedkeuring**: Een systeem geïmplementeerd waarbij de admin een e-mail ontvangt met links om nieuwe vakmannen goed of af te keuren.
-- **Juridische Pagina's**: Pagina's voor Privacybeleid, Algemene Voorwaarden en Cookiebeleid aangemaakt en in de footer gelinkt.
-- **Content & UI Verbeteringen**:
-    - Een nieuwe, uitgebreide Over Ons pagina gemaakt met teamfoto's en toegevoegd aan de navigatie.
-    - KVK-nummer toegevoegd aan de footer.
-    - Website titel en favicon aangepast.
-    - Professionele afbeeldingen toegevoegd voor diensten en de hero-sectie.
-    - De Zoek Vakman knop leidt nu naar een selectiepagina met alle diensten.
-    - Een bug opgelost waardoor dropdowns op mobiel niet werkten op de review- en registratiepagina's.
-    - Een bug opgelost waarbij de pagina niet naar boven scrollde na het navigeren.
-- **Opschonen**: Alle verwijzingen naar Emergent (badge, scripts, afbeeldings-URL's) verwijderd uit de frontend op verzoek van de gebruiker.
-- **Deployment Voorbereiding**: Een  endpoint toegevoegd aan de backend om te voldoen aan de eisen van de deployment-omgeving.
-- **Tracking**: Google Ads en Google Analytics trackingcodes toegevoegd.
+-   **Admin Dashboard Hersteld & Uitgebreid**: Authenticatieproblemen opgelost en geavanceerde dashboards voor Financiën en Marketing gebouwd.
+-   **Vakman Dashboard Vernieuwd**: Een modern dashboard met opdrachten, agenda en profielweergave geïmplementeerd.
+-   **Vakman Registratie Proces Verbeterd**: Velden voor KVK/BTW/Verzekering toegevoegd, dubbele registratie geblokkeerd en auto-login na aanmelding geïmplementeerd.
+-   **Email Notificatie Systeem**: Volledige email-flows voor boekingen en vakman-goedkeuring/afwijzing gebouwd.
+-   **Wachtwoord Vergeten Functie**: Een complete flow met email-tokenverificatie geïmplementeerd.
+-   **Deployment Voorbereidingen**: Alle hardcoded URLs vervangen door environment variables en health-check endpoint gerepareerd.
+-   **Test Accounts Aangemaakt**: Accounts voor Admin, Monteur en Klant zijn beschikbaar voor testen.
 
 **Earlier issues found/mentioned but not fixed**
-- Geen. Alle eerdere problemen zijn opgelost.
+-   Geen.
 
 **Known issue recurrence from previous fork**
-- De gebruiker is erg gevoelig voor verwijzingen naar Emergent in de code of URL's. Hoewel alles in de frontend is opgeschoond, kan de  in de preview-omgeving opnieuw voor verwarring zorgen. Het is belangrijk om uit te leggen dat dit een configuratie is voor de preview-omgeving en verdwijnt na de uiteindelijke deployment.
+-   De gebruiker is gevoelig voor de  subdomein in de preview URL. Blijf proactief uitleggen dat dit een tijdelijke ontwikkelomgeving is en dat dit verdwijnt na deployment naar .
 
 **Code Architecture**
 
 
 **Key Technical Concepts**
-- **Backend**: FastAPI (Python)
-- **Frontend**: React (JavaScript)
-- **Database**: MongoDB
-- **Styling**: Tailwind CSS, Shadcn/UI
-- **Email**:  met TransIP SMTP
-- **Payments**: Stripe
+-   **Backend**: FastAPI (Python)
+-   **Frontend**: React (JavaScript)
+-   **Database**: MongoDB
+-   **Styling**: Tailwind CSS, Shadcn/UI
+-   **Email**:  met TransIP SMTP
+-   **Authenticatie**: JWT
 
 **key DB schema**
-- **users**: {email, password, role, is_approved (boolean voor vakman)}
-- **bookings**: {customer_id, service_id, address, status, ...}
-- **reviews**: {booking_id, rating, text, customer_name, is_published (optioneel)}
+-   **vakmannen**: Bevat nu ook , , , .
+-   **users**: Bevat , ,  ('customer', 'vakman', 'admin').
 
 **changes in tech stack**
-- Geen.
+-   Geen.
 
 **All files of reference**
-- : Kern van de applicatie. Bevat alle API-logica, inclusief de nieuwe admin-endpoints, e-mailfuncties en het  endpoint.
-- : Nieuwe pagina voor het admin-beheer.
-- : Hoofdpagina, zwaar aangepast voor mobiel en content.
-- : Hoofd routing-bestand, aangepast met nieuwe routes en een scroll-to-top component.
-- : Aangepast voor titel, favicon, Google tracking en opschoning.
-- : Bevat nu de SMTP-credentials.
+-   : Sterk uitgebreid met nieuwe endpoints voor dashboards, wachtwoord-reset en email-logica.
+-   : Sterk uitgebreid met nieuwe tabs en complexe UI voor financieel en marketingbeheer.
+-   : Volledig vernieuwd met een tab-gebaseerde interface.
+-   : Overgeschreven om de 'kies een monteur' stap te initiëren.
+-    & : Nieuwe bestanden voor de wachtwoord-reset flow.
 
 **Areas that need refactoring**:
-- De admin-API-endpoints in  zijn momenteel onbeveiligd. Ze moeten worden geïntegreerd met het bestaande JWT-authenticatiesysteem () en een role-check voor 'admin'.
+-   **Admin Beveiliging**: De endpoints voor het admin dashboard (, ) zijn **onbeveiligd** en moeten met hoge prioriteit voorzien worden van role-based authenticatie.
+-   **Component Grootte**:  (ca. 1400+ regels) en  zijn erg groot geworden. Overweeg deze op te splitsen in kleinere, meer beheersbare modules/componenten.
 
 **key api endpoints**
-- 
-- 
-- 
-- 
-- 
-- 
--  (POST voor nieuwe review, stuurt nu e-mail)
--  (POST, stuurt nu e-mail met goedkeuringslinks)
-- 
+-   **Nieuw (te maken)**: 
+-   **Nieuw (gemaakt)**:
+    -   , 
+    -   , 
+-   **Bijgewerkt**:
+    -    (blokkeert nu dubbele registratie)
+    -    &  (sturen nu emails)
+    -    (moet nog worden aangepast voor )
 
 **Critical Info for New Agent**
-- **Prioriteit**: De absolute topprioriteit is het functioneel maken van het Admin Dashboard door de API-routeconflicten op te lossen.
-- **Authenticatie**: De admin-routes zijn momenteel onbeveiligd als tijdelijke workaround. Na het oplossen van het routeconflict is de volgende stap het beveiligen van deze endpoints.
-- **Gebruikerscommunicatie**: De gebruiker is zeer direct en technisch. Wees voorbereid op specifieke verzoeken en snelle iteraties.
-- **Emergent gevoeligheid**: Wees proactief in het uitleggen waarom bepaalde Emergent URL's (zoals de  in de preview-omgeving) noodzakelijk zijn en verzeker de gebruiker ervan dat deze niet in de productie-build zullen verschijnen.
+-   **Prioriteit 1**: Rond de Kies een monteur feature af door de benodigde backend API's te bouwen.
+-   **Prioriteit 2 (KRITIEK)**: Beveilig direct daarna alle admin-endpoints. Dit is een groot beveiligingslek.
+-   **Gebruikerscommunicatie**: De gebruiker is gevoelig voor de preview-URL. Blijf het onderscheid tussen de preview- en productie-omgeving benadrukken.
 
 **documents and test reports created in this job**
-- Geen nieuwe documenten aangemaakt.
+-    (bijgewerkt)
+-   
 
 **Last 10 User Messages and any pending HUMAN messages**
-1. **User asks for a management dashboard.** (Handled, in progress)
-2. **User provides detailed specs for multiple dashboards (Operational, Financial, etc.).** (Acknowledged, MVP defined)
-3. **User clarifies MVP scope for Admin and Vakman dashboards.** (Used as spec for current work)
-4. **User asks to add team photos to the Over Ons page.** (Completed)
-5. **User provides Google Ads & Analytics IDs.** (Completed)
-6. **User asks to change the email recipient to .** (Completed)
-7. **User asks why emails for 'vakman' registrations are not arriving.** (Investigated, test emails work)
-8. **User reports deployment errors.** (Investigated,  endpoint added, email content improved)
-9. **User asks why the URL contains .** (Explained and fixed to be cleaner)
-10. **User provides a full code snippet for a new Over Ons page and asks to add it.** (Completed)
-11. **User says ga door (continue) while the agent is debugging the admin dashboard.** (This is the last pending instruction)
+1.  **User**: Vraagt om email-notificaties voor goedkeuring/afwijzing van monteurs. (Voltooid)
+2.  **User**: Vraagt om een Wachtwoord vergeten functie. (Voltooid)
+3.  **User**: Vraagt om een deployment health check. (Voltooid, problemen opgelost)
+4.  **User**: Vraagt om dubbele registratie te voorkomen en direct in te loggen na registratie. (Voltooid)
+5.  **User**: Vraagt om testaccounts. (Voltooid)
+6.  **User**: Vraagt om een admin-account met wachtwoord. (Voltooid)
+7.  **User**: Herhaalt zorgen over de emergentagent URL. (Behandeld)
+8.  **User**: ik wil graag de monteur zelf kiezen en de klus naar de betreffende monteur sturen. (Huidige taak, IN UITVOERING)
+9.  **User**: Wil testaccounts met de juiste URL. (Behandeld)
+10. **User**: Wil dat de geselecteerde monteur de klus ontvangt. (Onderdeel van huidige taak)
 
 **Project Health Check:**
-- **Broken**: Het Admin Dashboard is niet-functioneel vanwege API-authenticatieproblemen.
-- **Mocked**: N/A
+-   **Broken**: De Kies een monteur feature is halverwege de implementatie en dus niet functioneel. Het Admin Dashboard is onbeveiligd.
+-   **Mocked**: De campagne data en Google Ads functionaliteit in het Marketing Dashboard is gesimuleerd in de frontend en nog niet gekoppeld aan een echte backend-service of API.
 
 **3rd Party Integrations**
-- **Stripe**: Voor premium lidmaatschappen.
-- **TransIP SMTP**: Geïntegreerd via  voor het versturen van alle e-mails. Gebruikt credentials uit .
-- **Google Analytics & Google Ads**: Tracking scripts toegevoegd in .
+-   **Stripe**: Voor premium lidmaatschappen (bestaand).
+-   **TransIP SMTP**: Geïntegreerd via  voor alle email-notificaties.
+-   **Google Analytics & Google Ads**: Alleen tracking-scripts in ; geen API-integratie.
 
 **Testing status**
-- **Testing agent used after significant changes**: YES (voor mobiele responsiviteit).
-- **Troubleshoot agent used after agent stuck in loop**: NO
-- **Test files created**: Geen.
-- **Known regressions**: Geen.
+-   **Testing agent used after significant changes**: YES, na de initiële dashboard-ontwikkeling.
+-   **Troubleshoot agent used after agent stuck in loop**: NO
+-   **Test files created**: Geen
+-   **Known regressions**: Geen
 
 **Credentials to test flow:**
-- **SMTP Credentials**: Opgeslagen in .
-- **User/Admin Credentials**: Niet nodig, gebruik de registratieflow om testgebruikers aan te maken.
+-   **Admin**:  / 
+-   **Monteur**:  / 
+-   **Klant**:  / 
 
 **What agent forgot to execute**
-- De agent stond op het punt om de conflicterende admin-routes in  te verwijderen, maar werd onderbroken. De daadwerkelijke fix moet nog worden uitgevoerd.</analysis>
+-   De agent heeft de kritieke taak om het admin dashboard te beveiligen nog niet uitgevoerd, ondanks dat dit al eerder als noodzakelijk was geïdentificeerd. Dit blijft een openstaand beveiligingsrisico.</analysis>
