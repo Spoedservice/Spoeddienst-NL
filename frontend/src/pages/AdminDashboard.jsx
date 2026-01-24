@@ -51,8 +51,31 @@ const campaignTemplates = {
   }
 };
 
-const nlCities = ["Amsterdam", "Rotterdam", "Den Haag", "Utrecht", "Eindhoven", "Tilburg", "Groningen", "Almere", "Breda", "Nijmegen"];
-const beCities = ["Antwerpen", "Gent", "Brussel", "Charleroi", "Luik", "Brugge", "Namen", "Leuven", "Mechelen", "Aalst"];
+const nlCities = [
+  { name: "Amsterdam", population: 872000 },
+  { name: "Rotterdam", population: 651000 },
+  { name: "Den Haag", population: 545000 },
+  { name: "Utrecht", population: 357000 },
+  { name: "Eindhoven", population: 234000 },
+  { name: "Tilburg", population: 219000 },
+  { name: "Groningen", population: 203000 },
+  { name: "Almere", population: 215000 },
+  { name: "Breda", population: 184000 },
+  { name: "Nijmegen", population: 177000 }
+];
+
+const beCities = [
+  { name: "Antwerpen", population: 520000 },
+  { name: "Gent", population: 262000 },
+  { name: "Brussel", population: 185000 },
+  { name: "Charleroi", population: 201000 },
+  { name: "Luik", population: 197000 },
+  { name: "Brugge", population: 118000 },
+  { name: "Namen", population: 111000 },
+  { name: "Leuven", population: 101000 },
+  { name: "Mechelen", population: 86000 },
+  { name: "Aalst", population: 85000 }
+];
 
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState("overview");
@@ -66,10 +89,15 @@ export default function AdminDashboard() {
   const [filterStatus, setFilterStatus] = useState("all");
   const [dateRange, setDateRange] = useState("month");
   
-  // Campaign state
+  // Campaign state - now per city
+  const [cityCampaigns, setCityCampaigns] = useState({});
+  const [googleAdsConnected, setGoogleAdsConnected] = useState(false);
+  const [googleAdsId, setGoogleAdsId] = useState("");
+  const [showGoogleAdsModal, setShowGoogleAdsModal] = useState(false);
   const [campaigns, setCampaigns] = useState([]);
   const [showCampaignCreator, setShowCampaignCreator] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState(null);
+  const [selectedCountryTab, setSelectedCountryTab] = useState("NL");
   const [campaignConfig, setCampaignConfig] = useState({
     name: "",
     country: "NL",
