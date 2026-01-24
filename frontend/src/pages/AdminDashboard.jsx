@@ -108,19 +108,55 @@ export default function AdminDashboard() {
   });
 
   useEffect(() => {
+    checkAuth();
     fetchAllData();
   }, []);
 
+  const checkAuth = () => {
+    const token = localStorage.getItem('token');
+    const userData = localStorage.getItem('user');
+    if (!token || !userData) {
+      toast.error("Je moet ingelogd zijn als admin om deze pagina te bekijken");
+      window.location.href = '/login';
+      return false;
+    }
+    try {
+      const user = JSON.parse(userData);
+      if (user.role !== 'admin') {
+        toast.error("Je hebt geen toegang tot deze pagina");
+        window.location.href = '/';
+        return false;
+      }
+    } catch (e) {
+      console.error("Error parsing user data:", e);
+      window.location.href = '/login';
+      return false;
+    }
+    return true;
+  };
+
+  const getAuthHeaders = () => {
+    const token = localStorage.getItem('token');
+    return {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    };
+  };
+
   const fetchAllData = async () => {
+    if (!checkAuth()) return;
+    
     setLoading(true);
     try {
+      const headers = getAuthHeaders();
       const [bookingsRes, vakmannenRes, reviewsRes, statsRes, financialRes, marketingRes] = await Promise.all([
-        axios.get(`${API}/admin/bookings`),
-        axios.get(`${API}/admin/vakmannen`),
-        axios.get(`${API}/admin/reviews`),
-        axios.get(`${API}/admin/stats`),
-        axios.get(`${API}/admin/financial?period=${dateRange}`),
-        axios.get(`${API}/admin/marketing`)
+        axios.get(`${API}/admin/bookings`, headers),
+        axios.get(`${API}/admin/vakmannen`, headers),
+        axios.get(`${API}/admin/reviews`, headers),
+        axios.get(`${API}/admin/stats`, headers),
+        axios.get(`${API}/admin/financial?period=${dateRange}`, headers),
+        axios.get(`${API}/admin/marketing`, headers)
       ]);
       setBookings(bookingsRes.data);
       setVakmannen(vakmannenRes.data);
