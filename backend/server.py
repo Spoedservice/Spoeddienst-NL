@@ -1376,21 +1376,39 @@ async def get_admin_stats():
 @api_router.post("/admin/vakman/{vakman_id}/approve")
 async def approve_vakman_admin(vakman_id: str):
     """Approve a vakman registration"""
+    # First get the vakman data for the email
+    vakman = await db.vakmannen.find_one({"id": vakman_id}, {"_id": 0, "password": 0})
+    if not vakman:
+        raise HTTPException(status_code=404, detail="Vakman niet gevonden")
+    
     result = await db.vakmannen.update_one(
         {"id": vakman_id}, 
         {"$set": {"is_approved": True, "is_available": True}}
     )
     if result.modified_count == 0:
         raise HTTPException(status_code=404, detail="Vakman niet gevonden")
-    return {"message": "Vakman goedgekeurd"}
+    
+    # Send approval email to vakman
+    await send_vakman_approval_email(vakman)
+    
+    return {"message": "Vakman goedgekeurd en email verstuurd"}
 
 @api_router.post("/admin/vakman/{vakman_id}/reject")
 async def reject_vakman_admin(vakman_id: str):
     """Reject and delete a vakman registration"""
+    # First get the vakman data for the email
+    vakman = await db.vakmannen.find_one({"id": vakman_id}, {"_id": 0, "password": 0})
+    if not vakman:
+        raise HTTPException(status_code=404, detail="Vakman niet gevonden")
+    
+    # Send rejection email before deleting
+    await send_vakman_rejection_email(vakman)
+    
     result = await db.vakmannen.delete_one({"id": vakman_id})
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Vakman niet gevonden")
-    return {"message": "Vakman afgewezen"}
+    
+    return {"message": "Vakman afgewezen en email verstuurd"}
 
 @api_router.post("/admin/review/{review_id}/approve")
 async def approve_review_admin(review_id: str):
