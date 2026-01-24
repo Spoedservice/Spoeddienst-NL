@@ -5,15 +5,54 @@ import {
   Zap, Users, Calendar, Star, TrendingUp, Clock, CheckCircle, XCircle, 
   Eye, Phone, Mail, MapPin, AlertCircle, Filter, Search, RefreshCw,
   ChevronDown, ChevronUp, BarChart3, DollarSign, Download, FileText,
-  PieChart, Target, TrendingDown, CreditCard, Euro, Receipt
+  PieChart, Target, TrendingDown, CreditCard, Euro, Receipt, Megaphone,
+  Globe, Play, Pause, Copy, ExternalLink, Sparkles, Send, Flag
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
+
+// Campaign templates
+const campaignTemplates = {
+  spoed: {
+    name: "Spoed Campagne",
+    description: "24/7 spoedservice voor dringende klussen",
+    headlines: [
+      "🚨 Spoed {service}? Binnen 30 min ter plaatse!",
+      "24/7 Spoedservice - {service} Direct Beschikbaar",
+      "Noodgeval? Bel Nu - {service} Staat Klaar!"
+    ],
+    keywords: ["{service} spoed", "nood {service}", "{service} 24 uur", "spoed {service} {city}"]
+  },
+  lokaal: {
+    name: "Lokale Campagne",
+    description: "Gerichte campagne voor specifieke steden",
+    headlines: [
+      "Betrouwbare {service} in {city}",
+      "{service} Nodig in {city}? Wij Helpen Direct!",
+      "Top {service} {city} - 5★ Beoordeeld"
+    ],
+    keywords: ["{service} {city}", "beste {service} {city}", "{service} bij mij in de buurt"]
+  },
+  seizoen: {
+    name: "Seizoen Campagne",
+    description: "Seizoensgebonden aanbiedingen",
+    headlines: [
+      "Winterklaar? Laat uw {service} checken!",
+      "Voorjaarsactie: 15% Korting op {service}",
+      "Zomeronderhoud - {service} Nu Regelen"
+    ],
+    keywords: ["winter {service}", "voorjaar onderhoud", "{service} actie"]
+  }
+};
+
+const nlCities = ["Amsterdam", "Rotterdam", "Den Haag", "Utrecht", "Eindhoven", "Tilburg", "Groningen", "Almere", "Breda", "Nijmegen"];
+const beCities = ["Antwerpen", "Gent", "Brussel", "Charleroi", "Luik", "Brugge", "Namen", "Leuven", "Mechelen", "Aalst"];
 
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState("overview");
@@ -26,6 +65,19 @@ export default function AdminDashboard() {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
   const [dateRange, setDateRange] = useState("month");
+  
+  // Campaign state
+  const [campaigns, setCampaigns] = useState([]);
+  const [showCampaignCreator, setShowCampaignCreator] = useState(false);
+  const [selectedTemplate, setSelectedTemplate] = useState(null);
+  const [campaignConfig, setCampaignConfig] = useState({
+    name: "",
+    country: "NL",
+    cities: [],
+    services: ["elektricien", "loodgieter", "slotenmaker"],
+    budget: 50,
+    startDate: new Date().toISOString().split('T')[0]
+  });
 
   useEffect(() => {
     fetchAllData();
