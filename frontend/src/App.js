@@ -21,6 +21,8 @@ import BookingSuccessPage from "@/pages/BookingSuccessPage";
 import LoginPage from "@/pages/LoginPage";
 import RegisterPage from "@/pages/RegisterPage";
 import VakmanRegisterPage from "@/pages/VakmanRegisterPage";
+import WachtwoordVergetenPage from "@/pages/WachtwoordVergetenPage";
+import ResetWachtwoordPage from "@/pages/ResetWachtwoordPage";
 import CustomerDashboard from "@/pages/CustomerDashboard";
 import VakmanDashboard from "@/pages/VakmanDashboard";
 import ServicePage from "@/pages/ServicePage";
