@@ -58,6 +58,7 @@ function App() {
         <ScrollToTop />
         <Routes>
           <Route path="/" element={<LandingPage />} />
+          <Route path="/boek" element={<BookingPage />} />
           <Route path="/boek/:serviceType" element={<BookingPage />} />
           <Route path="/booking/:bookingId" element={<BookingPage />} />
           <Route path="/booking/success" element={<BookingSuccessPage />} />
