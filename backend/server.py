@@ -2284,6 +2284,39 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.on_event("startup")
+async def startup_event():
+    """Ensure admin user exists on startup"""
+    try:
+        admin_email = "admin@spoeddienst24.nl"
+        admin_password = "Casblanca123!"
+        
+        existing_admin = await db.users.find_one({"email": admin_email})
+        
+        if not existing_admin:
+            # Create admin user
+            admin_user = {
+                "id": str(uuid.uuid4()),
+                "email": admin_email,
+                "name": "Administrator",
+                "phone": "",
+                "password": bcrypt.hashpw(admin_password.encode(), bcrypt.gensalt()).decode(),
+                "role": "admin",
+                "created_at": datetime.now(timezone.utc)
+            }
+            await db.users.insert_one(admin_user)
+            logger.info("Admin user created successfully")
+        else:
+            # Update admin password to ensure it's correct
+            new_hash = bcrypt.hashpw(admin_password.encode(), bcrypt.gensalt()).decode()
+            await db.users.update_one(
+                {"email": admin_email},
+                {"$set": {"password": new_hash, "role": "admin"}}
+            )
+            logger.info("Admin user password updated")
+    except Exception as e:
+        logger.error(f"Error setting up admin user: {e}")
+
 @app.on_event("shutdown")
 async def shutdown_db_client():
     client.close()
