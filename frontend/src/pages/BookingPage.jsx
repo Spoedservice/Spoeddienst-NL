@@ -57,10 +57,14 @@ const timeSlots = [
 export default function BookingPage() {
   const { serviceType } = useParams();
   const navigate = useNavigate();
+  const fileInputRef = useRef(null);
   
   const [selectedService, setSelectedService] = useState(serviceType || "");
   const [isEmergency, setIsEmergency] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [photo, setPhoto] = useState(null);
+  const [photoPreview, setPhotoPreview] = useState(null);
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
   
   const [formData, setFormData] = useState({
     description: "",
