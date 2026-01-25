@@ -1182,6 +1182,11 @@ export default function AdminDashboard() {
               </div>
             )}
 
+            {/* Campaigns Tab */}
+            {activeTab === "campaigns" && (
+              <CampaignPlanner token={token} />
+            )}
+
             {/* Marketing Tab */}
             {activeTab === "marketing" && (
               <div className="space-y-6">
