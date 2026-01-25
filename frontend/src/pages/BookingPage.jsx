@@ -490,11 +490,11 @@ export default function BookingPage() {
               {/* Submit Button */}
               <Button
                 type="submit"
-                disabled={loading}
+                disabled={loading || uploadingPhoto}
                 className="w-full bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white font-bold py-6 text-lg shadow-lg hover:shadow-xl transition-all"
                 data-testid="submit-button"
               >
-                {loading ? "Bezig met versturen..." : "Bevestig boeking"}
+                {uploadingPhoto ? "Foto uploaden..." : loading ? "Bezig met versturen..." : "Bevestig boeking"}
               </Button>
             </form>
           )}
