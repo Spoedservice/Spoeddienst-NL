@@ -1186,7 +1186,7 @@ export default function AdminDashboard() {
 
             {/* Campaigns Tab */}
             {activeTab === "campaigns" && (
-              <CampaignPlanner token={token} />
+              <CampaignPlanner token={authToken} />
             )}
 
             {/* Marketing Tab */}
