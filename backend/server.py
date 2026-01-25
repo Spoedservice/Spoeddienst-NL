@@ -2320,3 +2320,358 @@ async def startup_event():
 @app.on_event("shutdown")
 async def shutdown_db_client():
     client.close()
+
+# ==================== SEO PAGES: PROBLEMS ====================
+
+PROBLEM_PAGES = {
+    # Loodgieter problemen
+    "lekkage-spoed": {
+        "slug": "lekkage-spoed",
+        "title": "Spoed Lekkage Service",
+        "service_type": "loodgieter",
+        "h1": "Lekkage Spoed - 24/7 Loodgieter",
+        "description": "Direct hulp bij lekkage? Onze spoed loodgieters zijn 24/7 beschikbaar. Binnen 30 minuten ter plaatse voor waterlekkage, leidingbreuk en meer.",
+        "keywords": ["lekkage spoed", "waterlekkage", "leiding lek", "gesprongen waterleiding", "lekkage repareren"],
+        "problems": ["Waterlekkage in huis", "Gesprongen waterleiding", "Lekkende kraan", "Lekkage badkamer/keuken", "Lekkage plafond of muur"],
+        "meta_title": "Lekkage Spoed | 24/7 Spoed Loodgieter - Binnen 30 min ter plaatse",
+        "meta_description": "Waterlekkage? Bel direct onze 24/7 spoed loodgieter. Binnen 30 minuten ter plaatse. Vaste prijzen, geen verrassingen."
+    },
+    "wc-verstopt-spoed": {
+        "slug": "wc-verstopt-spoed",
+        "title": "WC Verstopt Spoed Service",
+        "service_type": "loodgieter",
+        "h1": "WC Verstopt - 24/7 Ontstoppingsdienst",
+        "description": "Toilet verstopt? Onze ontstoppingsdienst is 24/7 bereikbaar. Snel en professioneel uw WC ontstoppen.",
+        "keywords": ["wc verstopt", "toilet verstopt", "wc ontstoppen", "toilet ontstoppen spoed", "wc verstopping"],
+        "problems": ["WC volledig verstopt", "Water loopt niet weg", "WC loopt over", "Terugkomend water", "Stankoverlast toilet"],
+        "meta_title": "WC Verstopt | 24/7 Ontstoppingsdienst - Direct Geholpen",
+        "meta_description": "WC verstopt? Direct hulp van onze 24/7 ontstoppingsdienst. Professioneel ontstoppen, vaste prijs, snel ter plaatse."
+    },
+    "riool-verstopt": {
+        "slug": "riool-verstopt",
+        "title": "Riool Verstopt 24/7",
+        "service_type": "loodgieter",
+        "h1": "Riool Verstopt - 24/7 Rioolontstopping",
+        "description": "Riool verstopt? Onze rioolontstoppers zijn 24/7 beschikbaar met professionele apparatuur.",
+        "keywords": ["riool verstopt", "rioolontstopping", "riool ontstoppen", "hoofdriool verstopt", "rioolstank"],
+        "problems": ["Hoofdriool verstopt", "Rioolstank in huis", "Alle afvoeren verstopt", "Rioolput vol", "Borrelend geluid afvoer"],
+        "meta_title": "Riool Verstopt | 24/7 Rioolontstopping - Professionele Service",
+        "meta_description": "Riool verstopt? 24/7 professionele rioolontstopping. Snel ter plaatse met camera-inspectie en hogedruk reiniging."
+    },
+    "afvoer-verstopt": {
+        "slug": "afvoer-verstopt",
+        "title": "Afvoer Verstopt Service",
+        "service_type": "loodgieter",
+        "h1": "Afvoer Verstopt - Snel Ontstoppen",
+        "description": "Afvoer verstopt in keuken, badkamer of douche? Wij ontstoppen snel en vakkundig alle afvoeren.",
+        "keywords": ["afvoer verstopt", "gootsteen verstopt", "douche afvoer verstopt", "afvoer ontstoppen", "verstopping afvoer"],
+        "problems": ["Gootsteen verstopt", "Douche afvoer verstopt", "Wastafel verstopt", "Water blijft staan", "Langzaam weglopend water"],
+        "meta_title": "Afvoer Verstopt | Snel Ontstoppen - 24/7 Beschikbaar",
+        "meta_description": "Afvoer verstopt? Snel en professioneel ontstoppen van gootsteen, douche en wastafel. 24/7 bereikbaar."
+    },
+    # Slotenmaker problemen
+    "buitengesloten": {
+        "slug": "buitengesloten",
+        "title": "Buitengesloten Spoed Service",
+        "service_type": "slotenmaker",
+        "h1": "Buitengesloten - 24/7 Slotenmaker",
+        "description": "Buitengesloten? Onze spoed slotenmakers openen uw deur schadevrij, 24/7 beschikbaar.",
+        "keywords": ["buitengesloten", "deur openen", "buitengesloten slotenmaker", "sleutel vergeten", "deur dichtgevallen"],
+        "problems": ["Sleutel vergeten binnen", "Deur dichtgevallen", "Sleutel kwijt", "Deur zit op slot", "Niet meer naar binnen"],
+        "meta_title": "Buitengesloten | 24/7 Slotenmaker - Schadevrij Deur Openen",
+        "meta_description": "Buitengesloten? Onze 24/7 slotenmakers openen uw deur schadevrij. Binnen 30 minuten ter plaatse, vaste prijs."
+    },
+    "sleutel-afgebroken": {
+        "slug": "sleutel-afgebroken",
+        "title": "Sleutel Afgebroken in Slot",
+        "service_type": "slotenmaker",
+        "h1": "Sleutel Afgebroken - Spoed Slotenmaker",
+        "description": "Sleutel afgebroken in het slot? Wij verwijderen de afgebroken sleutel en vervangen indien nodig het slot.",
+        "keywords": ["sleutel afgebroken", "sleutel zit vast", "sleutel in slot afgebroken", "cilinder kapot", "slot draait niet"],
+        "problems": ["Sleutel afgebroken in slot", "Sleutel zit vast", "Slot draait niet meer", "Cilinder geblokkeerd", "Halve sleutel in slot"],
+        "meta_title": "Sleutel Afgebroken | Spoed Slotenmaker - Direct Hulp",
+        "meta_description": "Sleutel afgebroken in het slot? Onze slotenmakers verwijderen de sleutel en repareren uw slot. 24/7 service."
+    },
+    "slot-vervangen": {
+        "slug": "slot-vervangen",
+        "title": "Slot Vervangen Service",
+        "service_type": "slotenmaker",
+        "h1": "Slot Vervangen - Alle Merken",
+        "description": "Slot vervangen of upgraden? Wij plaatsen alle soorten sloten, van cilinder tot meerpuntssluiting.",
+        "keywords": ["slot vervangen", "cilinder vervangen", "nieuw slot plaatsen", "slot upgraden", "veilig slot"],
+        "problems": ["Oud slot vervangen", "Slot na inbraak vervangen", "Cilinder vervangen", "Slot upgraden", "Extra veilig slot"],
+        "meta_title": "Slot Vervangen | Alle Merken - Snel Geplaatst",
+        "meta_description": "Slot vervangen? Wij plaatsen alle soorten sloten snel en vakkundig. Vraag vrijblijvend advies. 24/7 bereikbaar."
+    },
+    "inbraakschade": {
+        "slug": "inbraakschade",
+        "title": "Inbraakschade Herstellen",
+        "service_type": "slotenmaker",
+        "h1": "Inbraakschade - Spoed Reparatie",
+        "description": "Inbraakschade aan deur of slot? Wij herstellen de schade en maken uw woning weer veilig.",
+        "keywords": ["inbraakschade", "inbraak slot reparatie", "deur na inbraak", "slot na inbraak", "inbraakpreventie"],
+        "problems": ["Deur geforceerd", "Slot kapot na inbraak", "Kozijn beschadigd", "Deur sluit niet meer", "Direct weer veilig"],
+        "meta_title": "Inbraakschade Herstellen | Spoed Slotenmaker - Direct Veilig",
+        "meta_description": "Inbraakschade? Onze slotenmakers herstellen de schade en maken uw woning direct weer veilig. 24/7 spoed service."
+    },
+    # Elektricien problemen
+    "stroomstoring": {
+        "slug": "stroomstoring",
+        "title": "Stroomstoring Spoed Service",
+        "service_type": "elektricien",
+        "h1": "Stroomstoring - 24/7 Elektricien",
+        "description": "Stroomstoring in huis? Onze spoed elektriciens zijn 24/7 beschikbaar om uw stroom te herstellen.",
+        "keywords": ["stroomstoring", "geen stroom", "stroom uitgevallen", "elektricien spoed", "stroomuitval"],
+        "problems": ["Geen stroom in huis", "Stroom uitgevallen", "Gedeeltelijk geen stroom", "Stroom valt steeds uit", "Hoofdschakelaar valt uit"],
+        "meta_title": "Stroomstoring | 24/7 Spoed Elektricien - Snel Stroom Terug",
+        "meta_description": "Stroomstoring? Onze 24/7 spoed elektriciens herstellen uw stroom snel. Binnen 30 minuten ter plaatse."
+    },
+    "kortsluiting": {
+        "slug": "kortsluiting",
+        "title": "Kortsluiting Spoed Service",
+        "service_type": "elektricien",
+        "h1": "Kortsluiting - Direct Hulp",
+        "description": "Kortsluiting in huis? Dit kan gevaarlijk zijn. Onze elektriciens komen direct om het probleem veilig op te lossen.",
+        "keywords": ["kortsluiting", "kortsluiting spoed", "vonken elektra", "brandlucht elektra", "elektra gevaarlijk"],
+        "problems": ["Kortsluiting in huis", "Vonken uit stopcontact", "Brandlucht elektra", "Zekering springt steeds", "Rook uit meterkast"],
+        "meta_title": "Kortsluiting | Spoed Elektricien - Veilig & Snel Opgelost",
+        "meta_description": "Kortsluiting? Bel direct onze 24/7 spoed elektricien. Veilig en snel opgelost. Voorkom brandgevaar!"
+    },
+    "groepenkast-storing": {
+        "slug": "groepenkast-storing",
+        "title": "Groepenkast Storing Service",
+        "service_type": "elektricien",
+        "h1": "Groepenkast Storing - Spoed Reparatie",
+        "description": "Storing in de groepenkast? Automaat die uitvalt? Onze elektriciens lossen het snel op.",
+        "keywords": ["groepenkast storing", "automaat valt uit", "groep springt", "meterkast probleem", "zekering kapot"],
+        "problems": ["Automaat valt steeds uit", "Groep springt eruit", "Aardlekschakelaar defect", "Zekering kapot", "Oververhitte groepenkast"],
+        "meta_title": "Groepenkast Storing | 24/7 Elektricien - Direct Gerepareerd",
+        "meta_description": "Groepenkast storing? Automaat of aardlek valt uit? Onze elektriciens repareren het snel. 24/7 service."
+    },
+    "aardlekschakelaar": {
+        "slug": "aardlekschakelaar",
+        "title": "Aardlekschakelaar Valt Uit",
+        "service_type": "elektricien",
+        "h1": "Aardlekschakelaar Valt Uit - Hulp",
+        "description": "Aardlekschakelaar valt steeds uit? Wij vinden de oorzaak en lossen het probleem op.",
+        "keywords": ["aardlekschakelaar", "aardlek valt uit", "aardlekschakelaar defect", "geen stroom aardlek", "aardlek blijft uitvallen"],
+        "problems": ["Aardlek valt steeds uit", "Aardlek blijft uitvallen", "Oorzaak aardlek onbekend", "Aardlekschakelaar defect", "Isolatiefout"],
+        "meta_title": "Aardlekschakelaar Valt Uit | Elektricien - Oorzaak Vinden",
+        "meta_description": "Aardlekschakelaar valt steeds uit? Onze elektriciens vinden de oorzaak en lossen het op. 24/7 bereikbaar."
+    }
+}
+
+# Dutch cities for SEO pages
+DUTCH_CITIES = [
+    {"slug": "amsterdam", "name": "Amsterdam", "province": "Noord-Holland"},
+    {"slug": "rotterdam", "name": "Rotterdam", "province": "Zuid-Holland"},
+    {"slug": "den-haag", "name": "Den Haag", "province": "Zuid-Holland"},
+    {"slug": "utrecht", "name": "Utrecht", "province": "Utrecht"},
+    {"slug": "eindhoven", "name": "Eindhoven", "province": "Noord-Brabant"},
+    {"slug": "tilburg", "name": "Tilburg", "province": "Noord-Brabant"},
+    {"slug": "groningen", "name": "Groningen", "province": "Groningen"},
+    {"slug": "almere", "name": "Almere", "province": "Flevoland"},
+    {"slug": "breda", "name": "Breda", "province": "Noord-Brabant"},
+    {"slug": "nijmegen", "name": "Nijmegen", "province": "Gelderland"},
+    {"slug": "enschede", "name": "Enschede", "province": "Overijssel"},
+    {"slug": "arnhem", "name": "Arnhem", "province": "Gelderland"},
+    {"slug": "haarlem", "name": "Haarlem", "province": "Noord-Holland"},
+    {"slug": "amersfoort", "name": "Amersfoort", "province": "Utrecht"},
+    {"slug": "zaanstad", "name": "Zaanstad", "province": "Noord-Holland"},
+    {"slug": "apeldoorn", "name": "Apeldoorn", "province": "Gelderland"},
+    {"slug": "s-hertogenbosch", "name": "'s-Hertogenbosch", "province": "Noord-Brabant"},
+    {"slug": "maastricht", "name": "Maastricht", "province": "Limburg"},
+    {"slug": "leiden", "name": "Leiden", "province": "Zuid-Holland"},
+    {"slug": "dordrecht", "name": "Dordrecht", "province": "Zuid-Holland"},
+    {"slug": "zwolle", "name": "Zwolle", "province": "Overijssel"},
+    {"slug": "ede", "name": "Ede", "province": "Gelderland"},
+    {"slug": "zoetermeer", "name": "Zoetermeer", "province": "Zuid-Holland"},
+    {"slug": "leeuwarden", "name": "Leeuwarden", "province": "Friesland"},
+    {"slug": "alkmaar", "name": "Alkmaar", "province": "Noord-Holland"},
+    {"slug": "delft", "name": "Delft", "province": "Zuid-Holland"},
+    {"slug": "venlo", "name": "Venlo", "province": "Limburg"},
+    {"slug": "deventer", "name": "Deventer", "province": "Overijssel"},
+    {"slug": "helmond", "name": "Helmond", "province": "Noord-Brabant"},
+    {"slug": "hengelo", "name": "Hengelo", "province": "Overijssel"},
+    {"slug": "gouda", "name": "Gouda", "province": "Zuid-Holland"},
+    {"slug": "hilversum", "name": "Hilversum", "province": "Noord-Holland"},
+    {"slug": "purmerend", "name": "Purmerend", "province": "Noord-Holland"},
+    {"slug": "vlaardingen", "name": "Vlaardingen", "province": "Zuid-Holland"},
+    {"slug": "roosendaal", "name": "Roosendaal", "province": "Noord-Brabant"},
+    {"slug": "hoorn", "name": "Hoorn", "province": "Noord-Holland"},
+    {"slug": "assen", "name": "Assen", "province": "Drenthe"},
+    {"slug": "middelburg", "name": "Middelburg", "province": "Zeeland"},
+    {"slug": "emmen", "name": "Emmen", "province": "Drenthe"},
+    {"slug": "den-bosch", "name": "Den Bosch", "province": "Noord-Brabant"},
+]
+
+SERVICE_INFO = {
+    "loodgieter": {
+        "name": "Loodgieter",
+        "slug": "loodgieter",
+        "description": "lekkages, verstoppingen en sanitair problemen",
+        "keywords": ["spoed loodgieter", "24/7 loodgieter", "loodgieter nooddienst"],
+        "problems": ["Lekkage", "WC verstopt", "Riool verstopt", "Geen warm water", "Afvoer verstopt"]
+    },
+    "slotenmaker": {
+        "name": "Slotenmaker", 
+        "slug": "slotenmaker",
+        "description": "buitensluitingen, slot vervangingen en inbraakschade",
+        "keywords": ["spoed slotenmaker", "24/7 slotenmaker", "slotenmaker nooddienst"],
+        "problems": ["Buitengesloten", "Sleutel afgebroken", "Slot vervangen", "Inbraakschade", "Cilinder vervangen"]
+    },
+    "elektricien": {
+        "name": "Elektricien",
+        "slug": "elektricien", 
+        "description": "stroomstoringen, kortsluiting en groepenkast problemen",
+        "keywords": ["spoed elektricien", "24/7 elektricien", "elektricien storingsdienst"],
+        "problems": ["Stroomstoring", "Kortsluiting", "Groepenkast storing", "Aardlek valt uit", "Stopcontact defect"]
+    }
+}
+
+@api_router.get("/seo/problems")
+async def get_all_problems():
+    """Get all problem pages for SEO"""
+    return list(PROBLEM_PAGES.values())
+
+@api_router.get("/seo/problems/{slug}")
+async def get_problem_page(slug: str):
+    """Get specific problem page data"""
+    if slug not in PROBLEM_PAGES:
+        raise HTTPException(status_code=404, detail="Probleem pagina niet gevonden")
+    return PROBLEM_PAGES[slug]
+
+@api_router.get("/seo/cities")
+async def get_all_cities():
+    """Get all city pages for SEO"""
+    return DUTCH_CITIES
+
+@api_router.get("/seo/cities/{city_slug}/{service_type}")
+async def get_city_service_page(city_slug: str, service_type: str):
+    """Get city-specific service page data"""
+    city = next((c for c in DUTCH_CITIES if c["slug"] == city_slug), None)
+    if not city:
+        raise HTTPException(status_code=404, detail="Stad niet gevonden")
+    
+    service = SERVICE_INFO.get(service_type)
+    if not service:
+        raise HTTPException(status_code=404, detail="Service niet gevonden")
+    
+    return {
+        "city": city,
+        "service": service,
+        "title": f"Spoed {service['name']} {city['name']}",
+        "h1": f"Spoed {service['name']} {city['name']} - 24/7",
+        "description": f"Direct een spoed {service['name'].lower()} nodig in {city['name']}? Wij zijn 24/7 bereikbaar voor {service['description']}. Binnen 30 minuten ter plaatse in {city['name']} en omgeving.",
+        "meta_title": f"Spoed {service['name']} {city['name']} | 24/7 Beschikbaar - Snel Ter Plaatse",
+        "meta_description": f"Spoed {service['name'].lower()} nodig in {city['name']}? 24/7 bereikbaar, binnen 30 min ter plaatse. Bel nu voor directe hulp!"
+    }
+
+@api_router.get("/seo/services")
+async def get_services_info():
+    """Get all services info for SEO"""
+    return SERVICE_INFO
+
+# ==================== GOOGLE ADS CAMPAIGN PLANNER ====================
+
+class CampaignCreate(BaseModel):
+    name: str
+    service_type: str
+    cities: List[str]
+    keywords: List[str]
+    daily_budget: float
+    status: str = "draft"
+    notes: Optional[str] = ""
+
+class CampaignUpdate(BaseModel):
+    name: Optional[str] = None
+    cities: Optional[List[str]] = None
+    keywords: Optional[List[str]] = None
+    daily_budget: Optional[float] = None
+    status: Optional[str] = None
+    notes: Optional[str] = None
+
+@api_router.get("/admin/campaigns")
+async def get_campaigns(current_user: dict = Depends(get_admin_user)):
+    """Get all campaigns"""
+    campaigns = await db.campaigns.find({}, {"_id": 0}).to_list(100)
+    return campaigns
+
+@api_router.post("/admin/campaigns")
+async def create_campaign(campaign: CampaignCreate, current_user: dict = Depends(get_admin_user)):
+    """Create a new campaign"""
+    campaign_data = {
+        "id": str(uuid.uuid4()),
+        "name": campaign.name,
+        "service_type": campaign.service_type,
+        "cities": campaign.cities,
+        "keywords": campaign.keywords,
+        "daily_budget": campaign.daily_budget,
+        "status": campaign.status,
+        "notes": campaign.notes,
+        "created_at": datetime.now(timezone.utc),
+        "updated_at": datetime.now(timezone.utc),
+        "created_by": current_user["user_id"]
+    }
+    await db.campaigns.insert_one(campaign_data)
+    return {"message": "Campagne aangemaakt", "campaign": {k: v for k, v in campaign_data.items() if k != "_id"}}
+
+@api_router.put("/admin/campaigns/{campaign_id}")
+async def update_campaign(campaign_id: str, campaign: CampaignUpdate, current_user: dict = Depends(get_admin_user)):
+    """Update a campaign"""
+    update_data = {k: v for k, v in campaign.dict().items() if v is not None}
+    update_data["updated_at"] = datetime.now(timezone.utc)
+    
+    result = await db.campaigns.update_one(
+        {"id": campaign_id},
+        {"$set": update_data}
+    )
+    
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Campagne niet gevonden")
+    
+    return {"message": "Campagne bijgewerkt"}
+
+@api_router.delete("/admin/campaigns/{campaign_id}")
+async def delete_campaign(campaign_id: str, current_user: dict = Depends(get_admin_user)):
+    """Delete a campaign"""
+    result = await db.campaigns.delete_one({"id": campaign_id})
+    
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Campagne niet gevonden")
+    
+    return {"message": "Campagne verwijderd"}
+
+@api_router.get("/admin/campaigns/suggestions")
+async def get_campaign_suggestions(service_type: str = None, current_user: dict = Depends(get_admin_user)):
+    """Get keyword suggestions for campaigns"""
+    suggestions = {
+        "loodgieter": {
+            "keywords": [
+                "spoed loodgieter", "loodgieter 24/7", "24 uurs loodgieter", "loodgieter nooddienst",
+                "lekkage spoed", "wc verstopt", "riool verstopt", "afvoer verstopt",
+                "waterlekkage", "gesprongen leiding", "loodgieter weekend", "loodgieter nacht"
+            ],
+            "negative_keywords": ["vacature", "opleiding", "cursus", "salaris"]
+        },
+        "slotenmaker": {
+            "keywords": [
+                "spoed slotenmaker", "slotenmaker 24/7", "24 uurs slotenmaker", "buitengesloten",
+                "deur openen", "slot vervangen", "cilinder vervangen", "sleutel afgebroken",
+                "inbraakschade", "slotenmaker nacht", "slotenmaker weekend"
+            ],
+            "negative_keywords": ["vacature", "opleiding", "cursus", "sleutelmaker"]
+        },
+        "elektricien": {
+            "keywords": [
+                "spoed elektricien", "elektricien 24/7", "24 uurs elektricien", "stroomstoring",
+                "kortsluiting", "groepenkast storing", "aardlekschakelaar", "geen stroom",
+                "elektricien storingsdienst", "elektricien nacht", "elektricien weekend"
+            ],
+            "negative_keywords": ["vacature", "opleiding", "cursus", "stage"]
+        }
+    }
+    
+    if service_type and service_type in suggestions:
+        return suggestions[service_type]
+    return suggestions
