@@ -99,6 +99,7 @@ export default function AdminDashboard() {
   const [showCampaignCreator, setShowCampaignCreator] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState(null);
   const [selectedCountryTab, setSelectedCountryTab] = useState("NL");
+  const [authToken, setAuthToken] = useState(null);
   const [campaignConfig, setCampaignConfig] = useState({
     name: "",
     country: "NL",
