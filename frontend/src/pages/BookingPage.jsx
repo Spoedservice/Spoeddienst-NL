@@ -166,6 +166,12 @@ export default function BookingPage() {
     
     setLoading(true);
     try {
+      // Upload photo first if present
+      let photoUrl = null;
+      if (photo) {
+        photoUrl = await uploadPhoto();
+      }
+      
       const bookingData = {
         service_type: selectedService,
         is_emergency: isEmergency,
@@ -177,7 +183,8 @@ export default function BookingPage() {
         preferred_time: formData.preferred_time,
         customer_name: formData.customer_name,
         customer_email: formData.customer_email,
-        customer_phone: formData.customer_phone
+        customer_phone: formData.customer_phone,
+        photo_url: photoUrl
       };
 
       const response = await axios.post(`${API}/bookings`, bookingData);
