@@ -786,6 +786,22 @@ export default function AdminDashboard() {
                             </td>
                             <td className="py-3 px-2 text-sm">{booking.preferred_date}</td>
                             <td className="py-3 px-2">
+                              {booking.photo_url ? (
+                                <a 
+                                  href={`${process.env.REACT_APP_BACKEND_URL}${booking.photo_url}`} 
+                                  target="_blank" 
+                                  rel="noopener noreferrer"
+                                  className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800"
+                                  title="Bekijk foto"
+                                >
+                                  <Camera className="w-4 h-4" />
+                                  <span className="text-xs">Foto</span>
+                                </a>
+                              ) : (
+                                <span className="text-xs text-slate-400">-</span>
+                              )}
+                            </td>
+                            <td className="py-3 px-2">
                               {booking.vakman_name ? (
                                 <div className="flex items-center gap-2">
                                   <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
