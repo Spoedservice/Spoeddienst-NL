@@ -596,6 +596,7 @@ export default function AdminDashboard() {
             { id: "vakmannen", label: "Vakmannen", icon: Users, count: pendingVakmannen.length },
             { id: "reviews", label: "Reviews", icon: Star, count: pendingReviews.length },
             { id: "financial", label: "Financieel", icon: Euro },
+            { id: "campaigns", label: "Campagnes", icon: Target },
             { id: "marketing", label: "Marketing", icon: PieChart }
           ].map(tab => (
             <button
