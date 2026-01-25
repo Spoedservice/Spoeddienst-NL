@@ -2,6 +2,7 @@ import "@/App.css";
 import { useEffect } from "react";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { Toaster } from "@/components/ui/sonner";
+import { HelmetProvider } from "react-helmet-async";
 
 // ScrollToTop component - scrolls to top on route change
 function ScrollToTop() {
