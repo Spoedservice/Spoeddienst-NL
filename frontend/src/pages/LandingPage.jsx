@@ -193,20 +193,23 @@ export default function LandingPage() {
               <Badge className="bg-[#FF4500] text-white mb-6 px-4 py-1.5 text-sm font-medium pulse-emergency">
                 24/7 Spoed Beschikbaar
               </Badge>
-              <h1 className="font-heading font-black text-4xl sm:text-5xl lg:text-6xl text-slate-900 mb-6 leading-tight">
-                Boek snel een <span className="text-[#FF4500]">betrouwbare vakman</span>
+              <h1 className="font-heading font-black text-4xl sm:text-5xl lg:text-6xl text-slate-900 mb-4 leading-tight">
+                24/7 Spoed <span className="text-[#FF4500]">Loodgieter, Slotenmaker & Elektricien</span>
               </h1>
+              <p className="text-xl text-slate-700 font-medium mb-2">
+                Landelijk — Direct hulp nodig?
+              </p>
               <p className="text-lg text-slate-600 mb-8 max-w-lg">
-                Kies en boek je klus voor een vaste prijs. Je hebt vaak binnen 4 uur een afspraak met een gescreende vakman - bij spoed zijn wij nóg sneller!
+                Binnen 30 minuten ter plaatse (waar mogelijk). Direct hulp bij lekkage, verstopping, buitensluiting, stroomstoring en kortsluiting. Vaste prijs, gescreende vakmannen.
               </p>
 
-              {/* Search Box */}
-              <form onSubmit={handleSearch} className="mb-8">
+              {/* Search Box with Suggestions */}
+              <form onSubmit={handleSearch} className="mb-6">
                 <div className="flex flex-col sm:flex-row gap-3">
                   <div className="flex-1 relative">
                     <Input
                       type="text"
-                      placeholder="Zoek hier je klus (bijv. lekkage, stroomstoring)"
+                      placeholder="Wat is je probleem? (bijv. lekkage, buitengesloten)"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       className="h-14 pl-4 pr-4 text-base bg-white border-slate-200"
@@ -234,6 +237,27 @@ export default function LandingPage() {
                   <span className="text-slate-700 font-medium">Spoed - Direct hulp nodig</span>
                 </label>
               </form>
+
+              {/* Popular Search Suggestions */}
+              <div className="mb-8">
+                <p className="text-sm text-slate-500 mb-2">Populaire zoekopdrachten:</p>
+                <div className="flex flex-wrap gap-2">
+                  {['Lekkage', 'WC verstopt', 'Buitengesloten', 'Stroomstoring', 'Riool verstopt', 'Kortsluiting', 'Slot vervangen', 'Groepenkast'].map((term) => (
+                    <button
+                      key={term}
+                      type="button"
+                      onClick={() => {
+                        setSearchQuery(term);
+                        handleSearch({ preventDefault: () => {} });
+                      }}
+                      className="px-3 py-1.5 bg-white border border-slate-200 rounded-full text-sm text-slate-600 hover:border-[#FF4500] hover:text-[#FF4500] transition-colors"
+                      data-testid={`suggestion-${term.toLowerCase().replace(' ', '-')}`}
+                    >
+                      {term}
+                    </button>
+                  ))}
+                </div>
+              </div>
 
               {/* Trust Badges */}
               <div className="flex flex-wrap gap-6">
