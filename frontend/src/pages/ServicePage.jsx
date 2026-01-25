@@ -193,46 +193,6 @@ export default function ServicePage() {
         </div>
       </section>
 
-      {/* Vakmannen */}
-      {vakmannen.length > 0 && (
-        <section className="py-12 px-4 sm:px-6 lg:px-8">
-          <div className="max-w-6xl mx-auto">
-            <h2 className="font-heading font-bold text-2xl text-slate-900 mb-6">
-              Beschikbare vakmannen
-            </h2>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {vakmannen.map((vakman) => (
-                <Card key={vakman.id} className="border border-slate-200">
-                  <CardContent className="p-6">
-                    <div className="flex items-center gap-3 mb-4">
-                      <div className="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center font-heading font-bold text-lg text-slate-600">
-                        {vakman.name?.charAt(0)}
-                      </div>
-                      <div>
-                        <p className="font-medium text-slate-900">{vakman.name}</p>
-                        <div className="flex items-center gap-1 text-sm">
-                          <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
-                          <span className="text-slate-600">{vakman.rating?.toFixed(1) || 'Nieuw'}</span>
-                          <span className="text-slate-400">({vakman.total_reviews || 0} reviews)</span>
-                        </div>
-                      </div>
-                    </div>
-                    <p className="text-slate-600 text-sm mb-4 line-clamp-2">{vakman.description}</p>
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="flex items-center gap-1 text-slate-500">
-                        <MapPin className="w-4 h-4" />
-                        {vakman.location}
-                      </span>
-                      <span className="font-medium text-slate-900">€{vakman.hourly_rate}/uur</span>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
       {/* Trust Section */}
       <section className="py-12 px-4 sm:px-6 lg:px-8 bg-slate-900 text-white">
         <div className="max-w-6xl mx-auto">
