@@ -17,7 +17,7 @@ import os
 import uuid
 from datetime import datetime
 
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://spoeddienst.preview.emergentagent.com')
+BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://rapidhelp-3.preview.emergentagent.com')
 
 class TestBookingWithoutVakman:
     """Test that bookings are created WITHOUT vakman_id (admin assigns later)"""
