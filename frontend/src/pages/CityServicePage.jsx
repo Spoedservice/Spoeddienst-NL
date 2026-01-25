@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useParams, Link, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -16,10 +16,14 @@ const iconMap = {
 };
 
 export default function CityServicePage() {
-  const { service, city } = useParams();
+  const { city } = useParams();
+  const location = useLocation();
   const navigate = useNavigate();
   const [pageData, setPageData] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  // Extract service from URL path (e.g., /spoed-loodgieter/amsterdam -> loodgieter)
+  const service = location.pathname.split('/')[1].replace('spoed-', '');
 
   useEffect(() => {
     const fetchData = async () => {
