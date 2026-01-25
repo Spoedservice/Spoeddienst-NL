@@ -263,10 +263,7 @@ export default function LandingPage() {
                     <button
                       key={term}
                       type="button"
-                      onClick={() => {
-                        setSearchQuery(term);
-                        handleSearch({ preventDefault: () => {} });
-                      }}
+                      onClick={() => handleSuggestionClick(term)}
                       className="px-3 py-1.5 bg-white border border-slate-200 rounded-full text-sm text-slate-600 hover:border-[#FF4500] hover:text-[#FF4500] transition-colors"
                       data-testid={`suggestion-${term.toLowerCase().replace(' ', '-')}`}
                     >
