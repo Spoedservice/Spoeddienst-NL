@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Copy, Download, ExternalLink, Search, CheckCircle, MapPin, Zap, Droplets, Key } from "lucide-react";
+import { Copy, Download, ExternalLink, Search, CheckCircle, MapPin, Zap, Droplets, Key, FileSpreadsheet } from "lucide-react";
 import { toast } from "sonner";
 
 const DUTCH_CITIES = [
@@ -56,6 +56,21 @@ const SERVICES = [
   { slug: "elektricien", name: "Elektricien", icon: Zap, color: "text-yellow-500", bgColor: "bg-yellow-100" },
 ];
 
+const SERVICE_KEYWORDS = {
+  loodgieter: [
+    "spoed loodgieter", "loodgieter", "loodgieter 24/7", "24 uurs loodgieter",
+    "lekkage", "wc verstopt", "riool verstopt", "afvoer verstopt"
+  ],
+  slotenmaker: [
+    "spoed slotenmaker", "slotenmaker", "slotenmaker 24/7", "24 uurs slotenmaker",
+    "buitengesloten", "slot vervangen", "deur openen", "sleutel kwijt"
+  ],
+  elektricien: [
+    "spoed elektricien", "elektricien", "elektricien 24/7", "24 uurs elektricien",
+    "stroomstoring", "kortsluiting", "geen stroom", "groepenkast"
+  ]
+};
+
 const BASE_URL = "https://spoeddienst24.nl";
 
 export default function CityPagesOverview() {
@@ -65,7 +80,8 @@ export default function CityPagesOverview() {
   const [copiedUrl, setCopiedUrl] = useState(null);
   const [utmSource, setUtmSource] = useState("google");
   const [utmMedium, setUtmMedium] = useState("cpc");
-  const [utmCampaign, setUtmCampaign] = useState("spoed_campagne");
+  const [utmCampaign, setUtmCampaign] = useState("spoed");
+  const [dailyBudget, setDailyBudget] = useState("50");
 
   const provinces = [...new Set(DUTCH_CITIES.map(c => c.province))].sort();
 
@@ -105,7 +121,164 @@ export default function CityPagesOverview() {
     toast.success(`${urls.length} URLs gekopieerd!`);
   };
 
-  const downloadCSV = () => {
+  // Google Ads Editor Complete CSV Export
+  const downloadGoogleAdsEditorCSV = () => {
+    const services = selectedService === "all" ? SERVICES : SERVICES.filter(s => s.slug === selectedService);
+    const rows = [];
+    
+    // Header row for Google Ads Editor
+    rows.push([
+      "Row Type",
+      "Action", 
+      "Campaign status",
+      "Campaign",
+      "Campaign type",
+      "Networks",
+      "Budget",
+      "Budget type",
+      "Ad group",
+      "Ad group status",
+      "Max CPC",
+      "Ad type",
+      "Headline 1",
+      "Headline 2", 
+      "Headline 3",
+      "Description 1",
+      "Description 2",
+      "Final URL",
+      "Path 1",
+      "Path 2",
+      "Keyword",
+      "Match type",
+      "Keyword status"
+    ]);
+    
+    services.forEach(service => {
+      const campaignName = `Spoed ${service.name} NL`;
+      
+      // Campaign row
+      rows.push([
+        "Campaign",
+        "Add",
+        "Enabled",
+        campaignName,
+        "Search",
+        "Google search",
+        dailyBudget,
+        "Daily",
+        "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""
+      ]);
+      
+      filteredCities.forEach(city => {
+        const adGroupName = city.name;
+        const finalUrl = getFullUrl(service.slug, city.slug, true);
+        const keywords = SERVICE_KEYWORDS[service.slug] || [];
+        
+        // Ad Group row
+        rows.push([
+          "Ad group",
+          "Add",
+          "",
+          campaignName,
+          "",
+          "",
+          "",
+          "",
+          adGroupName,
+          "Enabled",
+          "2.00",
+          "", "", "", "", "", "", "", "", "", "", "", ""
+        ]);
+        
+        // Responsive Search Ad row
+        rows.push([
+          "Ad",
+          "Add",
+          "",
+          campaignName,
+          "",
+          "",
+          "",
+          "",
+          adGroupName,
+          "",
+          "",
+          "Responsive search ad",
+          `Spoed ${service.name} ${city.name}`,
+          "24/7 Beschikbaar",
+          "Binnen 30 Min Ter Plaatse",
+          `Direct een spoed ${service.name.toLowerCase()} nodig in ${city.name}? Wij zijn 24/7 bereikbaar. Bel nu!`,
+          `Professionele ${service.name.toLowerCase()}s in ${city.name}. Snel ter plaatse, vaste prijzen.`,
+          finalUrl,
+          "spoed",
+          service.slug,
+          "", "", ""
+        ]);
+        
+        // Keyword rows
+        keywords.forEach(baseKeyword => {
+          const keyword = `${baseKeyword} ${city.name.toLowerCase()}`;
+          
+          // Phrase match
+          rows.push([
+            "Keyword",
+            "Add",
+            "",
+            campaignName,
+            "",
+            "",
+            "",
+            "",
+            adGroupName,
+            "",
+            "",
+            "",
+            "", "", "", "", "",
+            finalUrl,
+            "", "",
+            `"${keyword}"`,
+            "Phrase",
+            "Enabled"
+          ]);
+          
+          // Exact match for main keywords
+          if (baseKeyword.includes("spoed") || baseKeyword === service.slug) {
+            rows.push([
+              "Keyword",
+              "Add",
+              "",
+              campaignName,
+              "",
+              "",
+              "",
+              "",
+              adGroupName,
+              "",
+              "",
+              "",
+              "", "", "", "", "",
+              finalUrl,
+              "", "",
+              `[${keyword}]`,
+              "Exact",
+              "Enabled"
+            ]);
+          }
+        });
+      });
+    });
+    
+    const csvContent = rows.map(row => row.map(cell => `"${(cell || '').toString().replace(/"/g, '""')}"`).join(",")).join("\n");
+    const blob = new Blob(["\ufeff" + csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `spoeddienst24_google_ads_editor_${new Date().toISOString().split('T')[0]}.csv`;
+    link.click();
+    toast.success("Google Ads Editor CSV gedownload! Importeer in Google Ads Editor.");
+  };
+
+  // Simple CSV for reference
+  const downloadSimpleCSV = () => {
     const services = selectedService === "all" ? SERVICES.map(s => s.slug) : [selectedService];
     const rows = [["Service", "Stad", "Provincie", "URL", "URL met UTM", "Headline 1", "Headline 2", "Description"]];
     
@@ -129,9 +302,9 @@ export default function CityPagesOverview() {
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
-    link.download = `spoeddienst24_city_pages_${new Date().toISOString().split('T')[0]}.csv`;
+    link.download = `spoeddienst24_overzicht_${new Date().toISOString().split('T')[0]}.csv`;
     link.click();
-    toast.success("CSV gedownload!");
+    toast.success("Overzicht CSV gedownload!");
   };
 
   const totalPages = selectedService === "all" 
@@ -148,59 +321,108 @@ export default function CityPagesOverview() {
             {totalPages} landing pages klaar voor je campagnes
           </p>
         </div>
-        <div className="flex gap-2">
-          <Button variant="outline" onClick={() => copyAllUrls(false)}>
+        <div className="flex flex-wrap gap-2">
+          <Button variant="outline" onClick={() => copyAllUrls(true)}>
             <Copy className="w-4 h-4 mr-2" />
             Kopieer URLs
           </Button>
-          <Button variant="outline" onClick={() => copyAllUrls(true)}>
-            <Copy className="w-4 h-4 mr-2" />
-            Met UTM
-          </Button>
-          <Button onClick={downloadCSV} className="bg-[#FF4500] hover:bg-[#CC3700]">
+          <Button variant="outline" onClick={downloadSimpleCSV}>
             <Download className="w-4 h-4 mr-2" />
-            Download CSV
+            Overzicht CSV
+          </Button>
+          <Button onClick={downloadGoogleAdsEditorCSV} className="bg-[#4285F4] hover:bg-[#3367D6] text-white">
+            <FileSpreadsheet className="w-4 h-4 mr-2" />
+            Google Ads Editor CSV
           </Button>
         </div>
       </div>
 
-      {/* UTM Settings */}
-      <Card>
-        <CardHeader className="pb-3">
-          <CardTitle className="text-lg">UTM Parameters</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <label className="text-sm text-slate-500 mb-1 block">utm_source</label>
-              <Input 
-                value={utmSource} 
-                onChange={(e) => setUtmSource(e.target.value)}
-                placeholder="google"
-              />
-            </div>
-            <div>
-              <label className="text-sm text-slate-500 mb-1 block">utm_medium</label>
-              <Input 
-                value={utmMedium} 
-                onChange={(e) => setUtmMedium(e.target.value)}
-                placeholder="cpc"
-              />
-            </div>
-            <div>
-              <label className="text-sm text-slate-500 mb-1 block">utm_campaign</label>
-              <Input 
-                value={utmCampaign} 
-                onChange={(e) => setUtmCampaign(e.target.value)}
-                placeholder="spoed_campagne"
-              />
-            </div>
-          </div>
-          <p className="text-xs text-slate-400 mt-2">
-            Voorbeeld URL: {getFullUrl("loodgieter", "amsterdam", true)}
+      {/* Google Ads Editor Info */}
+      <Card className="border-[#4285F4] bg-blue-50">
+        <CardContent className="p-4">
+          <h3 className="font-bold text-[#4285F4] mb-2">📥 Google Ads Editor Import</h3>
+          <ol className="text-sm text-slate-600 space-y-1 list-decimal list-inside">
+            <li>Download de <strong>Google Ads Editor CSV</strong></li>
+            <li>Open <strong>Google Ads Editor</strong> (gratis te downloaden van Google)</li>
+            <li>Ga naar <strong>Account → Import → From file</strong></li>
+            <li>Selecteer het gedownloade CSV bestand</li>
+            <li>Controleer de preview en klik <strong>Post changes</strong></li>
+          </ol>
+          <p className="text-xs text-slate-500 mt-2">
+            Dit maakt automatisch: {selectedService === "all" ? "3 campagnes" : "1 campagne"} met {filteredCities.length} ad groups, ads en keywords per campagne.
           </p>
         </CardContent>
       </Card>
+
+      {/* Settings */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* UTM Settings */}
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-lg">UTM Parameters</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-3 gap-2">
+              <div>
+                <label className="text-xs text-slate-500 mb-1 block">source</label>
+                <Input 
+                  value={utmSource} 
+                  onChange={(e) => setUtmSource(e.target.value)}
+                  placeholder="google"
+                  className="h-8 text-sm"
+                />
+              </div>
+              <div>
+                <label className="text-xs text-slate-500 mb-1 block">medium</label>
+                <Input 
+                  value={utmMedium} 
+                  onChange={(e) => setUtmMedium(e.target.value)}
+                  placeholder="cpc"
+                  className="h-8 text-sm"
+                />
+              </div>
+              <div>
+                <label className="text-xs text-slate-500 mb-1 block">campaign</label>
+                <Input 
+                  value={utmCampaign} 
+                  onChange={(e) => setUtmCampaign(e.target.value)}
+                  placeholder="spoed"
+                  className="h-8 text-sm"
+                />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Campaign Settings */}
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-lg">Campagne Instellingen</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <label className="text-xs text-slate-500 mb-1 block">Dagbudget (€)</label>
+                <Input 
+                  type="number"
+                  value={dailyBudget} 
+                  onChange={(e) => setDailyBudget(e.target.value)}
+                  placeholder="50"
+                  className="h-8 text-sm"
+                />
+              </div>
+              <div>
+                <label className="text-xs text-slate-500 mb-1 block">Max CPC</label>
+                <Input 
+                  value="€2.00"
+                  disabled
+                  className="h-8 text-sm bg-slate-50"
+                />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
 
       {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-4">
@@ -242,6 +464,7 @@ export default function CityPagesOverview() {
         {SERVICES.map(service => {
           const ServiceIcon = service.icon;
           const isActive = selectedService === "all" || selectedService === service.slug;
+          const keywordCount = (SERVICE_KEYWORDS[service.slug]?.length || 0) * filteredCities.length * 1.5;
           return (
             <Card 
               key={service.slug} 
@@ -255,7 +478,9 @@ export default function CityPagesOverview() {
                   </div>
                   <div>
                     <p className="font-medium">{service.name}</p>
-                    <p className="text-sm text-slate-500">{filteredCities.length} steden</p>
+                    <p className="text-sm text-slate-500">
+                      {filteredCities.length} steden • ~{Math.round(keywordCount)} keywords
+                    </p>
                   </div>
                 </div>
               </CardContent>
@@ -265,7 +490,7 @@ export default function CityPagesOverview() {
       </div>
 
       {/* City list */}
-      <div className="space-y-2">
+      <div className="space-y-2 max-h-[500px] overflow-y-auto">
         {filteredCities.map(city => {
           const servicesToShow = selectedService === "all" ? SERVICES : SERVICES.filter(s => s.slug === selectedService);
           
