@@ -6,7 +6,7 @@ import {
   Eye, Phone, Mail, MapPin, AlertCircle, Filter, Search, RefreshCw,
   ChevronDown, ChevronUp, BarChart3, DollarSign, Download, FileText,
   PieChart, Target, TrendingDown, CreditCard, Euro, Receipt, Megaphone,
-  Globe, Play, Pause, Copy, ExternalLink, Sparkles, Send, Flag
+  Globe, Play, Pause, Copy, ExternalLink, Sparkles, Send, Flag, Camera
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
