@@ -14,6 +14,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
+import CampaignPlanner from "@/components/admin/CampaignPlanner";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
