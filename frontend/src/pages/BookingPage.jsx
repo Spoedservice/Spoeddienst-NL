@@ -88,6 +88,68 @@ export default function BookingPage() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const handlePhotoSelect = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      // Check file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error("Foto mag maximaal 5MB zijn");
+        return;
+      }
+      
+      // Check file type
+      if (!file.type.startsWith('image/')) {
+        toast.error("Alleen afbeeldingen zijn toegestaan");
+        return;
+      }
+      
+      setPhoto(file);
+      
+      // Create preview
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPhotoPreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const removePhoto = () => {
+    setPhoto(null);
+    setPhotoPreview(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
+  const uploadPhoto = async () => {
+    if (!photo) return null;
+    
+    setUploadingPhoto(true);
+    try {
+      // Convert to base64
+      const reader = new FileReader();
+      const base64Promise = new Promise((resolve) => {
+        reader.onloadend = () => resolve(reader.result);
+        reader.readAsDataURL(photo);
+      });
+      
+      const base64Data = await base64Promise;
+      
+      const response = await axios.post(`${API}/upload/photo`, {
+        photo: base64Data
+      });
+      
+      return response.data.photo_url;
+    } catch (error) {
+      console.error("Error uploading photo:", error);
+      toast.error("Foto uploaden mislukt");
+      return null;
+    } finally {
+      setUploadingPhoto(false);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     
