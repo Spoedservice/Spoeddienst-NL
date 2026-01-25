@@ -600,6 +600,7 @@ export default function AdminDashboard() {
             { id: "reviews", label: "Reviews", icon: Star, count: pendingReviews.length },
             { id: "financial", label: "Financieel", icon: Euro },
             { id: "campaigns", label: "Campagnes", icon: Target },
+            { id: "citypages", label: "City Pages", icon: Globe },
             { id: "marketing", label: "Marketing", icon: PieChart }
           ].map(tab => (
             <button
