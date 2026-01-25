@@ -131,6 +131,7 @@ class BookingCreate(BaseModel):
     customer_name: str
     customer_email: EmailStr
     customer_phone: str
+    photo_url: Optional[str] = None
 
 class Booking(BaseModel):
     model_config = ConfigDict(extra="ignore")
