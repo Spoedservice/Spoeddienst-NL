@@ -150,6 +150,7 @@ class Booking(BaseModel):
     customer_name: str
     customer_email: str
     customer_phone: str
+    photo_url: Optional[str] = None
     status: str = "pending"  # pending, accepted, in_progress, completed, cancelled
     price: float = 0.0
     payment_status: str = "unpaid"
