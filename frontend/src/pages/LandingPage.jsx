@@ -84,14 +84,31 @@ export default function LandingPage() {
       return;
     }
     
-    if (query.includes("elektr") || query.includes("stroom") || query.includes("lamp") || query.includes("schakelaar") || query.includes("stopcontact")) {
+    // Loodgieter keywords
+    if (query.includes("elektr") || query.includes("stroom") || query.includes("lamp") || query.includes("schakelaar") || query.includes("stopcontact") || query.includes("kortsluiting") || query.includes("groepenkast") || query.includes("meterkast") || query.includes("zekering") || query.includes("aardlek")) {
       navigate(`/boek/elektricien${emergencyParam}`);
-    } else if (query.includes("lood") || query.includes("lek") || query.includes("kraan") || query.includes("water") || query.includes("afvoer") || query.includes("toilet")) {
+    } else if (query.includes("lood") || query.includes("lek") || query.includes("kraan") || query.includes("water") || query.includes("afvoer") || query.includes("toilet") || query.includes("wc") || query.includes("verstop") || query.includes("riool") || query.includes("daklek") || query.includes("cv") || query.includes("verwarming")) {
       navigate(`/boek/loodgieter${emergencyParam}`);
-    } else if (query.includes("slot") || query.includes("deur") || query.includes("buiten") || query.includes("sleutel") || query.includes("inbraak")) {
+    } else if (query.includes("slot") || query.includes("deur") || query.includes("buiten") || query.includes("sleutel") || query.includes("inbraak") || query.includes("cilinder")) {
       navigate(`/boek/slotenmaker${emergencyParam}`);
     } else {
       // If no match found, show all services to choose from
+      navigate(`/diensten${emergencyParam}`);
+    }
+  };
+
+  const handleSuggestionClick = (term) => {
+    setSearchQuery(term);
+    const query = term.toLowerCase();
+    const emergencyParam = isEmergency ? '?emergency=true' : '';
+    
+    if (query.includes("stroom") || query.includes("kortsluiting") || query.includes("groepenkast")) {
+      navigate(`/boek/elektricien${emergencyParam}`);
+    } else if (query.includes("lek") || query.includes("wc") || query.includes("verstop") || query.includes("riool")) {
+      navigate(`/boek/loodgieter${emergencyParam}`);
+    } else if (query.includes("buiten") || query.includes("slot")) {
+      navigate(`/boek/slotenmaker${emergencyParam}`);
+    } else {
       navigate(`/diensten${emergencyParam}`);
     }
   };
