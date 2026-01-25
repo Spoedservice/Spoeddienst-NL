@@ -2273,9 +2273,6 @@ async def get_premium_status(session_id: str, request: Request):
 async def root():
     return {"message": "SpoedDienst24 API", "version": "1.0.0"}
 
-# Include the router in the main app
-app.include_router(api_router)
-
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
