@@ -323,6 +323,54 @@ export default function BookingPage() {
                 />
               </div>
 
+              {/* Photo Upload */}
+              <div className="mb-6">
+                <Label>Foto toevoegen (optioneel)</Label>
+                <p className="text-sm text-slate-500 mb-3">Een foto helpt ons het probleem beter te begrijpen</p>
+                
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handlePhotoSelect}
+                  accept="image/*"
+                  className="hidden"
+                  data-testid="photo-input"
+                />
+                
+                {!photoPreview ? (
+                  <div 
+                    onClick={() => fileInputRef.current?.click()}
+                    className="border-2 border-dashed border-slate-300 rounded-xl p-8 text-center cursor-pointer hover:border-[#FF4500] hover:bg-orange-50 transition-all"
+                  >
+                    <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <Camera className="w-8 h-8 text-slate-400" />
+                    </div>
+                    <p className="font-medium text-slate-700 mb-1">Klik om een foto te uploaden</p>
+                    <p className="text-sm text-slate-500">of sleep een afbeelding hierheen</p>
+                    <p className="text-xs text-slate-400 mt-2">Max 5MB - JPG, PNG, WEBP</p>
+                  </div>
+                ) : (
+                  <div className="relative inline-block">
+                    <img 
+                      src={photoPreview} 
+                      alt="Preview" 
+                      className="max-w-full max-h-64 rounded-xl border border-slate-200 shadow-sm"
+                    />
+                    <button
+                      type="button"
+                      onClick={removePhoto}
+                      className="absolute -top-2 -right-2 w-8 h-8 bg-red-500 text-white rounded-full flex items-center justify-center shadow-lg hover:bg-red-600 transition-colors"
+                    >
+                      <X className="w-5 h-5" />
+                    </button>
+                    <div className="mt-2 flex items-center gap-2 text-sm text-green-600">
+                      <CheckCircle className="w-4 h-4" />
+                      Foto toegevoegd
+                    </div>
+                  </div>
+                )}
+              </div>
+
               {/* Date and Time */}
               <div className="grid md:grid-cols-2 gap-6 mb-6">
                 <div>
