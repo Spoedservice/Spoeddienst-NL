@@ -748,6 +748,7 @@ export default function AdminDashboard() {
                           <th className="text-left py-3 px-2 text-sm font-medium text-slate-500">Contact</th>
                           <th className="text-left py-3 px-2 text-sm font-medium text-slate-500">Locatie</th>
                           <th className="text-left py-3 px-2 text-sm font-medium text-slate-500">Datum</th>
+                          <th className="text-left py-3 px-2 text-sm font-medium text-slate-500">Foto</th>
                           <th className="text-left py-3 px-2 text-sm font-medium text-slate-500">Monteur</th>
                           <th className="text-left py-3 px-2 text-sm font-medium text-slate-500">Status</th>
                           <th className="text-left py-3 px-2 text-sm font-medium text-slate-500">Actie</th>
