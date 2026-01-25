@@ -51,64 +51,72 @@ import ReviewPage from "@/pages/ReviewPage";
 import DienstenSelectiePage from "@/pages/DienstenSelectiePage";
 import VakmanApprovePage from "@/pages/VakmanApprovePage";
 import AdminDashboard from "@/pages/AdminDashboard";
+import ProblemPage from "@/pages/ProblemPage";
+import CityServicePage from "@/pages/CityServicePage";
 
 function App() {
   return (
-    <div className="App">
-      <BrowserRouter>
-        <ScrollToTop />
-        <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/boek" element={<BookingPage />} />
-          <Route path="/boek/:serviceType" element={<BookingPage />} />
-          <Route path="/booking/:bookingId" element={<BookingPage />} />
-          <Route path="/booking/success" element={<BookingSuccessPage />} />
-          <Route path="/diensten/:slug" element={<ServicePage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
-          <Route path="/vakman/register" element={<VakmanRegisterPage />} />
-          <Route path="/wachtwoord-vergeten" element={<WachtwoordVergetenPage />} />
-          <Route path="/reset-wachtwoord" element={<ResetWachtwoordPage />} />
-          <Route path="/dashboard" element={<CustomerDashboard />} />
-          <Route path="/vakman/dashboard" element={<VakmanDashboard />} />
-          {/* Zakelijke pagina's */}
-          <Route path="/vve" element={<VVEPage />} />
-          <Route path="/horeca" element={<HorecaPage />} />
-          <Route path="/kantoor" element={<KantoorPage />} />
-          <Route path="/winkel" element={<WinkelPage />} />
-          <Route path="/partner" element={<PartnerPage />} />
-          <Route path="/affiliate" element={<AffiliatePage />} />
-          {/* Vakman pagina's */}
-          <Route path="/vakman" element={<VakmanInfoPage />} />
-          <Route path="/vakman/app" element={<VakmanAppPage />} />
-          <Route path="/vakman/voorwaarden" element={<VakmanVoorwaardenPage />} />
-          <Route path="/vakman/faq" element={<VakmanFAQPage />} />
-          {/* Info pagina's */}
-          <Route path="/over-ons" element={<OverOnsPage />} />
-          <Route path="/garantie" element={<GarantiePage />} />
-          <Route path="/prijzen" element={<PrijsgidsenPage />} />
-          <Route path="/premium" element={<PremiumPage />} />
-          <Route path="/premium/success" element={<PremiumSuccessPage />} />
-          <Route path="/blog" element={<BlogPage />} />
-          <Route path="/vacatures" element={<VacaturesPage />} />
-          {/* Juridische pagina's */}
-          <Route path="/privacy" element={<PrivacyPage />} />
-          <Route path="/voorwaarden" element={<VoorwaardenPage />} />
-          <Route path="/cookies" element={<CookiePage />} />
-          {/* Review pagina */}
-          <Route path="/review" element={<ReviewPage />} />
-          {/* Diensten selectie */}
-          <Route path="/diensten" element={<DienstenSelectiePage />} />
-          {/* Vakman goedkeuring */}
-          <Route path="/vakman/:vakmanId/approve" element={<VakmanApprovePage />} />
-          {/* Admin Dashboard */}
-          <Route path="/admin" element={<AdminDashboard />} />
-          <Route path="/admin/dashboard" element={<AdminDashboard />} />
-          <Route path="/beheer" element={<AdminDashboard />} />
-        </Routes>
-      </BrowserRouter>
-      <Toaster position="top-right" />
-    </div>
+    <HelmetProvider>
+      <div className="App">
+        <BrowserRouter>
+          <ScrollToTop />
+          <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/boek" element={<BookingPage />} />
+            <Route path="/boek/:serviceType" element={<BookingPage />} />
+            <Route path="/booking/:bookingId" element={<BookingPage />} />
+            <Route path="/booking/success" element={<BookingSuccessPage />} />
+            <Route path="/diensten/:slug" element={<ServicePage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+            <Route path="/vakman/register" element={<VakmanRegisterPage />} />
+            <Route path="/wachtwoord-vergeten" element={<WachtwoordVergetenPage />} />
+            <Route path="/reset-wachtwoord" element={<ResetWachtwoordPage />} />
+            <Route path="/dashboard" element={<CustomerDashboard />} />
+            <Route path="/vakman/dashboard" element={<VakmanDashboard />} />
+            {/* SEO Probleem pagina's */}
+            <Route path="/:slug" element={<ProblemPage />} />
+            {/* SEO City pagina's */}
+            <Route path="/spoed-:service/:city" element={<CityServicePage />} />
+            {/* Zakelijke pagina's */}
+            <Route path="/vve" element={<VVEPage />} />
+            <Route path="/horeca" element={<HorecaPage />} />
+            <Route path="/kantoor" element={<KantoorPage />} />
+            <Route path="/winkel" element={<WinkelPage />} />
+            <Route path="/partner" element={<PartnerPage />} />
+            <Route path="/affiliate" element={<AffiliatePage />} />
+            {/* Vakman pagina's */}
+            <Route path="/vakman" element={<VakmanInfoPage />} />
+            <Route path="/vakman/app" element={<VakmanAppPage />} />
+            <Route path="/vakman/voorwaarden" element={<VakmanVoorwaardenPage />} />
+            <Route path="/vakman/faq" element={<VakmanFAQPage />} />
+            {/* Info pagina's */}
+            <Route path="/over-ons" element={<OverOnsPage />} />
+            <Route path="/garantie" element={<GarantiePage />} />
+            <Route path="/prijzen" element={<PrijsgidsenPage />} />
+            <Route path="/premium" element={<PremiumPage />} />
+            <Route path="/premium/success" element={<PremiumSuccessPage />} />
+            <Route path="/blog" element={<BlogPage />} />
+            <Route path="/vacatures" element={<VacaturesPage />} />
+            {/* Juridische pagina's */}
+            <Route path="/privacy" element={<PrivacyPage />} />
+            <Route path="/voorwaarden" element={<VoorwaardenPage />} />
+            <Route path="/cookies" element={<CookiePage />} />
+            {/* Review pagina */}
+            <Route path="/review" element={<ReviewPage />} />
+            {/* Diensten selectie */}
+            <Route path="/diensten" element={<DienstenSelectiePage />} />
+            {/* Vakman goedkeuring */}
+            <Route path="/vakman/:vakmanId/approve" element={<VakmanApprovePage />} />
+            {/* Admin Dashboard */}
+            <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/admin/dashboard" element={<AdminDashboard />} />
+            <Route path="/beheer" element={<AdminDashboard />} />
+          </Routes>
+        </BrowserRouter>
+        <Toaster position="top-right" />
+      </div>
+    </HelmetProvider>
   );
 }
 
