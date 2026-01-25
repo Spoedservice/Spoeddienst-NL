@@ -961,7 +961,7 @@ async def login(credentials: UserLogin):
         user = await db.vakmannen.find_one({"email": credentials.email}, {"_id": 0})
     
     if not user or not verify_password(credentials.password, user["password"]):
-        raise HTTPException(status_code=401, detail="Invalid credentials")
+        raise HTTPException(status_code=401, detail="Ongeldige inloggegevens")
     
     token = create_token(user["id"], user["role"])
     return {
