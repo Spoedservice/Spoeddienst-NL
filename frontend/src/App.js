@@ -74,10 +74,12 @@ function App() {
             <Route path="/reset-wachtwoord" element={<ResetWachtwoordPage />} />
             <Route path="/dashboard" element={<CustomerDashboard />} />
             <Route path="/vakman/dashboard" element={<VakmanDashboard />} />
+            {/* SEO City pagina's - moet VOOR de probleem pagina's staan */}
+            <Route path="/spoed-loodgieter/:city" element={<CityServicePage />} />
+            <Route path="/spoed-slotenmaker/:city" element={<CityServicePage />} />
+            <Route path="/spoed-elektricien/:city" element={<CityServicePage />} />
             {/* SEO Probleem pagina's */}
             <Route path="/:slug" element={<ProblemPage />} />
-            {/* SEO City pagina's */}
-            <Route path="/spoed-:service/:city" element={<CityServicePage />} />
             {/* Zakelijke pagina's */}
             <Route path="/vve" element={<VVEPage />} />
             <Route path="/horeca" element={<HorecaPage />} />
