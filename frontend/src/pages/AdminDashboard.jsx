@@ -1191,6 +1191,11 @@ export default function AdminDashboard() {
               <CampaignPlanner token={authToken} />
             )}
 
+            {/* City Pages Tab */}
+            {activeTab === "citypages" && (
+              <CityPagesOverview />
+            )}
+
             {/* Marketing Tab */}
             {activeTab === "marketing" && (
               <div className="space-y-6">
