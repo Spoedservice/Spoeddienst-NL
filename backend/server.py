@@ -2287,8 +2287,13 @@ app.add_middleware(
 async def startup_event():
     """Ensure admin user exists on startup"""
     try:
-        admin_email = "admin@spoeddienst24.nl"
-        admin_password = "Casblanca123!"
+        admin_email = os.environ.get('ADMIN_EMAIL', 'admin@spoeddienst24.nl')
+        admin_password = os.environ.get('ADMIN_PASSWORD')
+        
+        # Skip admin setup if no password is configured
+        if not admin_password:
+            logger.warning("ADMIN_PASSWORD not set - skipping admin user setup")
+            return
         
         existing_admin = await db.users.find_one({"email": admin_email})
         
