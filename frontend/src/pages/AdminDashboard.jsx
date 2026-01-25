@@ -116,6 +116,7 @@ export default function AdminDashboard() {
 
   const checkAuth = () => {
     const token = localStorage.getItem('token');
+    setAuthToken(token);
     const userData = localStorage.getItem('user');
     if (!token || !userData) {
       toast.error("Je moet ingelogd zijn als admin om deze pagina te bekijken");
