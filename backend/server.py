@@ -1364,6 +1364,59 @@ async def get_service(slug: str):
 
 # ==================== BOOKING ROUTES ====================
 
+@api_router.post("/upload/photo")
+async def upload_photo(request: Request):
+    """Upload a photo for a booking - stores as base64 in MongoDB"""
+    import base64
+    
+    try:
+        body = await request.json()
+        photo_data = body.get("photo")  # base64 encoded image
+        
+        if not photo_data:
+            raise HTTPException(status_code=400, detail="No photo data provided")
+        
+        # Generate unique filename
+        photo_id = str(uuid.uuid4())
+        
+        # Store in MongoDB
+        await db.photos.insert_one({
+            "id": photo_id,
+            "data": photo_data,
+            "created_at": datetime.now(timezone.utc).isoformat()
+        })
+        
+        # Return URL to retrieve the photo
+        photo_url = f"/api/photos/{photo_id}"
+        
+        return {"photo_url": photo_url, "photo_id": photo_id}
+    except Exception as e:
+        logging.error(f"Photo upload error: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to upload photo")
+
+@api_router.get("/photos/{photo_id}")
+async def get_photo(photo_id: str):
+    """Retrieve a photo by ID"""
+    from fastapi.responses import Response
+    import base64
+    
+    photo = await db.photos.find_one({"id": photo_id}, {"_id": 0})
+    if not photo:
+        raise HTTPException(status_code=404, detail="Photo not found")
+    
+    # Decode base64 and return as image
+    try:
+        photo_data = photo["data"]
+        # Remove data URL prefix if present
+        if "," in photo_data:
+            photo_data = photo_data.split(",")[1]
+        
+        image_bytes = base64.b64decode(photo_data)
+        return Response(content=image_bytes, media_type="image/jpeg")
+    except Exception as e:
+        logging.error(f"Photo decode error: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to decode photo")
+
 @api_router.post("/bookings")
 async def create_booking(booking: BookingCreate):
     service = next((s for s in SERVICES if s["id"] == booking.service_type), None)
@@ -1384,6 +1437,7 @@ async def create_booking(booking: BookingCreate):
         customer_name=booking.customer_name,
         customer_email=booking.customer_email,
         customer_phone=booking.customer_phone,
+        photo_url=booking.photo_url,
         price=price
     )
     
