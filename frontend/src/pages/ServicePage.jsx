@@ -18,7 +18,6 @@ export default function ServicePage() {
   const { slug } = useParams();
   const navigate = useNavigate();
   const [service, setService] = useState(null);
-  const [vakmannen, setVakmannen] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -29,7 +28,6 @@ export default function ServicePage() {
     try {
       const response = await axios.get(`${API}/services/${slug}`);
       setService(response.data.service);
-      setVakmannen(response.data.vakmannen);
     } catch (error) {
       console.error("Error fetching service:", error);
     } finally {
