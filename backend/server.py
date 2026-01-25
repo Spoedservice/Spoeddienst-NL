@@ -307,6 +307,16 @@ async def send_booking_email(booking_data: dict):
                 <div style="background-color: white; padding: 15px; border-radius: 5px; border: 1px solid #ddd;">
                     <p style="margin: 0; white-space: pre-wrap;">{booking_data.get('description', 'Geen omschrijving')}</p>
                 </div>
+                
+                {"" if not booking_data.get('photo_url') else f'''
+                <h3 style="color: #333; margin-top: 20px;">📷 Foto van het probleem</h3>
+                <div style="background-color: white; padding: 15px; border-radius: 5px; border: 1px solid #ddd; text-align: center;">
+                    <a href="{FRONTEND_URL.rstrip("/")}{booking_data.get("photo_url")}" target="_blank" style="display: inline-block; background-color: #FF4500; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold;">
+                        📷 Bekijk Foto
+                    </a>
+                    <p style="margin: 10px 0 0 0; font-size: 12px; color: #666;">Klik om de foto te openen</p>
+                </div>
+                '''}
             </div>
             
             <div style="background-color: #333; padding: 15px; text-align: center;">
