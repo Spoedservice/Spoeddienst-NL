@@ -16,15 +16,21 @@ Een platform voor het boeken van vakmannen (elektricien, loodgieter, slotenmaker
 ### Backend Structuur
 ```
 /app/backend/
-├── server.py              # Hoofdbestand met routes
+├── server.py              # Hoofdbestand met alle routes (werkend)
+├── server_backup.py       # Backup van originele server.py
+├── config/
+│   ├── __init__.py
+│   └── database.py        # DB connectie, JWT config, auth helpers
 ├── models/
 │   ├── __init__.py
 │   └── schemas.py         # Pydantic models (User, Vakman, Booking, etc.)
 ├── services/
 │   ├── __init__.py
 │   └── email.py           # Email service functies
-├── routes/
-│   └── __init__.py        # (toekomstig: aparte route bestanden)
+├── routes/                # Route bestanden (referentie voor migratie)
+│   ├── __init__.py
+│   ├── auth.py            # Auth routes (login, register, reset)
+│   └── bookings.py        # Booking routes (CRUD, vakman accept)
 └── tests/
 ```
 
@@ -40,7 +46,7 @@ Een platform voor het boeken van vakmannen (elektricien, loodgieter, slotenmaker
 │   ├── ui/                # Shadcn componenten
 │   └── admin/             # Admin dashboard componenten
 │       ├── index.js
-│       ├── adminConstants.js
+│       ├── adminConstants.js  # Constants, templates, helpers
 │       ├── AdminStatsCards.jsx
 │       └── AdminTabs.jsx
 ```
@@ -78,11 +84,20 @@ pending → confirmed → accepted → in_progress → completed
 - [x] Premium lidmaatschap (Stripe)
 
 ## Refactoring Status
-- [x] Backend: Models naar `/models/schemas.py`
-- [x] Backend: Email service naar `/services/email.py`
-- [x] Frontend: Admin componenten naar `/components/admin/`
-- [ ] Backend: Routes opsplitsen (toekomstig)
-- [ ] Frontend: AdminDashboard verder opsplitsen
+
+### Voltooid ✅
+- [x] Backend: Pydantic models → `/models/schemas.py`
+- [x] Backend: Email service → `/services/email.py`
+- [x] Backend: Database config → `/config/database.py`
+- [x] Backend: Auth routes → `/routes/auth.py` (referentie)
+- [x] Backend: Booking routes → `/routes/bookings.py` (referentie)
+- [x] Frontend: Admin componenten → `/components/admin/`
+
+### Nog te doen (optioneel)
+- [ ] Backend: Routes volledig migreren naar aparte bestanden
+- [ ] Frontend: AdminDashboard verder opsplitsen in tab-componenten
+- [ ] Backend: Vakman routes naar `/routes/vakmannen.py`
+- [ ] Backend: Admin routes naar `/routes/admin.py`
 
 ## Test Accounts
 - **Admin**: admin@spoeddienst24.nl / Admin2024!
@@ -90,10 +105,10 @@ pending → confirmed → accepted → in_progress → completed
 - **Klant**: klant@test.nl / Test1234
 
 ## Openstaande Items
-- **P1**: Google Ads API integratie
-- **P2**: Verdere code refactoring
+- **P1**: Google Ads API integratie (credentials nodig)
 - **P3**: Belgische versie (spoeddienst24.be)
 
 ## Laatste Update
 - **Datum**: 24 januari 2025
-- **Sessie**: Code refactoring gestart - Backend models/services + Frontend admin componenten
+- **Sessie**: Code refactoring - Backend models/services/config + routes referentie bestanden + Frontend admin componenten
+- **Status**: Applicatie werkt volledig, refactoring bestanden zijn aangemaakt als referentie
