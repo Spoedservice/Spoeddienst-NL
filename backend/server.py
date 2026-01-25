@@ -2672,3 +2672,6 @@ async def get_campaign_suggestions(service_type: str = None, current_user: dict 
     if service_type and service_type in suggestions:
         return suggestions[service_type]
     return suggestions
+
+# Include the router in the main app (must be after all route definitions)
+app.include_router(api_router)
