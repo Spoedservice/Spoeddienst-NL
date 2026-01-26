@@ -1289,6 +1289,15 @@ async def register_vakman(vakman: VakmanCreate, request: Request):
     base_url = str(request.base_url).rstrip('/')
     await send_vakman_registration_email(vakman_dict, base_url)
     
+    # Send welcome email to vakman (async, don't wait)
+    if email_marketing_service:
+        asyncio.create_task(email_marketing_service.send_welcome_vakman({
+            "id": vakman_obj.id,
+            "name": vakman.name,
+            "email": email,
+            "service_type": vakman.service_type
+        }))
+    
     return {"token": token, "user": {"id": vakman_obj.id, "email": email, "name": vakman_obj.name, "role": "vakman", "is_approved": False}}
 
 @api_router.get("/vakman/{vakman_id}/approve")
