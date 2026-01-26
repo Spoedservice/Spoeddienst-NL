@@ -122,160 +122,26 @@ export default function CityPagesOverview() {
     toast.success(`${urls.length} URLs gekopieerd!`);
   };
 
-  // Google Ads Editor Complete CSV Export
+  // Google Ads Editor Complete CSV Export - Uses full keyword database
   const downloadGoogleAdsEditorCSV = () => {
-    const services = selectedService === "all" ? SERVICES : SERVICES.filter(s => s.slug === selectedService);
-    const rows = [];
+    const servicesList = selectedService === "all" 
+      ? ["loodgieter", "slotenmaker", "elektricien"] 
+      : [selectedService];
     
-    // Header row for Google Ads Editor
-    rows.push([
-      "Row Type",
-      "Action", 
-      "Campaign status",
-      "Campaign",
-      "Campaign type",
-      "Networks",
-      "Budget",
-      "Budget type",
-      "Ad group",
-      "Ad group status",
-      "Max CPC",
-      "Ad type",
-      "Headline 1",
-      "Headline 2", 
-      "Headline 3",
-      "Description 1",
-      "Description 2",
-      "Final URL",
-      "Path 1",
-      "Path 2",
-      "Keyword",
-      "Match type",
-      "Keyword status"
-    ]);
-    
-    services.forEach(service => {
-      const campaignName = `Spoed ${service.name} NL`;
-      
-      // Campaign row
-      rows.push([
-        "Campaign",
-        "Add",
-        "Enabled",
-        campaignName,
-        "Search",
-        "Google search",
-        dailyBudget,
-        "Daily",
-        "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""
-      ]);
-      
-      filteredCities.forEach(city => {
-        const adGroupName = city.name;
-        const finalUrl = getFullUrl(service.slug, city.slug, true);
-        const keywords = SERVICE_KEYWORDS[service.slug] || [];
-        
-        // Ad Group row
-        rows.push([
-          "Ad group",
-          "Add",
-          "",
-          campaignName,
-          "",
-          "",
-          "",
-          "",
-          adGroupName,
-          "Enabled",
-          "2.00",
-          "", "", "", "", "", "", "", "", "", "", "", ""
-        ]);
-        
-        // Responsive Search Ad row
-        rows.push([
-          "Ad",
-          "Add",
-          "",
-          campaignName,
-          "",
-          "",
-          "",
-          "",
-          adGroupName,
-          "",
-          "",
-          "Responsive search ad",
-          `Spoed ${service.name} ${city.name}`,
-          "24/7 Beschikbaar",
-          "Binnen 30 Min Ter Plaatse",
-          `Direct een spoed ${service.name.toLowerCase()} nodig in ${city.name}? Wij zijn 24/7 bereikbaar. Bel nu!`,
-          `Professionele ${service.name.toLowerCase()}s in ${city.name}. Snel ter plaatse, vaste prijzen.`,
-          finalUrl,
-          "spoed",
-          service.slug,
-          "", "", ""
-        ]);
-        
-        // Keyword rows
-        keywords.forEach(baseKeyword => {
-          const keyword = `${baseKeyword} ${city.name.toLowerCase()}`;
-          
-          // Phrase match
-          rows.push([
-            "Keyword",
-            "Add",
-            "",
-            campaignName,
-            "",
-            "",
-            "",
-            "",
-            adGroupName,
-            "",
-            "",
-            "",
-            "", "", "", "", "",
-            finalUrl,
-            "", "",
-            `"${keyword}"`,
-            "Phrase",
-            "Enabled"
-          ]);
-          
-          // Exact match for main keywords
-          if (baseKeyword.includes("spoed") || baseKeyword === service.slug) {
-            rows.push([
-              "Keyword",
-              "Add",
-              "",
-              campaignName,
-              "",
-              "",
-              "",
-              "",
-              adGroupName,
-              "",
-              "",
-              "",
-              "", "", "", "", "",
-              finalUrl,
-              "", "",
-              `[${keyword}]`,
-              "Exact",
-              "Enabled"
-            ]);
-          }
-        });
-      });
+    const csvContent = generateGoogleAdsEditorCSV({
+      services: servicesList,
+      dailyBudget: parseFloat(dailyBudget) || 50,
+      maxCpc: 2.00,
+      utmSource,
+      utmMedium,
+      utmCampaign
     });
     
-    const csvContent = rows.map(row => row.map(cell => `"${(cell || '').toString().replace(/"/g, '""')}"`).join(",")).join("\n");
-    const blob = new Blob(["\ufeff" + csvContent], { type: "text/csv;charset=utf-8;" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = `spoeddienst24_google_ads_editor_${new Date().toISOString().split('T')[0]}.csv`;
-    link.click();
-    toast.success("Google Ads Editor CSV gedownload! Importeer in Google Ads Editor.");
+    const filename = `spoeddienst24_google_ads_complete_${new Date().toISOString().split('T')[0]}.csv`;
+    downloadCSV(csvContent, filename);
+    
+    const keywordCount = getKeywordCount(servicesList);
+    toast.success(`Google Ads CSV gedownload! ~${keywordCount} keywords`);
   };
 
   // Simple CSV for reference
