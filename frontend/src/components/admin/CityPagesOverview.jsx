@@ -216,7 +216,7 @@ export default function CityPagesOverview() {
             <li>Controleer de preview en klik <strong>Post changes</strong></li>
           </ol>
           <p className="text-xs text-slate-500 mt-2">
-            Dit maakt automatisch: {selectedService === "all" ? "3 campagnes" : "1 campagne"} met {filteredCities.length} ad groups, ads en keywords per campagne.
+            Dit maakt automatisch: {selectedService === "all" ? "3 campagnes" : "1 campagne"} met {filteredCities.length} ad groups, ads en ~{getKeywordCount(selectedService === "all" ? ["loodgieter", "slotenmaker", "elektricien"] : [selectedService]).toLocaleString()} keywords.
           </p>
         </CardContent>
       </Card>
