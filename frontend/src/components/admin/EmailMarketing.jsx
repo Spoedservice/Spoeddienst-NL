@@ -221,6 +221,72 @@ export default function EmailMarketing({ token }) {
     }
   };
 
+  // CSV Import Handler
+  const handleCSVImport = (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const text = e.target.result;
+        const lines = text.split('\n');
+        const headers = lines[0].toLowerCase().split(',').map(h => h.trim().replace(/"/g, ''));
+        
+        // Find email column index
+        const emailIndex = headers.findIndex(h => 
+          h === 'email' || h === 'e-mail' || h === 'emailaddress' || h === 'mail'
+        );
+        
+        if (emailIndex === -1) {
+          toast.error("Geen email kolom gevonden in CSV. Verwacht: 'email', 'e-mail', of 'mail'");
+          return;
+        }
+
+        // Extract emails from all rows
+        const emails = [];
+        for (let i = 1; i < lines.length; i++) {
+          const line = lines[i].trim();
+          if (!line) continue;
+          
+          const values = line.split(',').map(v => v.trim().replace(/"/g, ''));
+          const email = values[emailIndex];
+          
+          // Basic email validation
+          if (email && email.includes('@') && email.includes('.')) {
+            emails.push(email.toLowerCase());
+          }
+        }
+
+        // Remove duplicates
+        const uniqueEmails = [...new Set(emails)];
+        
+        if (uniqueEmails.length === 0) {
+          toast.error("Geen geldige emailadressen gevonden in CSV");
+          return;
+        }
+
+        // Add to recipients field
+        const currentEmails = manualEmail.recipients ? manualEmail.recipients.split(',').map(e => e.trim()).filter(e => e) : [];
+        const allEmails = [...new Set([...currentEmails, ...uniqueEmails])];
+        
+        setManualEmail({
+          ...manualEmail,
+          recipients: allEmails.join(', ')
+        });
+        
+        toast.success(`${uniqueEmails.length} emailadressen geïmporteerd uit CSV`);
+      } catch (error) {
+        console.error("CSV parse error:", error);
+        toast.error("Fout bij lezen CSV bestand");
+      }
+    };
+    reader.readAsText(file);
+    
+    // Reset file input
+    event.target.value = '';
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
