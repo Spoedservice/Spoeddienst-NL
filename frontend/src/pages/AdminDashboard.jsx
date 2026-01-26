@@ -1198,6 +1198,11 @@ export default function AdminDashboard() {
               <CityPagesOverview />
             )}
 
+            {/* Email Marketing Tab */}
+            {activeTab === "emailmarketing" && (
+              <EmailMarketing token={token} />
+            )}
+
             {/* Marketing Tab */}
             {activeTab === "marketing" && (
               <div className="space-y-6">
