@@ -1200,7 +1200,7 @@ export default function AdminDashboard() {
 
             {/* Email Marketing Tab */}
             {activeTab === "emailmarketing" && (
-              <EmailMarketing token={token} />
+              <EmailMarketing token={authToken} />
             )}
 
             {/* Marketing Tab */}
