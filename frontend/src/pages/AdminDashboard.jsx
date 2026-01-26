@@ -602,7 +602,8 @@ export default function AdminDashboard() {
             { id: "financial", label: "Financieel", icon: Euro },
             { id: "campaigns", label: "Campagnes", icon: Target },
             { id: "citypages", label: "City Pages", icon: Globe },
-            { id: "marketing", label: "Marketing", icon: PieChart }
+            { id: "emailmarketing", label: "Email Marketing", icon: Mail },
+            { id: "marketing", label: "Google Ads", icon: PieChart }
           ].map(tab => (
             <button
               key={tab.id}
