@@ -17,6 +17,9 @@ import { toast } from "sonner";
 import CampaignPlanner from "@/components/admin/CampaignPlanner";
 import CityPagesOverview from "@/components/admin/CityPagesOverview";
 import EmailMarketing from "@/components/admin/EmailMarketing";
+import BookingsManagement from "@/components/admin/BookingsManagement";
+import VakmannenManagement from "@/components/admin/VakmannenManagement";
+import ReviewsManagement from "@/components/admin/ReviewsManagement";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
