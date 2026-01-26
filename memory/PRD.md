@@ -10,6 +10,7 @@ Een platform voor het boeken van vakmannen (elektricien, loodgieter, slotenmaker
 - **Email**: aiosmtplib met TransIP SMTP
 - **Payments**: Stripe
 - **Authenticatie**: JWT
+- **Analytics**: Google Analytics + Google Ads Conversion Tracking
 
 ## Code Architectuur
 
@@ -36,7 +37,7 @@ Een platform voor het boeken van vakmannen (elektricien, loodgieter, slotenmaker
 ├── pages/
 │   ├── AdminDashboard.jsx    # Admin dashboard
 │   ├── VakmanDashboard.jsx   # Vakman dashboard
-│   ├── BookingPage.jsx       # Booking form
+│   ├── BookingPage.jsx       # Booking form (met conversion tracking)
 │   ├── LandingPage.jsx       # Homepage
 │   ├── ProblemPage.jsx       # SEO problem pages
 │   ├── CityServicePage.jsx   # SEO city pages
@@ -45,8 +46,12 @@ Een platform voor het boeken van vakmannen (elektricien, loodgieter, slotenmaker
 │   ├── ui/                   # Shadcn components
 │   └── admin/
 │       ├── CampaignPlanner.jsx    # Google Ads planner
-│       ├── CityPagesOverview.jsx  # City pages for ads
+│       ├── CityPagesOverview.jsx  # City pages for ads + CSV export
 │       └── ...
+├── data/
+│   └── keywordsDatabase.js   # ~1000 keywords database
+├── utils/
+│   └── googleAdsGenerator.js # Google Ads Editor CSV generator
 └── App.js
 ```
 
@@ -64,7 +69,7 @@ Een platform voor het boeken van vakmannen (elektricien, loodgieter, slotenmaker
 - ✅ Wachtwoord vergeten functionaliteit
 - ✅ Role-based access control
 
-### SEO Features (Nieuw - 25 Jan 2025)
+### SEO Features (Compleet - 25 Jan 2025)
 - ✅ Homepage SEO optimalisatie
   - H1: "24/7 Spoed Loodgieter, Slotenmaker & Elektricien"
   - Meta tags, Open Graph, Schema.org
@@ -78,7 +83,7 @@ Een platform voor het boeken van vakmannen (elektricien, loodgieter, slotenmaker
   - /spoed-slotenmaker/[stad]
   - /spoed-elektricien/[stad]
 
-### Google Ads Features (Nieuw - 25 Jan 2025)
+### Google Ads Features (Compleet - 26 Jan 2025)
 - ✅ Campagne Planner in Admin Dashboard
   - Campagnes aanmaken per service/stad
   - Keyword management met suggesties
@@ -88,7 +93,18 @@ Een platform voor het boeken van vakmannen (elektricien, loodgieter, slotenmaker
   - Alle 120 landing page URLs
   - UTM parameter configuratie
   - Kopieer & export functie
-  - CSV download met headlines/descriptions
+- ✅ **Google Ads Editor CSV Export** (NIEUW)
+  - ~2,510 keywords totaal
+  - Loodgieter: ~879 keywords
+  - Slotenmaker: ~788 keywords
+  - Elektricien: ~843 keywords
+  - 3 campagnes, ~100 advertentiegroepen
+  - Phrase match + Exact match keywords
+  - Responsive search ads per stad
+- ✅ **Google Ads Conversion Tracking** (NIEUW)
+  - `conversion_event_book_appointment` event
+  - Triggert bij succesvolle boeking
+  - Geïntegreerd in BookingPage.jsx
 
 ## API Endpoints
 
@@ -158,12 +174,14 @@ REACT_APP_BACKEND_URL=https://spoeddienst24.nl
 - ✅ Authentication system working
 - ✅ No hardcoded secrets (moved to env)
 - ✅ Supervisor configuration present
+- ✅ Google Ads tracking geïmplementeerd
 
 ## Backlog / Future Tasks
-- P1: Google Ads API integratie (nu alleen planner)
+- P1: Google Ads API integratie (directe campagne-creatie - vereist Developer Token)
+- P2: Campaign Planner data persistent maken in MongoDB
 - P2: Code refactoring voltooien (routes extractie)
 - P3: Belgische versie (spoeddienst24.be)
 - P4: Native mobiele app (iOS/Android)
 
 ## Laatste Update
-25 januari 2025 - SEO pagina's en Google Ads Campagne Planner toegevoegd
+26 januari 2025 - Google Ads Editor CSV Export (~2510 keywords) en Conversion Tracking toegevoegd
