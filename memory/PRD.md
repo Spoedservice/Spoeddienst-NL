@@ -11,6 +11,7 @@ Een platform voor het boeken van vakmannen (elektricien, loodgieter, slotenmaker
 - **Payments**: Stripe
 - **Authenticatie**: JWT
 - **Analytics**: Google Analytics + Google Ads Conversion Tracking
+- **Email Marketing**: Custom geautomatiseerd systeem
 
 ## Code Architectuur
 
@@ -23,7 +24,8 @@ Een platform voor het boeken van vakmannen (elektricien, loodgieter, slotenmaker
 ├── models/
 │   └── schemas.py         # Pydantic models
 ├── services/
-│   └── email.py           # Email service
+│   ├── email.py           # Email service
+│   └── email_marketing.py # Email marketing automation (NIEUW)
 ├── routes/
 │   ├── auth.py            # Auth routes
 │   └── bookings.py        # Booking routes
@@ -47,7 +49,7 @@ Een platform voor het boeken van vakmannen (elektricien, loodgieter, slotenmaker
 │   └── admin/
 │       ├── CampaignPlanner.jsx    # Google Ads planner
 │       ├── CityPagesOverview.jsx  # City pages for ads + CSV export
-│       └── ...
+│       └── EmailMarketing.jsx     # Email marketing dashboard (NIEUW)
 ├── data/
 │   └── keywordsDatabase.js   # ~1000 keywords database
 ├── utils/
@@ -85,26 +87,22 @@ Een platform voor het boeken van vakmannen (elektricien, loodgieter, slotenmaker
 
 ### Google Ads Features (Compleet - 26 Jan 2025)
 - ✅ Campagne Planner in Admin Dashboard
-  - Campagnes aanmaken per service/stad
-  - Keyword management met suggesties
-  - Budget tracking
-  - Status beheer (Concept, Actief, Gepauzeerd)
 - ✅ City Pages Overview voor Google Ads
-  - Alle 120 landing page URLs
-  - UTM parameter configuratie
-  - Kopieer & export functie
-- ✅ **Google Ads Editor CSV Export** (NIEUW)
-  - ~2,510 keywords totaal
-  - Loodgieter: ~879 keywords
-  - Slotenmaker: ~788 keywords
-  - Elektricien: ~843 keywords
-  - 3 campagnes, ~100 advertentiegroepen
-  - Phrase match + Exact match keywords
-  - Responsive search ads per stad
-- ✅ **Google Ads Conversion Tracking** (NIEUW)
-  - `conversion_event_book_appointment` event
-  - Triggert bij succesvolle boeking
-  - Geïntegreerd in BookingPage.jsx
+- ✅ **Google Ads Editor CSV Export** (~2,510 keywords)
+- ✅ **Google Ads Conversion Tracking** (`conversion_event_book_appointment`)
+
+### Email Marketing Features (NIEUW - 26 Jan 2025)
+- ✅ **Welkomstmail Klant** - Automatisch bij registratie
+- ✅ **Welkomstmail Vakman** - Automatisch bij aanmelding
+- ✅ **Review Herinnering** - Automatisch X dagen na voltooide klus (instelbaar: 1-7 dagen)
+- ✅ **Inactieve Klant Heractivatie** - Automatisch na X dagen inactiviteit (instelbaar: 30-180 dagen)
+- ✅ **Seizoenscampagnes** - Handmatig versturen (Winter, Voorjaar, Zomer, Herfst)
+- ✅ **Handmatig Emails Versturen** - Naar geselecteerde ontvangers
+- ✅ **Templates Beheer** - Onderwerp en HTML aanpassen per email type
+- ✅ **Verzendgeschiedenis** - Overzicht van alle verstuurde emails
+- ✅ **Statistieken Dashboard** - Totaal verstuurd, succes rate, uitschrijvingen
+- ✅ **GDPR Compliant** - Uitschrijflink in alle marketing emails
+- ✅ **Email Wachtrij** - Geplande emails worden automatisch verstuurd
 
 ## API Endpoints
 
@@ -131,6 +129,19 @@ Een platform voor het boeken van vakmannen (elektricien, loodgieter, slotenmaker
 - PUT /api/admin/campaigns/{id}
 - DELETE /api/admin/campaigns/{id}
 
+### Email Marketing (NIEUW)
+- GET /api/admin/email-marketing/statistics
+- GET /api/admin/email-marketing/recent
+- GET /api/admin/email-marketing/templates
+- PUT /api/admin/email-marketing/templates/{type}
+- GET /api/admin/email-marketing/campaigns
+- PUT /api/admin/email-marketing/campaigns/{type}
+- POST /api/admin/email-marketing/send-manual
+- POST /api/admin/email-marketing/send-seasonal
+- POST /api/admin/email-marketing/process-queue
+- GET /api/admin/email-marketing/queue
+- GET /api/uitschrijven (public - unsubscribe)
+
 ### SEO
 - GET /api/seo/problems
 - GET /api/seo/problems/{slug}
@@ -138,29 +149,14 @@ Een platform voor het boeken van vakmannen (elektricien, loodgieter, slotenmaker
 - GET /api/seo/cities/{city}/{service}
 - GET /api/seo/services
 
-## Environment Variables
+## Database Collections
 
-### Backend (.env)
-```
-MONGO_URL=mongodb://...
-DB_NAME=...
-JWT_SECRET=... (required, no default)
-STRIPE_API_KEY=...
-SMTP_HOST=smtp.transip.email
-SMTP_PORT=465
-SMTP_USER=info@spoeddienst24.nl
-SMTP_PASSWORD=...
-SMTP_FROM=info@spoeddienst24.nl
-FRONTEND_URL=https://spoeddienst24.nl
-ADMIN_EMAIL=admin@spoeddienst24.nl
-ADMIN_PASSWORD=... (required for admin setup)
-CORS_ORIGINS=*
-```
-
-### Frontend (.env)
-```
-REACT_APP_BACKEND_URL=https://spoeddienst24.nl
-```
+### Email Marketing Collections (NIEUW)
+- `email_templates` - Email templates per type
+- `email_campaigns` - Campagne-instellingen (triggers, timing)
+- `sent_emails` - Verzendgeschiedenis
+- `email_preferences` - Uitschrijvingen (GDPR)
+- `email_queue` - Geplande emails
 
 ## Test Credentials
 - **Admin**: admin@spoeddienst24.nl / Casblanca123!
@@ -175,13 +171,14 @@ REACT_APP_BACKEND_URL=https://spoeddienst24.nl
 - ✅ No hardcoded secrets (moved to env)
 - ✅ Supervisor configuration present
 - ✅ Google Ads tracking geïmplementeerd
+- ✅ Email Marketing systeem actief
 
 ## Backlog / Future Tasks
-- P1: Google Ads API integratie (directe campagne-creatie - vereist Developer Token)
+- P1: Google Ads API directe integratie (vereist Developer Token)
 - P2: Campaign Planner data persistent maken in MongoDB
 - P2: Code refactoring voltooien (routes extractie)
 - P3: Belgische versie (spoeddienst24.be)
 - P4: Native mobiele app (iOS/Android)
 
 ## Laatste Update
-26 januari 2025 - Google Ads Editor CSV Export (~2510 keywords) en Conversion Tracking toegevoegd
+26 januari 2025 - Email Marketing systeem toegevoegd met automatische en handmatige emails
