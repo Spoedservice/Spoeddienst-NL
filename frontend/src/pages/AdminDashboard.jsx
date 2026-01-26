@@ -730,98 +730,11 @@ export default function AdminDashboard() {
 
             {/* Vakmannen Tab */}
             {activeTab === "vakmannen" && (
-              <Card className="border-0 shadow-sm">
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-lg">Vakmannen Beheer</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {vakmannen.map((vakman, idx) => (
-                      <div key={idx} className={`p-4 rounded-lg border ${vakman.is_approved ? 'bg-green-50 border-green-200' : 'bg-yellow-50 border-yellow-200'}`}>
-                        <div className="flex flex-col gap-4">
-                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                            <div className="flex-1">
-                              <div className="flex items-center gap-2 mb-2 flex-wrap">
-                                <h3 className="font-bold text-lg">{vakman.name}</h3>
-                                <Badge className={vakman.is_approved ? "bg-green-100 text-green-800" : "bg-yellow-100 text-yellow-800"}>
-                                  {vakman.is_approved ? "Goedgekeurd" : "In afwachting"}
-                                </Badge>
-                                <Badge variant="outline" className="capitalize">{vakman.service_type}</Badge>
-                              </div>
-                            </div>
-                            {!vakman.is_approved && (
-                              <div className="flex gap-2 flex-shrink-0">
-                                <Button className="bg-green-500 hover:bg-green-600" onClick={() => approveVakman(vakman.id)}>
-                                  <CheckCircle className="w-4 h-4 mr-2" />
-                                  Goedkeuren
-                                </Button>
-                                <Button variant="destructive" onClick={() => rejectVakman(vakman.id)}>
-                                  <XCircle className="w-4 h-4 mr-2" />
-                                  Afwijzen
-                                </Button>
-                              </div>
-                            )}
-                          </div>
-                          
-                          {/* Contact & Locatie */}
-                          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3 text-sm">
-                            <div className="flex items-center gap-2 text-slate-600">
-                              <Mail className="w-4 h-4 text-slate-400" />
-                              <a href={`mailto:${vakman.email}`} className="hover:text-[#FF4500]">{vakman.email}</a>
-                            </div>
-                            <div className="flex items-center gap-2 text-slate-600">
-                              <Phone className="w-4 h-4 text-slate-400" />
-                              <a href={`tel:${vakman.phone}`} className="hover:text-[#FF4500]">{vakman.phone}</a>
-                            </div>
-                            <div className="flex items-center gap-2 text-slate-600">
-                              <MapPin className="w-4 h-4 text-slate-400" />
-                              {vakman.location}
-                            </div>
-                            <div className="flex items-center gap-2 text-slate-600">
-                              <Euro className="w-4 h-4 text-slate-400" />
-                              €{vakman.hourly_rate}/uur
-                            </div>
-                          </div>
-
-                          {/* Bedrijfsgegevens */}
-                          <div className="bg-white/50 rounded-lg p-3 border border-slate-200">
-                            <h4 className="font-medium text-slate-700 mb-2 text-sm">Bedrijfsgegevens</h4>
-                            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3 text-sm">
-                              <div>
-                                <span className="text-slate-500">KVK-nummer:</span>
-                                <p className="font-medium text-slate-900">{vakman.kvk_nummer || <span className="text-red-500 italic">Niet opgegeven</span>}</p>
-                              </div>
-                              <div>
-                                <span className="text-slate-500">BTW-nummer:</span>
-                                <p className="font-medium text-slate-900">{vakman.btw_nummer || <span className="text-slate-400 italic">Niet opgegeven</span>}</p>
-                              </div>
-                              <div>
-                                <span className="text-slate-500">Verzekering:</span>
-                                <p className="font-medium text-slate-900">{vakman.verzekering || <span className="text-red-500 italic">Niet opgegeven</span>}</p>
-                              </div>
-                              <div>
-                                <span className="text-slate-500">Verzekeraar:</span>
-                                <p className="font-medium text-slate-900">{vakman.verzekering_maatschappij || <span className="text-slate-400 italic">Niet opgegeven</span>}</p>
-                              </div>
-                            </div>
-                          </div>
-
-                          {/* Beschrijving */}
-                          {vakman.description && (
-                            <div>
-                              <span className="text-sm text-slate-500">Beschrijving:</span>
-                              <p className="text-sm text-slate-700 mt-1">{vakman.description}</p>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    ))}
-                    {vakmannen.length === 0 && (
-                      <p className="text-center text-slate-500 py-8">Geen vakmannen geregistreerd</p>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
+              <VakmannenManagement
+                vakmannen={vakmannen}
+                onRefresh={fetchData}
+                token={authToken}
+              />
             )}
 
             {/* Reviews Tab */}
