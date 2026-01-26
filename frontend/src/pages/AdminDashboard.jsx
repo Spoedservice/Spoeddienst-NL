@@ -739,54 +739,11 @@ export default function AdminDashboard() {
 
             {/* Reviews Tab */}
             {activeTab === "reviews" && (
-              <Card className="border-0 shadow-sm">
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-lg">Reviews Beheer</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {reviews.map((review, idx) => (
-                      <div key={idx} className={`p-4 rounded-lg border ${review.status === 'approved' ? 'bg-green-50 border-green-200' : 'bg-yellow-50 border-yellow-200'}`}>
-                        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2 mb-2">
-                              <h3 className="font-bold">{review.customer_name}</h3>
-                              <div className="flex">
-                                {[...Array(5)].map((_, i) => (
-                                  <Star key={i} className={`w-4 h-4 ${i < review.rating ? 'text-yellow-400 fill-yellow-400' : 'text-slate-300'}`} />
-                                ))}
-                              </div>
-                              <Badge className={review.status === 'approved' ? "bg-green-100 text-green-800" : "bg-yellow-100 text-yellow-800"}>
-                                {review.status === 'approved' ? "Gepubliceerd" : "In afwachting"}
-                              </Badge>
-                            </div>
-                            <p className="text-sm text-slate-600 mb-2">"{review.comment}"</p>
-                            <div className="flex gap-4 text-xs text-slate-500">
-                              <span>Dienst: {review.service}</span>
-                              <span>Plaats: {review.city}</span>
-                            </div>
-                          </div>
-                          {review.status === 'pending' && (
-                            <div className="flex gap-2">
-                              <Button className="bg-green-500 hover:bg-green-600" onClick={() => approveReview(review.id)}>
-                                <CheckCircle className="w-4 h-4 mr-2" />
-                                Goedkeuren
-                              </Button>
-                              <Button variant="destructive" onClick={() => rejectReview(review.id)}>
-                                <XCircle className="w-4 h-4 mr-2" />
-                                Verwijderen
-                              </Button>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    ))}
-                    {reviews.length === 0 && (
-                      <p className="text-center text-slate-500 py-8">Geen reviews</p>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
+              <ReviewsManagement
+                reviews={reviews}
+                onRefresh={fetchData}
+                token={authToken}
+              />
             )}
 
             {/* Financial Tab */}
