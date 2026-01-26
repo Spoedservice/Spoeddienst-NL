@@ -2798,7 +2798,7 @@ async def get_email_campaigns(current_user: dict = Depends(get_admin_user)):
     return {"campaigns": campaigns}
 
 @api_router.put("/admin/email-marketing/campaigns/{campaign_type}")
-async def update_email_campaign(campaign_type: str, update: CampaignUpdate, current_user: dict = Depends(get_admin_user)):
+async def update_email_campaign(campaign_type: str, update: EmailCampaignUpdate, current_user: dict = Depends(get_admin_user)):
     """Update campaign settings"""
     update_data = {k: v for k, v in update.dict().items() if v is not None}
     if not update_data:
