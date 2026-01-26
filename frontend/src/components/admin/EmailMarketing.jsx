@@ -575,6 +575,46 @@ export default function EmailMarketing({ token }) {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
+            {/* Template Selector */}
+            <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+              <Label className="text-blue-700 font-medium">📋 Template Invoegen</Label>
+              <p className="text-sm text-blue-600 mb-3">Selecteer een template om automatisch in te vullen</p>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                {templates.filter(t => t.is_active).map(template => (
+                  <Button
+                    key={template.type}
+                    variant="outline"
+                    className="justify-start text-left h-auto py-2 px-3 hover:bg-blue-100 hover:border-blue-300"
+                    onClick={() => {
+                      // Strip HTML tags for plain text content, but keep structure
+                      const plainText = template.html_template
+                        ?.replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
+                        .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
+                        .replace(/<[^>]+>/g, '\n')
+                        .replace(/\n\s*\n/g, '\n\n')
+                        .replace(/^\s+|\s+$/g, '')
+                        .substring(0, 1000) || '';
+                      
+                      setManualEmail({
+                        ...manualEmail,
+                        subject: template.subject || '',
+                        content: `[Template: ${template.name}]\n\n${plainText}`
+                      });
+                      toast.success(`Template "${template.name}" ingevoegd`);
+                    }}
+                  >
+                    <div className="flex items-center gap-2">
+                      {(() => {
+                        const Icon = EMAIL_TYPE_ICONS[template.type] || Mail;
+                        return <Icon className="w-4 h-4 text-blue-600" />;
+                      })()}
+                      <span className="text-sm truncate">{template.name}</span>
+                    </div>
+                  </Button>
+                ))}
+              </div>
+            </div>
+
             <div>
               <Label>Ontvangers (komma-gescheiden)</Label>
               <Textarea 
