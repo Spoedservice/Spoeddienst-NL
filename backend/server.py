@@ -1958,6 +1958,13 @@ async def update_booking_status_admin(booking_id: str, status_update: dict, admi
     )
     if result.modified_count == 0:
         raise HTTPException(status_code=404, detail="Boeking niet gevonden")
+    
+    # If status is completed, queue review reminder email
+    if status == "completed" and email_marketing_service:
+        booking = await db.bookings.find_one({"id": booking_id}, {"_id": 0})
+        if booking:
+            asyncio.create_task(email_marketing_service.queue_review_reminder(booking))
+    
     return {"message": f"Status gewijzigd naar {status}"}
 
 class AssignVakmanRequest(BaseModel):
