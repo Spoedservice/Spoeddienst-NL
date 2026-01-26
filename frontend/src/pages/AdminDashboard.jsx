@@ -723,7 +723,7 @@ export default function AdminDashboard() {
               <BookingsManagement
                 bookings={bookings}
                 vakmannen={vakmannen}
-                onRefresh={fetchData}
+                onRefresh={fetchAllData}
                 token={authToken}
               />
             )}
@@ -732,7 +732,7 @@ export default function AdminDashboard() {
             {activeTab === "vakmannen" && (
               <VakmannenManagement
                 vakmannen={vakmannen}
-                onRefresh={fetchData}
+                onRefresh={fetchAllData}
                 token={authToken}
               />
             )}
@@ -741,7 +741,7 @@ export default function AdminDashboard() {
             {activeTab === "reviews" && (
               <ReviewsManagement
                 reviews={reviews}
-                onRefresh={fetchData}
+                onRefresh={fetchAllData}
                 token={authToken}
               />
             )}
