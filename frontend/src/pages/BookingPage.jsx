@@ -190,7 +190,22 @@ export default function BookingPage() {
       const response = await axios.post(`${API}/bookings`, bookingData);
       
       toast.success(`Bedankt ${formData.customer_name}! Uw boeking is ontvangen. We nemen binnen 15 minuten contact met u op.`);
-      navigate(`/booking/success?booking_id=${response.data.booking.id}`);
+      
+      // Track Google Ads conversion
+      if (window.gtag) {
+        window.gtag('event', 'conversion_event_book_appointment', {
+          'event_callback': () => {
+            navigate(`/booking/success?booking_id=${response.data.booking.id}`);
+          },
+          'event_timeout': 2000
+        });
+        // Fallback navigation after timeout
+        setTimeout(() => {
+          navigate(`/booking/success?booking_id=${response.data.booking.id}`);
+        }, 2500);
+      } else {
+        navigate(`/booking/success?booking_id=${response.data.booking.id}`);
+      }
     } catch (error) {
       console.error("Error creating booking:", error);
       toast.error("Er is iets misgegaan. Probeer het opnieuw.");

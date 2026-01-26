@@ -38,6 +38,25 @@
             gtag('config', 'AW-8844592682');
         </script>
         
+        <!-- Google Ads Conversion Tracking -->
+        <script>
+            // Helper function to track booking conversions
+            function gtagSendConversion(url) {
+                var callback = function () {
+                    if (typeof url === 'string') {
+                        window.location = url;
+                    }
+                };
+                gtag('event', 'conversion_event_book_appointment', {
+                    'event_callback': callback,
+                    'event_timeout': 2000
+                });
+                return false;
+            }
+            // Make it globally available
+            window.gtagSendConversion = gtagSendConversion;
+        </script>
+        
         <!-- Structured Data / Schema.org -->
         <script type="application/ld+json">
         {
