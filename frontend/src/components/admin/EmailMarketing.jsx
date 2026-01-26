@@ -683,14 +683,42 @@ export default function EmailMarketing({ token }) {
             </div>
 
             <div>
-              <Label>Ontvangers (komma-gescheiden)</Label>
+              <div className="flex items-center justify-between mb-1">
+                <Label>Ontvangers (komma-gescheiden)</Label>
+                <div className="flex gap-2">
+                  <input
+                    type="file"
+                    accept=".csv"
+                    ref={fileInputRef}
+                    onChange={handleCSVImport}
+                    className="hidden"
+                  />
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="text-xs"
+                  >
+                    <Upload className="w-3 h-3 mr-1" />
+                    CSV Importeren
+                  </Button>
+                  {manualEmail.recipients && (
+                    <Badge variant="outline" className="text-xs">
+                      {manualEmail.recipients.split(',').filter(e => e.trim()).length} ontvangers
+                    </Badge>
+                  )}
+                </div>
+              </div>
               <Textarea 
                 placeholder="email1@example.com, email2@example.com"
                 value={manualEmail.recipients}
                 onChange={(e) => setManualEmail({...manualEmail, recipients: e.target.value})}
-                rows={2}
+                rows={3}
                 className="mt-1"
               />
+              <p className="text-xs text-slate-500 mt-1">
+                💡 Tip: Upload een CSV bestand met een 'email' kolom om meerdere ontvangers toe te voegen
+              </p>
             </div>
             <div>
               <Label>Onderwerp</Label>
