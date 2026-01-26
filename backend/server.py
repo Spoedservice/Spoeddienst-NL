@@ -2733,7 +2733,7 @@ class EmailTemplateUpdate(BaseModel):
     html_template: Optional[str] = None
     is_active: Optional[bool] = None
 
-class CampaignUpdate(BaseModel):
+class EmailCampaignUpdate(BaseModel):
     delay_days: Optional[int] = None
     delay_hours: Optional[int] = None
     is_active: Optional[bool] = None
