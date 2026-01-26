@@ -175,10 +175,30 @@ Een platform voor het boeken van vakmannen (elektricien, loodgieter, slotenmaker
 
 ## Backlog / Future Tasks
 - P1: Google Ads API directe integratie (vereist Developer Token)
-- P2: Campaign Planner data persistent maken in MongoDB
-- P2: Code refactoring voltooien (routes extractie)
+- ~~P2: Campaign Planner data persistent maken in MongoDB~~ ✅ (Was al persistent)
+- ~~P2: Code refactoring voltooien~~ ✅ (Basis refactoring voltooid)
 - P3: Belgische versie (spoeddienst24.be)
 - P4: Native mobiele app (iOS/Android)
 
+## Refactoring Status (26 Jan 2025)
+### Backend
+- ✅ Duplicaat classes opgelost (CampaignUpdate → EmailCampaignUpdate)
+- ✅ Route bestanden aangemaakt: `/routes/admin.py`, `/routes/seo.py`, `/routes/campaigns.py`
+- ⚠️ Routes nog niet volledig geïmporteerd in server.py (voor stabiliteit)
+- 📁 `server.py` blijft 2908 regels (grote refactoring uitgesteld voor stabiliteit)
+
+### Frontend
+- ✅ Nieuwe componenten aangemaakt:
+  - `BookingsManagement.jsx` - Boekingen beheer
+  - `VakmannenManagement.jsx` - Vakmannen beheer
+  - `ReviewsManagement.jsx` - Reviews beheer
+- ✅ `index.js` bijgewerkt met alle exports
+- 📁 `AdminDashboard.jsx` blijft 1639 regels (componenten klaar voor integratie)
+
+### Aanbevolen Volgende Stappen
+1. Integreer nieuwe componenten in AdminDashboard.jsx
+2. Migreer routes van server.py naar route-bestanden
+3. Split lange email templates naar aparte bestanden
+
 ## Laatste Update
-26 januari 2025 - Email Marketing systeem toegevoegd met automatische en handmatige emails
+26 januari 2025 - Email Marketing systeem + basis code refactoring voltooid
