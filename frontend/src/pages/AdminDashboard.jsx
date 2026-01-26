@@ -936,6 +936,11 @@ export default function AdminDashboard() {
               <CityPagesOverview />
             )}
 
+            {/* SEA Campaign Builder Tab */}
+            {activeTab === "seacampaign" && (
+              <SEACampaignBuilder />
+            )}
+
             {/* Email Marketing Tab */}
             {activeTab === "emailmarketing" && (
               <EmailMarketing token={authToken} />
