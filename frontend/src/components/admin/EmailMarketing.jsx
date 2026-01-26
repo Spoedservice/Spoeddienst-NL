@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,7 +12,7 @@ import { toast } from "sonner";
 import { 
   Mail, Send, Clock, Users, CheckCircle, XCircle, Settings, 
   RefreshCw, Play, Snowflake, Sun, Leaf, Flower2, Edit, Save,
-  TrendingUp, AlertCircle, Eye, MailOpen, UserX
+  TrendingUp, AlertCircle, Eye, MailOpen, UserX, Upload, FileText
 } from "lucide-react";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
