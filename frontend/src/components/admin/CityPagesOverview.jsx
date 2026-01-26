@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Copy, Download, ExternalLink, Search, CheckCircle, MapPin, Zap, Droplets, Key, FileSpreadsheet, Rocket } from "lucide-react";
 import { toast } from "sonner";
-import { generateGoogleAdsEditorCSV, downloadCSV, getKeywordCount } from "@/utils/googleAdsGenerator";
+import { generateGoogleAdsEditorCSV, downloadCSV, getKeywordCount, COMPLETE_KEYWORDS } from "@/utils/googleAdsGenerator";
 
 const DUTCH_CITIES = [
   { slug: "amsterdam", name: "Amsterdam", province: "Noord-Holland" },
@@ -331,7 +331,7 @@ export default function CityPagesOverview() {
         {SERVICES.map(service => {
           const ServiceIcon = service.icon;
           const isActive = selectedService === "all" || selectedService === service.slug;
-          const keywordCount = (SERVICE_KEYWORDS[service.slug]?.length || 0) * filteredCities.length * 1.5;
+          const keywordCount = getKeywordCount([service.slug]);
           return (
             <Card 
               key={service.slug} 
