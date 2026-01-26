@@ -4,8 +4,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Copy, Download, ExternalLink, Search, CheckCircle, MapPin, Zap, Droplets, Key, FileSpreadsheet } from "lucide-react";
+import { Copy, Download, ExternalLink, Search, CheckCircle, MapPin, Zap, Droplets, Key, FileSpreadsheet, Rocket } from "lucide-react";
 import { toast } from "sonner";
+import { generateGoogleAdsEditorCSV, downloadCSV, getKeywordCount } from "@/utils/googleAdsGenerator";
 
 const DUTCH_CITIES = [
   { slug: "amsterdam", name: "Amsterdam", province: "Noord-Holland" },
