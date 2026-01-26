@@ -954,6 +954,14 @@ async def register_customer(user: UserCreate):
     await db.users.insert_one(user_dict)
     token = create_token(user_obj.id, "customer")
     
+    # Send welcome email (async, don't wait)
+    if email_marketing_service:
+        asyncio.create_task(email_marketing_service.send_welcome_customer({
+            "id": user_obj.id,
+            "name": user.name,
+            "email": user.email
+        }))
+    
     return {"token": token, "user": {"id": user_obj.id, "email": user_obj.email, "name": user_obj.name, "role": "customer"}}
 
 @api_router.post("/auth/login")
