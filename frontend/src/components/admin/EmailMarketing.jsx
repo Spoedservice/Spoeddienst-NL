@@ -57,6 +57,7 @@ export default function EmailMarketing({ token }) {
     content: ""
   });
   const [sendingManual, setSendingManual] = useState(false);
+  const fileInputRef = useRef(null);
 
   const headers = { Authorization: `Bearer ${token}` };
 
