@@ -2680,5 +2680,204 @@ async def get_campaign_suggestions(service_type: str = None, current_user: dict 
         return suggestions[service_type]
     return suggestions
 
+# ==================== EMAIL MARKETING ENDPOINTS ====================
+
+from services.email_marketing import EmailMarketingService, EMAIL_TYPES
+
+# Initialize email marketing service
+email_marketing_service = None
+
+@app.on_event("startup")
+async def init_email_marketing():
+    global email_marketing_service
+    smtp_config = {
+        "host": SMTP_HOST,
+        "port": SMTP_PORT,
+        "user": SMTP_USER,
+        "password": SMTP_PASSWORD,
+        "from": SMTP_FROM
+    }
+    email_marketing_service = EmailMarketingService(db, smtp_config, FRONTEND_URL)
+    await email_marketing_service.initialize_default_templates()
+    await email_marketing_service.initialize_default_campaigns()
+    logger.info("Email marketing service initialized")
+
+# Pydantic models for email marketing
+class EmailTemplateUpdate(BaseModel):
+    subject: Optional[str] = None
+    html_template: Optional[str] = None
+    is_active: Optional[bool] = None
+
+class CampaignUpdate(BaseModel):
+    delay_days: Optional[int] = None
+    delay_hours: Optional[int] = None
+    is_active: Optional[bool] = None
+
+class ManualEmailRequest(BaseModel):
+    to_emails: List[str]
+    subject: str
+    html_content: str
+    email_type: str = "manual"
+
+class SeasonalCampaignRequest(BaseModel):
+    season: str  # winter, spring, summer, autumn
+
+@api_router.get("/admin/email-marketing/statistics")
+async def get_email_statistics(current_user: dict = Depends(get_admin_user)):
+    """Get email marketing statistics"""
+    if not email_marketing_service:
+        raise HTTPException(status_code=500, detail="Email marketing service not initialized")
+    
+    stats = await email_marketing_service.get_statistics()
+    return stats
+
+@api_router.get("/admin/email-marketing/recent")
+async def get_recent_emails(limit: int = 50, current_user: dict = Depends(get_admin_user)):
+    """Get recent sent emails"""
+    if not email_marketing_service:
+        raise HTTPException(status_code=500, detail="Email marketing service not initialized")
+    
+    emails = await email_marketing_service.get_recent_emails(limit)
+    return {"emails": emails}
+
+@api_router.get("/admin/email-marketing/templates")
+async def get_email_templates(current_user: dict = Depends(get_admin_user)):
+    """Get all email templates"""
+    templates = await db.email_templates.find({}, {"_id": 0}).to_list(50)
+    return {"templates": templates, "email_types": EMAIL_TYPES}
+
+@api_router.put("/admin/email-marketing/templates/{template_type}")
+async def update_email_template(template_type: str, update: EmailTemplateUpdate, current_user: dict = Depends(get_admin_user)):
+    """Update an email template"""
+    update_data = {k: v for k, v in update.dict().items() if v is not None}
+    if not update_data:
+        raise HTTPException(status_code=400, detail="No update data provided")
+    
+    update_data["updated_at"] = datetime.now(timezone.utc)
+    
+    result = await db.email_templates.update_one(
+        {"type": template_type},
+        {"$set": update_data}
+    )
+    
+    if result.modified_count == 0:
+        raise HTTPException(status_code=404, detail="Template not found")
+    
+    updated = await db.email_templates.find_one({"type": template_type}, {"_id": 0})
+    return {"message": "Template updated", "template": updated}
+
+@api_router.get("/admin/email-marketing/campaigns")
+async def get_email_campaigns(current_user: dict = Depends(get_admin_user)):
+    """Get all campaign settings"""
+    campaigns = await db.email_campaigns.find({}, {"_id": 0}).to_list(50)
+    return {"campaigns": campaigns}
+
+@api_router.put("/admin/email-marketing/campaigns/{campaign_type}")
+async def update_email_campaign(campaign_type: str, update: CampaignUpdate, current_user: dict = Depends(get_admin_user)):
+    """Update campaign settings"""
+    update_data = {k: v for k, v in update.dict().items() if v is not None}
+    if not update_data:
+        raise HTTPException(status_code=400, detail="No update data provided")
+    
+    update_data["updated_at"] = datetime.now(timezone.utc)
+    
+    result = await db.email_campaigns.update_one(
+        {"type": campaign_type},
+        {"$set": update_data}
+    )
+    
+    if result.modified_count == 0:
+        raise HTTPException(status_code=404, detail="Campaign not found")
+    
+    updated = await db.email_campaigns.find_one({"type": campaign_type}, {"_id": 0})
+    return {"message": "Campaign updated", "campaign": updated}
+
+@api_router.post("/admin/email-marketing/send-manual")
+async def send_manual_email(request: ManualEmailRequest, current_user: dict = Depends(get_admin_user)):
+    """Send a manual email to selected recipients"""
+    if not email_marketing_service:
+        raise HTTPException(status_code=500, detail="Email marketing service not initialized")
+    
+    sent_count = 0
+    failed_count = 0
+    
+    for email in request.to_emails:
+        # Add unsubscribe link to the content
+        unsubscribe_token = email_marketing_service.generate_unsubscribe_token(email)
+        html_with_unsubscribe = request.html_content + f'''
+        <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; text-align: center;">
+            <p style="color: #999; font-size: 11px;">
+                <a href="{FRONTEND_URL}/uitschrijven?email={email}&token={unsubscribe_token}" style="color: #999;">
+                    Uitschrijven van marketing emails
+                </a>
+            </p>
+        </div>
+        '''
+        
+        success = await email_marketing_service.send_email(
+            email,
+            request.subject,
+            html_with_unsubscribe,
+            request.email_type
+        )
+        
+        if success:
+            sent_count += 1
+        else:
+            failed_count += 1
+    
+    return {
+        "message": f"Emails verstuurd: {sent_count}, Mislukt: {failed_count}",
+        "sent_count": sent_count,
+        "failed_count": failed_count
+    }
+
+@api_router.post("/admin/email-marketing/send-seasonal")
+async def send_seasonal_campaign(request: SeasonalCampaignRequest, current_user: dict = Depends(get_admin_user)):
+    """Send a seasonal campaign to all customers"""
+    if not email_marketing_service:
+        raise HTTPException(status_code=500, detail="Email marketing service not initialized")
+    
+    valid_seasons = ["winter", "spring", "summer", "autumn"]
+    if request.season not in valid_seasons:
+        raise HTTPException(status_code=400, detail=f"Invalid season. Must be one of: {valid_seasons}")
+    
+    sent_count = await email_marketing_service.send_seasonal_campaign(request.season)
+    return {
+        "message": f"Seizoenscampagne '{request.season}' verstuurd naar {sent_count} klanten",
+        "sent_count": sent_count
+    }
+
+@api_router.post("/admin/email-marketing/process-queue")
+async def process_email_queue(current_user: dict = Depends(get_admin_user)):
+    """Manually trigger processing of the email queue"""
+    if not email_marketing_service:
+        raise HTTPException(status_code=500, detail="Email marketing service not initialized")
+    
+    await email_marketing_service.process_email_queue()
+    return {"message": "Email queue processed"}
+
+@api_router.get("/admin/email-marketing/queue")
+async def get_email_queue(current_user: dict = Depends(get_admin_user)):
+    """Get pending emails in the queue"""
+    queue = await db.email_queue.find(
+        {"status": "pending"},
+        {"_id": 0}
+    ).sort("send_at", 1).to_list(100)
+    return {"queue": queue}
+
+# Public unsubscribe endpoint (no auth required)
+@api_router.get("/uitschrijven")
+async def unsubscribe_email(email: str, token: str):
+    """Unsubscribe from marketing emails"""
+    if not email_marketing_service:
+        raise HTTPException(status_code=500, detail="Service unavailable")
+    
+    success = await email_marketing_service.unsubscribe(email, token)
+    if success:
+        return {"message": "U bent succesvol uitgeschreven van marketing emails."}
+    else:
+        raise HTTPException(status_code=400, detail="Ongeldige uitschrijflink")
+
 # Include the router in the main app (must be after all route definitions)
 app.include_router(api_router)
