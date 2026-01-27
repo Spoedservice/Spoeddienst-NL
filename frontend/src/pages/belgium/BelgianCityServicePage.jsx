@@ -32,7 +32,7 @@ export default function BelgianCityServicePage() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold mb-4">Pagina niet gevonden</h1>
-          <Link to="/be" className="text-[#FF4500] hover:underline">Terug naar home</Link>
+          <Link to={beRoute("/")} className="text-[#FF4500] hover:underline">Terug naar home</Link>
         </div>
       </div>
     );
@@ -54,14 +54,14 @@ export default function BelgianCityServicePage() {
         <meta name="description" content={pageDescription} />
         <meta property="og:title" content={pageTitle} />
         <meta property="og:description" content={pageDescription} />
-        <link rel="canonical" href={`https://spoeddienst24.be/be/spoed-${serviceSlug}/${citySlug}`} />
+        <link rel="canonical" href={`https://spoeddienst24.be/spoed-${serviceSlug}/${citySlug}`} />
       </Helmet>
 
       <div className="min-h-screen bg-slate-50">
         {/* Header */}
         <header className="bg-white border-b sticky top-0 z-50">
           <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-            <Link to="/be" className="flex items-center gap-2">
+            <Link to={beRoute("/")} className="flex items-center gap-2">
               <div className="w-10 h-10 bg-gradient-to-br from-[#FF4500] to-[#CC3700] rounded-xl flex items-center justify-center">
                 <Zap className="w-6 h-6 text-white" />
               </div>
@@ -81,9 +81,9 @@ export default function BelgianCityServicePage() {
         {/* Breadcrumb */}
         <div className="bg-white border-b">
           <div className="max-w-7xl mx-auto px-4 py-2 text-sm text-slate-500">
-            <Link to="/be" className="hover:text-[#FF4500]">Home</Link>
+            <Link to={beRoute("/")} className="hover:text-[#FF4500]">Home</Link>
             <span className="mx-2">/</span>
-            <Link to={`/be/dienst/${serviceSlug}`} className="hover:text-[#FF4500]">{service.name}</Link>
+            <Link to={beRoute(`/dienst/${serviceSlug}`)} className="hover:text-[#FF4500]">{service.name}</Link>
             <span className="mx-2">/</span>
             <span className="text-slate-900">{city.name}</span>
           </div>
@@ -116,7 +116,7 @@ export default function BelgianCityServicePage() {
                     Bel Direct: {BE_CONFIG.contact.phoneDisplay}
                   </a>
                   <Link 
-                    to={`/be/boek?service=${serviceSlug}&city=${citySlug}`}
+                    to={beRoute(`/boek?service=${serviceSlug}&city=${citySlug}`)}
                     className="inline-flex items-center justify-center gap-2 bg-white text-slate-900 px-6 py-3 rounded-full font-bold hover:bg-slate-100"
                   >
                     Online Boeken
@@ -224,7 +224,7 @@ export default function BelgianCityServicePage() {
                       {nearbyCities.map(nearbyCity => (
                         <Link 
                           key={nearbyCity.slug}
-                          to={`/be/spoed-${serviceSlug}/${nearbyCity.slug}`}
+                          to={beRoute(`/spoed-${serviceSlug}/${nearbyCity.slug}`)}
                           className="flex items-center gap-2 text-sm text-slate-600 hover:text-[#FF4500]"
                         >
                           <MapPin className="w-4 h-4" />
