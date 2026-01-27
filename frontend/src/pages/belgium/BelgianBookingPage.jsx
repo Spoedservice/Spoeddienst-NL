@@ -200,6 +200,8 @@ export default function BelgianBookingPage() {
         photo_url: photoUrls.length > 0 ? photoUrls[0] : null
       };
 
+      console.log("Sending booking data:", JSON.stringify(bookingData, null, 2));
+
       const response = await fetch(`${API_URL}/api/bookings`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
