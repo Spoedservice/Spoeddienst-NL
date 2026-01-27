@@ -7,7 +7,7 @@ import {
   Zap, Droplet, Key, Phone, Clock, Shield, Star, 
   MapPin, CheckCircle, ArrowRight
 } from "lucide-react";
-import { BE_CONFIG, BELGIAN_CITIES, BELGIAN_SERVICES } from "@/config/belgiumConfig";
+import { BE_CONFIG, BELGIAN_CITIES, BELGIAN_SERVICES, beRoute } from "@/config/belgiumConfig";
 
 const SERVICE_ICONS = {
   loodgieter: Droplet,
