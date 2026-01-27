@@ -63,7 +63,7 @@ export default function BelgianLandingPage() {
             <div className="flex items-center gap-4">
               {/* Country Switcher */}
               <div className="hidden md:flex items-center gap-2 text-sm">
-                <Link to="/" className="px-2 py-1 rounded hover:bg-slate-100">🇳🇱 NL</Link>
+                <a href="https://spoeddienst24.nl" className="px-2 py-1 rounded hover:bg-slate-100">🇳🇱 NL</a>
                 <span className="px-2 py-1 rounded bg-orange-100 text-orange-700 font-medium">🇧🇪 BE</span>
               </div>
               
@@ -313,7 +313,7 @@ export default function BelgianLandingPage() {
                 <div className="mt-4 pt-4 border-t border-slate-700">
                   <p className="text-xs text-slate-500 mb-2">Land wijzigen:</p>
                   <div className="flex gap-2">
-                    <Link to="/" className="px-3 py-1 bg-slate-800 rounded text-sm hover:bg-slate-700">🇳🇱 Nederland</Link>
+                    <a href="https://spoeddienst24.nl" className="px-3 py-1 bg-slate-800 rounded text-sm hover:bg-slate-700">🇳🇱 Nederland</a>
                     <span className="px-3 py-1 bg-[#FF4500] rounded text-sm">🇧🇪 België</span>
                   </div>
                 </div>
