@@ -177,7 +177,7 @@ export default function BelgianLandingPage() {
               {BELGIAN_CITIES.slice(0, 20).map(city => (
                 <Link
                   key={city.slug}
-                  to={`/be/spoed-loodgieter/${city.slug}`}
+                  to={beRoute(`/spoed-loodgieter/${city.slug}`)}
                   className="px-4 py-2 bg-slate-100 hover:bg-[#FF4500] hover:text-white rounded-full text-sm transition-colors"
                 >
                   <MapPin className="w-3 h-3 inline mr-1" />
