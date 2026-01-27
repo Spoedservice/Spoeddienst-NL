@@ -1,4 +1,4 @@
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useLocation } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -16,7 +16,13 @@ const SERVICE_ICONS = {
 };
 
 export default function BelgianCityServicePage() {
-  const { serviceSlug, citySlug } = useParams();
+  const { citySlug } = useParams();
+  const location = useLocation();
+  
+  // Extract service from URL path (e.g., /be/spoed-loodgieter/antwerpen -> loodgieter)
+  const pathParts = location.pathname.split('/');
+  const servicePathPart = pathParts[2] || ''; // e.g., "spoed-loodgieter"
+  const serviceSlug = servicePathPart.replace('spoed-', ''); // e.g., "loodgieter"
   
   const city = BELGIAN_CITIES.find(c => c.slug === citySlug);
   const service = BELGIAN_SERVICES.find(s => s.slug === serviceSlug);
