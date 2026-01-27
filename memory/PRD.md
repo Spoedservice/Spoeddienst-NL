@@ -173,11 +173,11 @@ Een platform voor het boeken van vakmannen (elektricien, loodgieter, slotenmaker
 - ✅ Google Ads tracking geïmplementeerd
 - ✅ Email Marketing systeem actief
 
-## Backlog / Future Tasks
-- P1: Google Ads API directe integratie (vereist Developer Token)
+## Backlog / Voltooide Tasks
+- ~~P1: Google Ads API directe integratie~~ (geblokkeerd - wacht op Developer Token)
 - ~~P2: Campaign Planner data persistent maken in MongoDB~~ ✅ (Was al persistent)
 - ~~P2: Code refactoring voltooien~~ ✅ (Basis refactoring voltooid)
-- P3: Belgische versie (spoeddienst24.be)
+- ~~P3: Belgische versie (spoeddienst24.be)~~ ✅ **VOLTOOID 27 Jan 2025**
 - P4: Native mobiele app (iOS/Android)
 
 ## Refactoring Status (26 Jan 2025)
