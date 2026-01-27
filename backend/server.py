@@ -136,6 +136,7 @@ class BookingCreate(BaseModel):
     customer_email: EmailStr
     customer_phone: str
     photo_url: Optional[str] = None
+    country: Optional[str] = "NL"  # NL or BE - determines which admin receives the booking
 
 class Booking(BaseModel):
     model_config = ConfigDict(extra="ignore")
