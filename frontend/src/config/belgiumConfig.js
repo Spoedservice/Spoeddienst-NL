@@ -1,6 +1,19 @@
 // Belgian Configuration for SpoedDienst24.be
 // Contains all Belgium-specific data: cities, terminology, contact info
 
+// Detect if we're running as the Belgian standalone site
+const IS_STANDALONE_BE = process.env.REACT_APP_COUNTRY === "BE";
+
+// Helper function to get the correct route prefix
+export const getRoutePrefix = () => IS_STANDALONE_BE ? "" : "/be";
+
+// Helper function to build Belgian routes
+export const beRoute = (path) => {
+  const prefix = getRoutePrefix();
+  if (path === "/" || path === "") return prefix || "/";
+  return `${prefix}${path}`;
+};
+
 export const BE_CONFIG = {
   country: "België",
   countryCode: "BE",
