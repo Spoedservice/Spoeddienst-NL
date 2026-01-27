@@ -207,7 +207,9 @@ export default function BelgianBookingPage() {
       });
 
       if (!response.ok) {
-        throw new Error("Boeking mislukt");
+        const errorData = await response.json().catch(() => ({}));
+        console.error("Booking error response:", errorData);
+        throw new Error(errorData.detail || "Boeking mislukt");
       }
 
       const result = await response.json();
