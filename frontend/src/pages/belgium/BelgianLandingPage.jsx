@@ -279,9 +279,9 @@ export default function BelgianLandingPage() {
               <div>
                 <h4 className="font-bold mb-4">Diensten</h4>
                 <ul className="space-y-2 text-slate-400 text-sm">
-                  <li><Link to="/be/dienst/loodgieter" className="hover:text-white">Loodgieter</Link></li>
-                  <li><Link to="/be/dienst/slotenmaker" className="hover:text-white">Slotenmaker</Link></li>
-                  <li><Link to="/be/dienst/elektricien" className="hover:text-white">Elektricien</Link></li>
+                  <li><Link to={beRoute("/dienst/loodgieter")} className="hover:text-white">Loodgieter</Link></li>
+                  <li><Link to={beRoute("/dienst/slotenmaker")} className="hover:text-white">Slotenmaker</Link></li>
+                  <li><Link to={beRoute("/dienst/elektricien")} className="hover:text-white">Elektricien</Link></li>
                 </ul>
               </div>
               
