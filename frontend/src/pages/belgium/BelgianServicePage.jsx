@@ -70,7 +70,7 @@ export default function BelgianServicePage() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold mb-4">Dienst niet gevonden</h1>
-          <Link to="/be" className="text-[#FF4500] hover:underline">Terug naar home</Link>
+          <Link to={beRoute("/")} className="text-[#FF4500] hover:underline">Terug naar home</Link>
         </div>
       </div>
     );
@@ -103,7 +103,7 @@ export default function BelgianServicePage() {
         {/* Header */}
         <header className="bg-white border-b sticky top-0 z-50">
           <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-            <Link to="/be" className="flex items-center gap-2">
+            <Link to={beRoute("/")} className="flex items-center gap-2">
               <div className="w-10 h-10 bg-gradient-to-br from-[#FF4500] to-[#CC3700] rounded-xl flex items-center justify-center">
                 <Zap className="w-6 h-6 text-white" />
               </div>
@@ -123,7 +123,7 @@ export default function BelgianServicePage() {
         {/* Breadcrumb */}
         <div className="bg-white border-b">
           <div className="max-w-7xl mx-auto px-4 py-2 text-sm text-slate-500">
-            <Link to="/be" className="hover:text-[#FF4500]">Home</Link>
+            <Link to={beRoute("/")} className="hover:text-[#FF4500]">Home</Link>
             <span className="mx-2">/</span>
             <span className="text-slate-900">{service.name}</span>
           </div>
@@ -306,7 +306,7 @@ export default function BelgianServicePage() {
         {/* Footer */}
         <footer className="bg-slate-900 text-white py-8">
           <div className="max-w-7xl mx-auto px-4 text-center">
-            <Link to="/be" className="text-slate-400 hover:text-white text-sm">
+            <Link to={beRoute("/")} className="text-slate-400 hover:text-white text-sm">
               ← Terug naar SpoedDienst24.be
             </Link>
             <p className="text-slate-500 text-sm mt-4">
