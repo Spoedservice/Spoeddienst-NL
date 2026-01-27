@@ -12,7 +12,7 @@ import {
   Zap, Droplet, Key, Phone, Clock, Shield, Upload,
   CheckCircle, ArrowRight, ArrowLeft, MapPin, X, Loader2
 } from "lucide-react";
-import { BE_CONFIG, BELGIAN_CITIES, BELGIAN_SERVICES } from "@/config/belgiumConfig";
+import { BE_CONFIG, BELGIAN_CITIES, BELGIAN_SERVICES, beRoute } from "@/config/belgiumConfig";
 
 const API_URL = process.env.REACT_APP_BACKEND_URL;
 
