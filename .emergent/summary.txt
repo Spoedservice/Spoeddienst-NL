@@ -7,61 +7,58 @@ De gebruiker wil een website bouwen genaamd SpoedDienst24.nl, vergelijkbaar met 
 -   Een betalingssysteem.
 -   Een Premium lidmaatschap-pagina.
 -   Een review-systeem.
--   Een admin-dashboard voor het beheren van de site, inclusief het toewijzen van boekingen.
--   Een dashboard voor vakmannen om opdrachten te accepteren/afwijzen.
+-   Een admin-dashboard voor het beheren van de site.
+-   Een dashboard voor vakmannen.
 -   Email-notificaties voor de gehele flow.
--   Een Wachtwoord vergeten functie.
--   Voorkom dubbele registratie en log vakmannen direct in na registratie.
--   Recente verzoeken:
-    - De sectie Beschikbare vakmannen verwijderen van de dienstpagina's.
-    - Uitgebreide SEO-optimalisaties doorvoeren: homepage-teksten, meta-tags, en het aanmaken van dynamische probleem-pagina's (bv. ) en stad-pagina's (bv. ).
-    - Een Google Ads Campagne Planner bouwen in het admin dashboard.
-    - Een CSV-exportfunctie maken die een compleet, importeerbaar bestand voor Google Ads Editor genereert, inclusief ~1000 door de gebruiker aangeleverde zoekwoorden, gestructureerd in campagnes, advertentiegroepen en advertenties.
+-   Wachtwoord vergeten functie.
+-   Uitgebreide SEO-optimalisaties: homepage-teksten, meta-tags, dynamische probleem-pagina's () en stad-pagina's ().
+-   Een Google Ads Campagne Planner en CSV-exportfunctie in het admin dashboard.
+-   Een geautomatiseerd e-mailmarketing systeem.
+-   Een professionele SEA-campagne bouwer.
+-   Een aparte versie van de website voor de Belgische markt ().
+-   Een CSV-importfunctie voor het toevoegen van klanten aan e-mailcampagnes.
 
 **User's preferred language**: Dutch. The next agent MUST respond in Dutch.
 
 **what currently exists?**
-Een uitgebreide full-stack applicatie (React, FastAPI, MongoDB) met authenticatie, dashboards voor admin en vakman, en een complete boekingsflow. In de laatste sessie is het admin-wachtwoordprobleem opgelost door een startup-script te implementeren dat de admin-gegevens uit de -file laadt. Er zijn grootschalige SEO-optimalisaties doorgevoerd, waaronder het aanmaken van dynamische probleem- en stadspagina's, en de implementatie van een Google Ads Campagne Planner in het admin dashboard. De Beschikbare vakmannen-sectie is van de dienstpagina's verwijderd. De agent was bezig met het implementeren van een geavanceerde CSV-export voor Google Ads Editor op basis van een zeer uitgebreide zoekwoordenlijst van de gebruiker.
+Een uitgebreide full-stack applicatie (React, FastAPI, MongoDB) met authenticatie, dashboards, en een complete boekingsflow. De site heeft grootschalige SEO-optimalisaties en een Google Ads CSV-exportfunctie. Recentelijk is er een compleet, geautomatiseerd e-mailmarketing systeem gebouwd, inclusief een admin-interface met statistieken, template-beheer, en geautomatiseerde triggers (welkomstmails, review-herinneringen). Ook is er een professionele SEA Campagne Builder voor de Elektricien dienst geïmplementeerd en is de  component gedeeltelijk gerefactord door logica te verplaatsen naar kleinere componenten. De basisstructuur (scaffolding) voor een Belgische versie van de site ( routes) is opgezet.
 
 **Last working item**:
--   **Last item agent was working**: Het implementeren van een geavanceerde Google Ads Editor CSV-export. De gebruiker heeft een lijst van ~1000 zoekwoorden verstrekt die moet worden omgezet in een correct gestructureerd CSV-bestand met campagnes, advertentiegroepen, advertenties en zoekwoorden (zowel Phrase als Exact match). De agent heeft hiervoor de datastructuur (), de generator logica () en de UI-component () aangemaakt/aangepast.
+-   **Last item agent was working**: Het opzetten van de basisstructuur (scaffolding) voor de Belgische versie van de website (). De agent heeft de nodige configuratiebestanden, pagina-componenten, en een Belgische SEA-generator aangemaakt en de routes in  voorbereid.
 -   **Status**: IN PROGRESS
 -   **Agent Testing Done**: N
--   **Which testing method agent to use?** manual testing by curl. De agent moet inloggen als admin, navigeren naar de City Pages tab, op de nieuwe exportknop klikken en het gedownloade CSV-bestand grondig inspecteren om te verifiëren dat het de correcte structuur heeft voor Google Ads Editor en alle data (campagnes, ad groups, ads, keywords) bevat.
+-   **Which testing method agent to use?**: frontend testing agent. Deze nieuwe functionaliteit vereist uitgebreide tests van de nieuwe  routes, de weergave van gelokaliseerde content (Vlaamse steden, terminologie), en de functionaliteit van de Belgische pagina's en de SEA-generator.
 -   **User Testing Done**: N
 
 **All Pending/In progress Issue list**:
 -   Geen.
 
 **In progress Task List**:
--   **Task 1**: Voltooi en test de geavanceerde Google Ads Editor CSV-export (P0)
-    -   **Where to resume**: De agent heeft de bestanden  en  aangemaakt en was bezig met het aanpassen van . De volgende stappen zijn het finaliseren van de UI-aanpassingen (bv. het tonen van het aantal keywords, het bijwerken van de button-tekst) en het grondig testen van de downloadfunctionaliteit.
-    -   **What will be achieved with this?** De gebruiker kan een compleet, correct gestructureerd CSV-bestand downloaden dat direct kan worden geïmporteerd in Google Ads Editor om 3 campagnes, 120 advertentiegroepen en ~1000+ zoekwoorden aan te maken.
+-   **Task 1**: Voltooi de Belgische versie van de website (spoeddienst24.be) (P0)
+    -   **Where to resume**: De basisbestanden zijn aangemaakt (, , ). Deze bestanden moeten nu gevuld worden met de juiste logica en content. De componenten moeten volledig geïntegreerd worden en de backend moet mogelijk worden aangepast om de gelokaliseerde data correct te kunnen leveren.
+    -   **What will be achieved with this?** Een functionele, gelokaliseerde versie van de website voor de Belgische markt, toegankelijk via de  URL-prefix, met content en functionaliteit afgestemd op België (Vlaamse steden, Ondernemingsnummer i.p.v. BTW, etc.).
     -   **Status**: IN PROGRESS
-    -   **Should Test frontend/backend/both after fix?** frontend
+    -   **Should Test frontend/backend/both after fix?** both
     -   **Blocked on something**: Nee.
 
 **Upcoming and Future Tasks**
 - **Upcoming Tasks**:
-    - **P1: Implementeer Google Ads API Integratie**: De gebruiker heeft credentials (Client ID, Client Secret, Customer ID) gedeeld voor directe API-integratie, maar mist nog de **Developer Token**. Zodra de CSV-export werkt en de gebruiker de token heeft, kan een één-klik campagne-creatie functionaliteit worden gebouwd.
-    - **P2: Maak Campaign Planner persistent**: De data van de  wordt nu in het geheugen van de server opgeslagen en is niet persistent. Dit moet worden opgeslagen in een MongoDB-collectie.
-    - **P2: Voltooi Code Refactoring**: De  en  bestanden zijn zeer groot geworden. De eerder gestarte refactoring om logica te verplaatsen naar aparte bestanden (, ) moet worden voltooid.
+    - **P1: Implementeer Google Ads API Integratie**: Wacht nog op de **Developer Token** van de gebruiker. Dit maakt één-klik campagne-creatie mogelijk.
+    - **P2: Voltooi Backend Code Refactoring**: De  is nog steeds zeer groot. De eerder geplande refactoring om routes op te splitsen in aparte bestanden (zoals , , etc.) is nog niet voltooid en is belangrijk voor de onderhoudbaarheid.
 - **Future Tasks**:
-    - **P3**: Creëer een aparte versie van de website voor de Belgische markt ().
-    - **P4**: Ontwikkel een native mobiele app voor iOS en Android.
+    - **P3**: Ontwikkel een native mobiele app voor iOS en Android.
 
 **Completed work in this session**
--   **Admin Account Fix**: Het inlogprobleem voor de admin is permanent opgelost door een startup-event in  te implementeren dat de admin-gebruiker aanmaakt/update op basis van credentials in .
--   **Vertaling Foutmelding**: De Invalid credentials foutmelding is vertaald naar Ongeldige inloggegevens.
--   **Dienstpagina's Opgeschoond**: De sectie Beschikbare vakmannen is verwijderd uit .
--   **SEO Optimalisaties (Grootschalig)**:
-    -   **Homepage**:  en  zijn bijgewerkt met een nieuwe H1, subtitel, SEO-tekst, geoptimaliseerde meta-tags (incl. Schema.org) en klikbare populaire zoekopdrachten.
-    -   **Dynamische Pagina's**: Er zijn componenten (, ) en backend endpoints gemaakt om 12 probleem-pagina's en 120 stad-pagina's dynamisch te genereren.
-    -   **Nieuwe Routes**:  is uitgebreid met routes voor de nieuwe dynamische pagina's.
--   **Google Ads Voorbereidingen**:
-    -   Een **Campagne Planner** en **City Pages Overview** zijn als nieuwe tabs toegevoegd aan het .
-    -   Een CSV-exportfunctie is gebouwd, met als laatste stap de integratie van ~1000 keywords.
--   **Deployment Readiness**: Hardcoded credentials zijn uit de code gehaald en naar  bestanden verplaatst na een health check.
+-   **Google Ads CSV Export & Tracking**: De geavanceerde CSV-export is voltooid en de Google Tag conversion tracking is succesvol geïntegreerd op de boekingspagina.
+-   **Geautomatiseerd Email Marketing Systeem**: Een volledig functioneel systeem is gebouwd:
+    -   **Backend**: Service () met scheduler () voor automatische en vertraagde mails (welkomstmails, review-herinneringen).
+    -   **Database**: Nieuwe MongoDB-collecties voor , , en .
+    -   **Frontend**: Nieuwe Email Marketing tab in het admin-dashboard met statistieken, campagne- en templatebeheer, en een handmatige verzendfunctie.
+    -   **Features**: Template-invoegfunctie en een CSV-importfunctie voor klant-e-mails.
+-   **Professionele SEA Campagne Builder**: Een nieuwe UI gebouwd in het admin-dashboard waarmee een zeer gedetailleerde Google Ads CSV kan worden gegenereerd voor de Elektricien campagne, gebaseerd op professionele SEA-structuren (thematische ad groups, match types, negative keywords).
+-   **Frontend Refactoring**: Het  component is opgeschoond door de logica voor Boekingen, Vakmannen en Reviews te verplaatsen naar aparte componenten (, , ).
+-   **Bugfix**: Een  en  fout in het  is opgelost na de refactoring.
+-   **Scaffolding Belgische Site**: De basisbestanden en routes voor  zijn aangemaakt.
 
 **Earlier issues found/mentioned but not fixed**
 -   Geen.
@@ -73,76 +70,70 @@ Een uitgebreide full-stack applicatie (React, FastAPI, MongoDB) met authenticati
 
 
 **Key Technical Concepts**
--   **Backend**: FastAPI (Python)
--   **Frontend**: React (JavaScript)
--   **Database**: MongoDB
--   **Styling**: Tailwind CSS, Shadcn/UI
--   **Authenticatie**: JWT
--   **Nieuwe bibliotheek**:  voor het beheren van meta-tags.
--   **Nieuw concept**: Genereren van een complex, gestructureerd CSV-bestand voor Google Ads Editor.
--   **Backend Startup Event**: Gebruik van  om de admin-configuratie bij elke start te garanderen.
+-   **Backend**: FastAPI, MongoDB, Motor, APScheduler (voor achtergrondtaken/e-mails).
+-   **Frontend**: React, Tailwind CSS, Shadcn/UI,  (voor CSV-import).
+-   **Architectuur**: Introductie van een  laag in de backend. Gedeeltelijke refactoring van een grote React-component naar kleinere, gespecialiseerde componenten. URL-prefix () gebaseerde lokalisatiestrategie.
 
 **key DB schema**
--   De  logica in de backend () gebruikt momenteel een in-memory dictionary. Voor persistentie moet dit worden gemigreerd naar een MongoDB-collectie.
+-   **email_campaigns**: 
+-   **email_templates**: 
+-   **email_logs**: 
+-   **unsubscribers**: 
+-   **campaigns**: (Google Ads campagnes, persistent in MongoDB)
 
 **changes in tech stack**
--   De  bibliotheek is toegevoegd aan de frontend.
+-   **Backend**:  en  zijn toegevoegd en geïnstalleerd.
 
 **All files of reference**
--   **Aangemaakt**:
-    -   
-    -   
-    -   
-    -   
-    -   
-    -   
--   **Sterk aangepast**:
-    -   
-    -   
-    -   
-    -   
-    -   
-    -   
+-   **/app/backend/services/email_marketing.py**: Bevat alle logica voor het versturen en beheren van e-mails.
+-   **/app/frontend/src/components/admin/EmailMarketing.jsx**: De UI-component voor het e-mailmarketingsysteem.
+-   **/app/frontend/src/components/admin/SEACampaignBuilder.jsx**: De UI voor het bouwen van de professionele SEA-campagne.
+-   **/app/frontend/src/utils/seaCampaignGenerator.js**: De logica voor het genereren van de professionele SEA-campagne CSV.
+-   **/app/frontend/src/pages/AdminDashboard.jsx**: Gedeeltelijk gerefactord, importeert nu ,  en .
+-   **/app/frontend/src/config/belgiumConfig.js**: Configuratie voor de Belgische site.
+-   **/app/frontend/src/pages/belgium/**: Nieuwe pagina's voor de Belgische site.
+-   **/app/backend/server.py**: Nog steeds het centrale bestand, maar aangepast om de e-mail service aan te roepen en de  class te hernoemen.
 
 **Areas that need refactoring**:
--   **Backend**:  is extreem groot geworden. De logica voor authenticatie, boekingen, SEO en campagnes moet worden opgesplitst in aparte route-bestanden onder .
--   **Frontend**:  is complex. De logica voor de verschillende tabs kan verder worden opgesplitst in kleinere, herbruikbare componenten.
--   **Backend Data**: De campagne data in  is niet persistent. Dit moet worden verplaatst naar een MongoDB-collectie.
+-   ****: Dit is de hoogste prioriteit. Het bestand is ~3000 regels lang. De logica voor admin, SEO, campagnes, etc. moet daadwerkelijk verplaatst worden naar de reeds aangemaakte (maar lege) bestanden in de  map om de code beheersbaar te maken.
 
 **key api endpoints**
--   **Nieuwe Endpoints**:
+-   **Email Marketing Endpoints**:
+    -   
+    -   
     -   
     -   
     -   
     -   
 
 **Critical Info for New Agent**
--   **Top Prioriteit**: Voltooi de geavanceerde Google Ads Editor CSV-export. De gebruiker is zeer gefocust op SEO en Google Ads. Finaliseer de  component en test de download en de inhoud van het CSV-bestand grondig.
--   **API vs. CSV**: Focus op het afmaken van de CSV-export. De directe API-integratie is een toekomstige taak die afhangt van de gebruiker die een Developer Token aanlevert.
--   **Data Persistentie**: Wees je ervan bewust dat de  momenteel geen data opslaat in de database. Dit is een belangrijke volgende stap nadat de CSV-export is voltooid.
--   **Refactoring**: Houd de noodzaak voor refactoring van  en  in gedachten bij het plannen van toekomstige taken om de onderhoudbaarheid van de code te waarborgen.
+-   **Prioriteit 1: Belgische Site**: De gebruiker heeft akkoord gegeven om de Belgische site te bouwen. De basisstructuur is aanwezig; de taak is nu om deze te vullen met logica en content en volledig te integreren.
+-   **Backend Schuld**: De refactoring van  is een belangrijke technische schuld. Hoewel de gebruiker dit niet expliciet heeft gevraagd, is het cruciaal voor de lange termijn gezondheid van het project. Het is aan te raden dit aan te pakken na de implementatie van de Belgische site.
+-   **Gebruikersinteractie**: De gebruiker is zeer betrokken en levert gedetailleerde, professionele specificaties (zoals voor de SEA-campagne). Wees voorbereid om deze specificaties nauwkeurig te implementeren.
+-   **Google Ads API**: Dit blijft een openstaand punt dat geblokkeerd is door de gebruiker (wacht op Developer Token).
 
 **documents and test reports created in this job**
--    (volledig bijgewerkt met de laatste features)
+-    (volledig bijgewerkt)
 
 **Last 10 User Messages and any pending HUMAN messages**
-10. Gebruiker levert een enorme CSV met ~1000 zoekwoorden voor de Google Ads campagnes.
-9.  Agent bevestigt de implementatie van de uitgebreide zoekwoordenlijst in de CSV-export.
-8.  Gebruiker geeft Google Ads Tracking Code, verward met API Developer Token.
-7.  Agent verduidelijkt het verschil en adviseert voor nu de CSV-export te gebruiken.
-6.  Gebruiker geeft Google Ads Customer ID en Project info.
-5.  Agent vraagt om de Client Secret.
-4.  Gebruiker levert de Client Secret.
-3.  Agent bevestigt de ontvangen credentials en vraagt om de laatste ontbrekende credential: de **Google Ads Developer Token**.
-2.  Gebruiker vraagt om een Google Ads Editor CSV-export in plaats van directe API-integratie, nadat de agent hierom vraagt.
-1.  Gebruiker wil directe Google Ads API integratie.
+10. Gebruiker vraagt om een Belgische versie ().
+9. Gebruiker geeft specificaties voor de Belgische site (routing, steden, terminologie).
+8. Agent bouwt en test een professionele SEA Campagne Builder voor Elektricien.
+7. Gebruiker levert gedetailleerde professionele input voor een SEA-campagne.
+6. Agent implementeert en test een CSV-importfunctie voor e-mailontvangers.
+5. Gebruiker levert CSV-bestanden met klantgegevens voor mailmarketing.
+4. Agent lost  fout op in de AdminDashboard.
+3. Agent start de integratie van gerefactorde componenten in AdminDashboard, maar stuit op een fout.
+2. Gebruiker vraagt om de gerefactorde componenten te integreren.
+1. Agent implementeert en test de template invoegen functie in het e-mailmarketingsysteem.
 
 **Project Health Check:**
 -   **Broken**: Geen.
--   **Mocked**: De directe één-klik Google Ads API-integratie is niet functioneel. De  in het admin dashboard slaat data alleen op in het servergeheugen, niet in de database.
+-   **Mocked**: De directe Google Ads API-integratie is niet functioneel. De Belgische site is momenteel alleen een niet-functionele scaffold.
 
 **3rd Party Integrations**
--   **Google Ads**: Implementatie via Google Ads Editor CSV-export is in uitvoering. Directe API-integratie is gepland maar geblokkeerd omdat de gebruiker nog een **Developer Token** moet aanleveren.
+-   **Google Ads**: CSV-export is volledig functioneel. Directe API-integratie is gepland maar geblokkeerd.
+-   **Email (SMTP)**: Wordt gebruikt door de backend voor het versturen van transactionele en marketing e-mails.
 
 **Testing status**
 -   **Testing agent used after significant changes**: NO
@@ -156,5 +147,4 @@ Een uitgebreide full-stack applicatie (React, FastAPI, MongoDB) met authenticati
     -   **Wachtwoord**:  (wordt geladen uit )
 
 **What agent forgot to execute**
--   De agent is de refactoring van  en  niet gestart, waardoor deze bestanden nog groter en complexer zijn geworden.
--   De data voor de Google Ads Campagne Planner wordt opgeslagen in een tijdelijke dictionary in  en niet in de MongoDB-database, waardoor deze niet persistent is.</analysis>
+-   De agent heeft de volledige refactoring van  niet voltooid. Er zijn routebestanden aangemaakt, maar de logica is niet verplaatst, waardoor  een zeer groot en complex bestand blijft. Dit was een van de oorspronkelijke P2-taken.</analysis>
