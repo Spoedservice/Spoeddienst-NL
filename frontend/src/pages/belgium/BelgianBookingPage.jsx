@@ -156,7 +156,12 @@ export default function BelgianBookingPage() {
   };
 
   const handleSubmit = async () => {
-    if (!validateStep(3)) return;
+    // Re-validate step 3 before submitting
+    if (!formData.name || !formData.email || !formData.phone || !formData.address || !formData.postcode || !formData.city) {
+      toast.error("Vul alle verplichte velden in voordat u bevestigt");
+      setStep(3); // Go back to contact step
+      return;
+    }
     
     setIsSubmitting(true);
     
