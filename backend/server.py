@@ -42,6 +42,7 @@ SMTP_PASSWORD = os.environ.get('SMTP_PASSWORD', '')
 SMTP_FROM = os.environ.get('SMTP_FROM', 'info@spoeddienst24.nl')
 FRONTEND_URL = os.environ.get('FRONTEND_URL', 'https://spoeddienst24.nl')
 ADMIN_EMAIL = os.environ.get('ADMIN_EMAIL', 'Spoeddienst26@gmail.com')
+ADMIN_EMAIL_BE = os.environ.get('ADMIN_EMAIL_BE', 'info@spoeddienst24.be')  # Belgian admin email
 
 # Create the main app
 app = FastAPI()
