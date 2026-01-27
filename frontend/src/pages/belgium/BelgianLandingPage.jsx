@@ -112,7 +112,7 @@ export default function BelgianLandingPage() {
                   return (
                     <Link
                       key={service.slug}
-                      to={`/be/dienst/${service.slug}`}
+                      to={beRoute(`/dienst/${service.slug}`)}
                       className={`group p-6 rounded-2xl bg-gradient-to-br ${SERVICE_COLORS[service.slug]} text-white hover:scale-105 transition-all duration-300 shadow-lg`}
                     >
                       <Icon className="w-12 h-12 mb-3 mx-auto" />
