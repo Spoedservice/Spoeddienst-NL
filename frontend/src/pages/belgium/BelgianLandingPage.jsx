@@ -250,7 +250,7 @@ export default function BelgianLandingPage() {
                 {BE_CONFIG.contact.phoneDisplay}
               </a>
               <Link 
-                to="/be/boek"
+                to={beRoute("/boek")}
                 className="inline-flex items-center justify-center gap-2 bg-slate-900 text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-slate-800 transition-colors"
               >
                 Online Boeken
