@@ -54,6 +54,12 @@ import AdminDashboard from "@/pages/AdminDashboard";
 import ProblemPage from "@/pages/ProblemPage";
 import CityServicePage from "@/pages/CityServicePage";
 
+// Belgian Pages
+import BelgianLandingPage from "@/pages/belgium/BelgianLandingPage";
+import BelgianCityServicePage from "@/pages/belgium/BelgianCityServicePage";
+import BelgianServicePage from "@/pages/belgium/BelgianServicePage";
+import BelgianBookingPage from "@/pages/belgium/BelgianBookingPage";
+
 function App() {
   return (
     <HelmetProvider>
@@ -114,6 +120,14 @@ function App() {
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
             <Route path="/beheer" element={<AdminDashboard />} />
+            
+            {/* Belgian Routes - SpoedDienst24.be */}
+            <Route path="/be" element={<BelgianLandingPage />} />
+            <Route path="/be/boek" element={<BelgianBookingPage />} />
+            <Route path="/be/dienst/:serviceSlug" element={<BelgianServicePage />} />
+            <Route path="/be/spoed-loodgieter/:citySlug" element={<BelgianCityServicePage />} />
+            <Route path="/be/spoed-slotenmaker/:citySlug" element={<BelgianCityServicePage />} />
+            <Route path="/be/spoed-elektricien/:citySlug" element={<BelgianCityServicePage />} />
           </Routes>
         </BrowserRouter>
         <Toaster position="top-right" />

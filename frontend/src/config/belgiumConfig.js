@@ -80,6 +80,14 @@ export const BELGIAN_CITIES = [
   { name: "Diest", slug: "diest", province: "Vlaams-Brabant" },
   { name: "Halle", slug: "halle", province: "Vlaams-Brabant" },
   
+  // Brussel (tweetalig gewest)
+  { name: "Brussel", slug: "brussel", province: "Brussels Hoofdstedelijk Gewest", isCapital: true },
+  { name: "Schaarbeek", slug: "schaarbeek", province: "Brussels Hoofdstedelijk Gewest" },
+  { name: "Anderlecht", slug: "anderlecht", province: "Brussels Hoofdstedelijk Gewest" },
+  { name: "Sint-Jans-Molenbeek", slug: "sint-jans-molenbeek", province: "Brussels Hoofdstedelijk Gewest" },
+  { name: "Elsene", slug: "elsene", province: "Brussels Hoofdstedelijk Gewest" },
+  { name: "Ukkel", slug: "ukkel", province: "Brussels Hoofdstedelijk Gewest" },
+  
   // Limburg
   { name: "Hasselt", slug: "hasselt", province: "Limburg", isCapital: true },
   { name: "Genk", slug: "genk", province: "Limburg" },
