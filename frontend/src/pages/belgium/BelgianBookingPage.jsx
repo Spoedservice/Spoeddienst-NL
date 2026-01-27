@@ -244,7 +244,7 @@ export default function BelgianBookingPage() {
         {/* Header */}
         <header className="bg-white border-b sticky top-0 z-50">
           <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-            <Link to="/be" className="flex items-center gap-2">
+            <Link to={beRoute("/")} className="flex items-center gap-2">
               <div className="w-10 h-10 bg-gradient-to-br from-[#FF4500] to-[#CC3700] rounded-xl flex items-center justify-center">
                 <Zap className="w-6 h-6 text-white" />
               </div>
