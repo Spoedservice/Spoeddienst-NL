@@ -200,5 +200,55 @@ Een platform voor het boeken van vakmannen (elektricien, loodgieter, slotenmaker
 2. Migreer routes van server.py naar route-bestanden
 3. Split lange email templates naar aparte bestanden
 
+## Belgische Site (SpoedDienst24.be) - NIEUW 27 Jan 2025
+
+### Geïmplementeerde Features
+- ✅ **Landing Page** (`/be`) - Volledig gelokaliseerde homepage voor België
+- ✅ **Service Pages** (`/be/dienst/[loodgieter|slotenmaker|elektricien]`) - Per dienst overzicht
+- ✅ **City+Service Pages** (`/be/spoed-[dienst]/[stad]`) - SEO pagina's per stad
+- ✅ **Booking Page** (`/be/boek`) - 4-stappen wizard met Belgische validatie
+- ✅ **Belgian SEA Campaign Generator** - Google Ads CSV voor België
+
+### Configuratie
+- **Domein**: spoeddienst24.be
+- **Telefoonnummer**: 03 808 47 47
+- **Prioriteitssteden**: Antwerpen, Brussel, Leuven
+- **Regio's**: Antwerpen, Brussels Hoofdstedelijk Gewest, Oost-Vlaanderen, West-Vlaanderen, Vlaams-Brabant, Limburg
+
+### Frontend Bestanden
+```
+/app/frontend/src/
+├── config/
+│   └── belgiumConfig.js          # Steden, diensten, terminologie
+├── pages/belgium/
+│   ├── BelgianLandingPage.jsx    # /be
+│   ├── BelgianServicePage.jsx    # /be/dienst/:service
+│   ├── BelgianCityServicePage.jsx # /be/spoed-:service/:city
+│   └── BelgianBookingPage.jsx    # /be/boek
+└── utils/
+    └── belgianSeaCampaignGenerator.js # SEA CSV voor België
+```
+
+### Routes (App.js)
+- `/be` - BelgianLandingPage
+- `/be/boek` - BelgianBookingPage
+- `/be/dienst/:serviceSlug` - BelgianServicePage
+- `/be/spoed-loodgieter/:citySlug` - BelgianCityServicePage
+- `/be/spoed-slotenmaker/:citySlug` - BelgianCityServicePage
+- `/be/spoed-elektricien/:citySlug` - BelgianCityServicePage
+
+### Belgische Steden (50+)
+- **Antwerpen**: Antwerpen, Berchem, Borgerhout, Deurne, Ekeren, Hoboken, Merksem, Wilrijk, Mortsel, Edegem, Kontich, Schoten, Brasschaat, Kapellen, Wommelgem, Mechelen, Turnhout, Heist-op-den-Berg, Lier
+- **Brussel**: Brussel, Schaarbeek, Anderlecht, Sint-Jans-Molenbeek, Elsene, Ukkel
+- **Oost-Vlaanderen**: Gent, Sint-Niklaas, Aalst, Dendermonde, Lokeren, Wetteren
+- **West-Vlaanderen**: Brugge, Oostende, Kortrijk, Roeselare, Knokke-Heist, Blankenberge
+- **Vlaams-Brabant**: Leuven, Vilvoorde, Aarschot, Tienen, Diest, Halle
+- **Limburg**: Hasselt, Genk, Sint-Truiden, Beringen, Tongeren
+
+## Backlog / Future Tasks
+- P1: Google Ads API directe integratie (vereist Developer Token)
+- P2: Backend `server.py` refactoring (opsplitsen naar route-bestanden)
+- P3: Native mobiele app (iOS/Android)
+
 ## Laatste Update
-26 januari 2025 - Email Marketing systeem + basis code refactoring voltooid
+27 januari 2025 - Belgische site (SpoedDienst24.be) volledig geïmplementeerd
