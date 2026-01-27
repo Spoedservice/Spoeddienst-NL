@@ -228,7 +228,9 @@ export default function BelgianBookingPage() {
       
     } catch (error) {
       console.error("Booking error:", error);
-      toast.error("Er ging iets mis. Bel ons direct op " + BE_CONFIG.contact.phoneDisplay);
+      console.error("Form data was:", JSON.stringify(formData, null, 2));
+      const errorMessage = error.message || "Onbekende fout";
+      toast.error(`Fout: ${errorMessage}. Bel ons direct op ${BE_CONFIG.contact.phoneDisplay}`);
     } finally {
       setIsSubmitting(false);
     }
