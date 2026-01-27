@@ -290,7 +290,7 @@ export default function BelgianLandingPage() {
                 <ul className="space-y-2 text-slate-400 text-sm">
                   {mainCities.map(city => (
                     <li key={city.slug}>
-                      <Link to={`/be/spoed-loodgieter/${city.slug}`} className="hover:text-white">{city.name}</Link>
+                      <Link to={beRoute(`/spoed-loodgieter/${city.slug}`)} className="hover:text-white">{city.name}</Link>
                     </li>
                   ))}
                 </ul>
