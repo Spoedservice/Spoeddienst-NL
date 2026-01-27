@@ -187,18 +187,17 @@ export default function BelgianBookingPage() {
       // Create booking
       const bookingData = {
         service_type: formData.service,
-        urgency: formData.urgency,
+        is_emergency: formData.urgency === "spoed",
         description: formData.description,
         customer_name: formData.name,
         customer_email: formData.email,
         customer_phone: formData.phone,
         address: formData.address,
-        postcode: formData.postcode,
+        postal_code: formData.postcode,
         city: formData.city,
-        country: "BE",
-        preferred_date: formData.preferredDate || null,
-        photos: photoUrls,
-        source: "website_be"
+        preferred_date: formData.preferredDate || new Date().toISOString().split("T")[0],
+        preferred_time: formData.urgency === "spoed" ? "zo snel mogelijk" : "overdag",
+        photo_url: photoUrls.length > 0 ? photoUrls[0] : null
       };
 
       const response = await fetch(`${API_URL}/api/bookings`, {
