@@ -19,9 +19,12 @@ export default function BelgianCityServicePage() {
   const { citySlug } = useParams();
   const location = useLocation();
   
-  // Extract service from URL path (e.g., /be/spoed-loodgieter/antwerpen -> loodgieter)
-  const pathParts = location.pathname.split('/');
-  const servicePathPart = pathParts[2] || ''; // e.g., "spoed-loodgieter"
+  // Extract service from URL path
+  // Works for both /spoed-loodgieter/antwerpen (standalone BE) and /be/spoed-loodgieter/antwerpen (NL site)
+  const pathParts = location.pathname.split('/').filter(p => p); // Remove empty strings
+  
+  // Find the part that starts with "spoed-"
+  const servicePathPart = pathParts.find(p => p.startsWith('spoed-')) || '';
   const serviceSlug = servicePathPart.replace('spoed-', ''); // e.g., "loodgieter"
   
   const city = BELGIAN_CITIES.find(c => c.slug === citySlug);
