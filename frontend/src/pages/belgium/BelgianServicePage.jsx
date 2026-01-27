@@ -96,7 +96,7 @@ export default function BelgianServicePage() {
       <Helmet>
         <title>{pageTitle}</title>
         <meta name="description" content={pageDescription} />
-        <link rel="canonical" href={`https://spoeddienst24.be/be/dienst/${serviceSlug}`} />
+        <link rel="canonical" href={`https://spoeddienst24.be/dienst/${serviceSlug}`} />
       </Helmet>
 
       <div className="min-h-screen bg-slate-50">
@@ -163,7 +163,7 @@ export default function BelgianServicePage() {
                     Bel Direct: {BE_CONFIG.contact.phoneDisplay}
                   </a>
                   <Link 
-                    to={`/be/boek?service=${serviceSlug}`}
+                    to={beRoute(`/boek?service=${serviceSlug}`)}
                     className="inline-flex items-center justify-center gap-2 bg-slate-900 text-white px-6 py-3 rounded-full font-bold hover:bg-slate-800"
                   >
                     Online Boeken
@@ -257,7 +257,7 @@ export default function BelgianServicePage() {
                       {cities.slice(0, 5).map(city => (
                         <Link
                           key={city.slug}
-                          to={`/be/spoed-${serviceSlug}/${city.slug}`}
+                          to={beRoute(`/spoed-${serviceSlug}/${city.slug}`)}
                           className="block text-sm text-slate-600 hover:text-[#FF4500] transition-colors"
                         >
                           {service.name} {city.name} →
@@ -294,7 +294,7 @@ export default function BelgianServicePage() {
                 {BE_CONFIG.contact.phoneDisplay}
               </a>
               <Link 
-                to={`/be/boek?service=${serviceSlug}`}
+                to={beRoute(`/boek?service=${serviceSlug}`)}
                 className="inline-flex items-center justify-center gap-2 bg-slate-900 text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-slate-800"
               >
                 Online Boeken
