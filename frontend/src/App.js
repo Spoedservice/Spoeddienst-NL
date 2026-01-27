@@ -60,6 +60,10 @@ import BelgianCityServicePage from "@/pages/belgium/BelgianCityServicePage";
 import BelgianServicePage from "@/pages/belgium/BelgianServicePage";
 import BelgianBookingPage from "@/pages/belgium/BelgianBookingPage";
 
+// Detect country from environment variable
+const COUNTRY = process.env.REACT_APP_COUNTRY || "NL";
+const IS_BELGIUM = COUNTRY === "BE";
+
 function App() {
   return (
     <HelmetProvider>
@@ -67,12 +71,72 @@ function App() {
         <BrowserRouter>
           <ScrollToTop />
           <Routes>
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/boek" element={<BookingPage />} />
-            <Route path="/boek/:serviceType" element={<BookingPage />} />
-            <Route path="/booking/:bookingId" element={<BookingPage />} />
-            <Route path="/booking/success" element={<BookingSuccessPage />} />
-            <Route path="/diensten/:slug" element={<ServicePage />} />
+            {/* Main routes - serve Belgian or Dutch version based on COUNTRY env var */}
+            {IS_BELGIUM ? (
+              <>
+                {/* Belgian Routes as Root for spoeddienst24.be */}
+                <Route path="/" element={<BelgianLandingPage />} />
+                <Route path="/boek" element={<BelgianBookingPage />} />
+                <Route path="/dienst/:serviceSlug" element={<BelgianServicePage />} />
+                <Route path="/spoed-loodgieter/:citySlug" element={<BelgianCityServicePage />} />
+                <Route path="/spoed-slotenmaker/:citySlug" element={<BelgianCityServicePage />} />
+                <Route path="/spoed-elektricien/:citySlug" element={<BelgianCityServicePage />} />
+              </>
+            ) : (
+              <>
+                {/* Dutch Routes for spoeddienst24.nl */}
+                <Route path="/" element={<LandingPage />} />
+                <Route path="/boek" element={<BookingPage />} />
+                <Route path="/boek/:serviceType" element={<BookingPage />} />
+                <Route path="/booking/:bookingId" element={<BookingPage />} />
+                <Route path="/booking/success" element={<BookingSuccessPage />} />
+                <Route path="/diensten/:slug" element={<ServicePage />} />
+                {/* SEO City pagina's - moet VOOR de probleem pagina's staan */}
+                <Route path="/spoed-loodgieter/:city" element={<CityServicePage />} />
+                <Route path="/spoed-slotenmaker/:city" element={<CityServicePage />} />
+                <Route path="/spoed-elektricien/:city" element={<CityServicePage />} />
+                {/* SEO Probleem pagina's */}
+                <Route path="/:slug" element={<ProblemPage />} />
+                {/* Zakelijke pagina's */}
+                <Route path="/vve" element={<VVEPage />} />
+                <Route path="/horeca" element={<HorecaPage />} />
+                <Route path="/kantoor" element={<KantoorPage />} />
+                <Route path="/winkel" element={<WinkelPage />} />
+                <Route path="/partner" element={<PartnerPage />} />
+                <Route path="/affiliate" element={<AffiliatePage />} />
+                {/* Vakman pagina's */}
+                <Route path="/vakman" element={<VakmanInfoPage />} />
+                <Route path="/vakman/app" element={<VakmanAppPage />} />
+                <Route path="/vakman/voorwaarden" element={<VakmanVoorwaardenPage />} />
+                <Route path="/vakman/faq" element={<VakmanFAQPage />} />
+                {/* Info pagina's */}
+                <Route path="/over-ons" element={<OverOnsPage />} />
+                <Route path="/garantie" element={<GarantiePage />} />
+                <Route path="/prijzen" element={<PrijsgidsenPage />} />
+                <Route path="/premium" element={<PremiumPage />} />
+                <Route path="/premium/success" element={<PremiumSuccessPage />} />
+                <Route path="/blog" element={<BlogPage />} />
+                <Route path="/vacatures" element={<VacaturesPage />} />
+                {/* Juridische pagina's */}
+                <Route path="/privacy" element={<PrivacyPage />} />
+                <Route path="/voorwaarden" element={<VoorwaardenPage />} />
+                <Route path="/cookies" element={<CookiePage />} />
+                {/* Review pagina */}
+                <Route path="/review" element={<ReviewPage />} />
+                {/* Diensten selectie */}
+                <Route path="/diensten" element={<DienstenSelectiePage />} />
+                
+                {/* Belgian Routes - accessible from Dutch site at /be */}
+                <Route path="/be" element={<BelgianLandingPage />} />
+                <Route path="/be/boek" element={<BelgianBookingPage />} />
+                <Route path="/be/dienst/:serviceSlug" element={<BelgianServicePage />} />
+                <Route path="/be/spoed-loodgieter/:citySlug" element={<BelgianCityServicePage />} />
+                <Route path="/be/spoed-slotenmaker/:citySlug" element={<BelgianCityServicePage />} />
+                <Route path="/be/spoed-elektricien/:citySlug" element={<BelgianCityServicePage />} />
+              </>
+            )}
+            
+            {/* Shared routes - available on both domains */}
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/vakman/register" element={<VakmanRegisterPage />} />
@@ -80,54 +144,13 @@ function App() {
             <Route path="/reset-wachtwoord" element={<ResetWachtwoordPage />} />
             <Route path="/dashboard" element={<CustomerDashboard />} />
             <Route path="/vakman/dashboard" element={<VakmanDashboard />} />
-            {/* SEO City pagina's - moet VOOR de probleem pagina's staan */}
-            <Route path="/spoed-loodgieter/:city" element={<CityServicePage />} />
-            <Route path="/spoed-slotenmaker/:city" element={<CityServicePage />} />
-            <Route path="/spoed-elektricien/:city" element={<CityServicePage />} />
-            {/* SEO Probleem pagina's */}
-            <Route path="/:slug" element={<ProblemPage />} />
-            {/* Zakelijke pagina's */}
-            <Route path="/vve" element={<VVEPage />} />
-            <Route path="/horeca" element={<HorecaPage />} />
-            <Route path="/kantoor" element={<KantoorPage />} />
-            <Route path="/winkel" element={<WinkelPage />} />
-            <Route path="/partner" element={<PartnerPage />} />
-            <Route path="/affiliate" element={<AffiliatePage />} />
-            {/* Vakman pagina's */}
-            <Route path="/vakman" element={<VakmanInfoPage />} />
-            <Route path="/vakman/app" element={<VakmanAppPage />} />
-            <Route path="/vakman/voorwaarden" element={<VakmanVoorwaardenPage />} />
-            <Route path="/vakman/faq" element={<VakmanFAQPage />} />
-            {/* Info pagina's */}
-            <Route path="/over-ons" element={<OverOnsPage />} />
-            <Route path="/garantie" element={<GarantiePage />} />
-            <Route path="/prijzen" element={<PrijsgidsenPage />} />
-            <Route path="/premium" element={<PremiumPage />} />
-            <Route path="/premium/success" element={<PremiumSuccessPage />} />
-            <Route path="/blog" element={<BlogPage />} />
-            <Route path="/vacatures" element={<VacaturesPage />} />
-            {/* Juridische pagina's */}
-            <Route path="/privacy" element={<PrivacyPage />} />
-            <Route path="/voorwaarden" element={<VoorwaardenPage />} />
-            <Route path="/cookies" element={<CookiePage />} />
-            {/* Review pagina */}
-            <Route path="/review" element={<ReviewPage />} />
-            {/* Diensten selectie */}
-            <Route path="/diensten" element={<DienstenSelectiePage />} />
-            {/* Vakman goedkeuring */}
             <Route path="/vakman/:vakmanId/approve" element={<VakmanApprovePage />} />
-            {/* Admin Dashboard */}
+            <Route path="/booking/success" element={<BookingSuccessPage />} />
+            
+            {/* Admin Dashboard - available on both domains */}
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
             <Route path="/beheer" element={<AdminDashboard />} />
-            
-            {/* Belgian Routes - SpoedDienst24.be */}
-            <Route path="/be" element={<BelgianLandingPage />} />
-            <Route path="/be/boek" element={<BelgianBookingPage />} />
-            <Route path="/be/dienst/:serviceSlug" element={<BelgianServicePage />} />
-            <Route path="/be/spoed-loodgieter/:citySlug" element={<BelgianCityServicePage />} />
-            <Route path="/be/spoed-slotenmaker/:citySlug" element={<BelgianCityServicePage />} />
-            <Route path="/be/spoed-elektricien/:citySlug" element={<BelgianCityServicePage />} />
           </Routes>
         </BrowserRouter>
         <Toaster position="top-right" />
