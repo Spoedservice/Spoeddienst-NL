@@ -156,15 +156,16 @@ export default function BelgianLandingPage() {
             </div>
 
             {/* Province Grid */}
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
-              {["Antwerpen", "Oost-Vlaanderen", "West-Vlaanderen", "Vlaams-Brabant", "Limburg"].map(province => {
+            <div className="grid grid-cols-2 md:grid-cols-6 gap-4 mb-8">
+              {["Antwerpen", "Brussels Hoofdstedelijk Gewest", "Oost-Vlaanderen", "West-Vlaanderen", "Vlaams-Brabant", "Limburg"].map(province => {
                 const provinceCities = BELGIAN_CITIES.filter(c => c.province === province);
+                const displayName = province === "Brussels Hoofdstedelijk Gewest" ? "Brussel" : province;
                 return (
                   <Card key={province} className="border-2 hover:border-[#FF4500] transition-colors cursor-pointer">
                     <CardContent className="p-4">
-                      <h3 className="font-bold text-slate-900 mb-2">{province}</h3>
+                      <h3 className="font-bold text-slate-900 mb-2 text-sm">{displayName}</h3>
                       <p className="text-2xl font-bold text-[#FF4500]">{provinceCities.length}</p>
-                      <p className="text-xs text-slate-500">steden & gemeenten</p>
+                      <p className="text-xs text-slate-500">steden</p>
                     </CardContent>
                   </Card>
                 );
