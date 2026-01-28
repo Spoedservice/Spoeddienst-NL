@@ -59,6 +59,11 @@ import BelgianLandingPage from "@/pages/belgium/BelgianLandingPage";
 import BelgianCityServicePage from "@/pages/belgium/BelgianCityServicePage";
 import BelgianServicePage from "@/pages/belgium/BelgianServicePage";
 import BelgianBookingPage from "@/pages/belgium/BelgianBookingPage";
+import BelgianOverOnsPage from "@/pages/belgium/BelgianOverOnsPage";
+import BelgianPrijzenPage from "@/pages/belgium/BelgianPrijzenPage";
+import BelgianVakmanPage from "@/pages/belgium/BelgianVakmanPage";
+import BelgianGarantiePage from "@/pages/belgium/BelgianGarantiePage";
+import BelgianProblemPage from "@/pages/belgium/BelgianProblemPage";
 
 // Detect country from environment variable
 const COUNTRY = process.env.REACT_APP_COUNTRY || "NL";
@@ -78,6 +83,17 @@ function App() {
                 <Route path="/" element={<BelgianLandingPage />} />
                 <Route path="/boek" element={<BelgianBookingPage />} />
                 <Route path="/dienst/:serviceSlug" element={<BelgianServicePage />} />
+                <Route path="/over-ons" element={<BelgianOverOnsPage />} />
+                <Route path="/prijzen" element={<BelgianPrijzenPage />} />
+                <Route path="/vakman" element={<BelgianVakmanPage />} />
+                <Route path="/garantie" element={<BelgianGarantiePage />} />
+                {/* Belgian SEO Problem pages */}
+                <Route path="/lekkage-spoed" element={<BelgianProblemPage />} />
+                <Route path="/buitengesloten-spoed" element={<BelgianProblemPage />} />
+                <Route path="/stroomstoring-spoed" element={<BelgianProblemPage />} />
+                <Route path="/inbraakschade-spoed" element={<BelgianProblemPage />} />
+                <Route path="/toilet-verstopt-spoed" element={<BelgianProblemPage />} />
+                {/* Belgian City+Service pages */}
                 <Route path="/spoed-loodgieter/:citySlug" element={<BelgianCityServicePage />} />
                 <Route path="/spoed-slotenmaker/:citySlug" element={<BelgianCityServicePage />} />
                 <Route path="/spoed-elektricien/:citySlug" element={<BelgianCityServicePage />} />
