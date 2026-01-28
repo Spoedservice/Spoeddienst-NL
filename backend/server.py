@@ -333,7 +333,7 @@ async def send_booking_email(booking_data: dict):
         
         # Determine recipient based on country
         country = booking_data.get('country', 'NL')
-        recipient_email = ADMIN_EMAIL_BE if country == 'BE' else "Spoeddienst26@gmail.com"
+        recipient_email = ADMIN_EMAIL_BE if country == 'BE' else "info@spoeddienst24.nl"
         
         # Create message
         message = MIMEMultipart("alternative")
