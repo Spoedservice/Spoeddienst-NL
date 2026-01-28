@@ -64,6 +64,7 @@ import BelgianPrijzenPage from "@/pages/belgium/BelgianPrijzenPage";
 import BelgianVakmanPage from "@/pages/belgium/BelgianVakmanPage";
 import BelgianGarantiePage from "@/pages/belgium/BelgianGarantiePage";
 import BelgianProblemPage from "@/pages/belgium/BelgianProblemPage";
+import BelgianVakmanRegisterPage from "@/pages/belgium/BelgianVakmanRegisterPage";
 
 // Detect country from environment variable
 const COUNTRY = process.env.REACT_APP_COUNTRY || "NL";
