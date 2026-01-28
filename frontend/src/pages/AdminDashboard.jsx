@@ -943,6 +943,11 @@ export default function AdminDashboard() {
               <SEACampaignBuilder />
             )}
 
+            {/* Google Ads Performance Data Tab (MOCK) */}
+            {activeTab === "googleads" && (
+              <GoogleAdsPerformance token={authToken} />
+            )}
+
             {/* Email Marketing Tab */}
             {activeTab === "emailmarketing" && (
               <EmailMarketing token={authToken} />
