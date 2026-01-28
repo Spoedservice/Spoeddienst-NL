@@ -202,7 +202,8 @@ export default function BelgianBookingPage() {
         city: formData.city,
         preferred_date: formData.preferredDate || new Date().toISOString().split("T")[0],
         preferred_time: formData.urgency === "spoed" ? "zo snel mogelijk" : "overdag",
-        photo_url: photoUrls.length > 0 ? photoUrls[0] : null
+        photo_url: photoUrls.length > 0 ? photoUrls[0] : null,
+        country: "BE"  // Belgian bookings go to info@spoeddienst24.be
       };
 
       console.log("Sending booking data:", JSON.stringify(bookingData, null, 2));
