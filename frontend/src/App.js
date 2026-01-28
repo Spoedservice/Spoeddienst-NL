@@ -87,6 +87,7 @@ function App() {
                 <Route path="/over-ons" element={<BelgianOverOnsPage />} />
                 <Route path="/prijzen" element={<BelgianPrijzenPage />} />
                 <Route path="/vakman" element={<BelgianVakmanPage />} />
+                <Route path="/vakman/register" element={<BelgianVakmanRegisterPage />} />
                 <Route path="/garantie" element={<BelgianGarantiePage />} />
                 {/* Belgian SEO Problem pages */}
                 <Route path="/:slug" element={<BelgianProblemPage />} />
