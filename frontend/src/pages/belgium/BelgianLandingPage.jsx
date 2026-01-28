@@ -321,8 +321,8 @@ export default function BelgianLandingPage() {
               <div className="relative hidden lg:block">
                 <div className="relative">
                   <img 
-                    src="https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=600&h=500&fit=crop" 
-                    alt="Vakman aan het werk" 
+                    src="https://customer-assets.emergentagent.com/job_spoeddienst-2/artifacts/v6mr67ur_27453350-93f2-4f60-b2c2-52bd24282a04-md.jpg" 
+                    alt="SpoedDienst24 - Slotenmaker, Elektricien, Loodgieter - Binnen 30 minuten ter plaatse" 
                     className="rounded-2xl shadow-2xl w-full object-cover"
                   />
                   {/* Floating Badge */}
