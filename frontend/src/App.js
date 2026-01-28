@@ -88,11 +88,7 @@ function App() {
                 <Route path="/vakman" element={<BelgianVakmanPage />} />
                 <Route path="/garantie" element={<BelgianGarantiePage />} />
                 {/* Belgian SEO Problem pages */}
-                <Route path="/lekkage-spoed" element={<BelgianProblemPage />} />
-                <Route path="/buitengesloten-spoed" element={<BelgianProblemPage />} />
-                <Route path="/stroomstoring-spoed" element={<BelgianProblemPage />} />
-                <Route path="/inbraakschade-spoed" element={<BelgianProblemPage />} />
-                <Route path="/toilet-verstopt-spoed" element={<BelgianProblemPage />} />
+                <Route path="/:slug" element={<BelgianProblemPage />} />
                 {/* Belgian City+Service pages */}
                 <Route path="/spoed-loodgieter/:citySlug" element={<BelgianCityServicePage />} />
                 <Route path="/spoed-slotenmaker/:citySlug" element={<BelgianCityServicePage />} />
