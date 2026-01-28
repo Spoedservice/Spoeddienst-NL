@@ -331,10 +331,14 @@ async def send_booking_email(booking_data: dict):
         </html>
         """
         
+        # Determine recipient based on country
+        country = booking_data.get('country', 'NL')
+        recipient_email = ADMIN_EMAIL_BE if country == 'BE' else "Spoeddienst26@gmail.com"
+        
         # Create message
         message = MIMEMultipart("alternative")
         message["From"] = SMTP_FROM
-        message["To"] = "Spoeddienst26@gmail.com"
+        message["To"] = recipient_email
         message["Subject"] = f"{'🚨 SPOED - ' if booking_data.get('is_emergency') else ''}Nieuwe Boeking: {service_name} - {booking_data.get('customer_name', 'Klant')}"
         
         # Add HTML content
