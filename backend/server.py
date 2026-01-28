@@ -2910,5 +2910,72 @@ async def unsubscribe_email(email: str, token: str):
     else:
         raise HTTPException(status_code=400, detail="Ongeldige uitschrijflink")
 
+
+# ==================== GOOGLE ADS MOCK API ====================
+# Mock service for Google Ads integration - will be swapped for real API when Developer Token is approved
+
+from services.google_ads_mock import google_ads_mock_service
+
+@api_router.get("/admin/google-ads/campaigns")
+async def get_google_ads_campaigns(
+    date_range: str = "LAST_30_DAYS",
+    service_type: Optional[str] = None,
+    current_user: dict = Depends(get_admin_user)
+):
+    """
+    Get campaign performance report from Google Ads (MOCK DATA).
+    Standard Google Ads API response structure.
+    """
+    return google_ads_mock_service.get_campaign_performance_report(
+        date_range=date_range,
+        service_type=service_type
+    )
+
+@api_router.get("/admin/google-ads/keywords")
+async def get_google_ads_keywords(
+    campaign_id: Optional[str] = None,
+    date_range: str = "LAST_30_DAYS",
+    current_user: dict = Depends(get_admin_user)
+):
+    """
+    Get keyword performance report from Google Ads (MOCK DATA).
+    """
+    return google_ads_mock_service.get_keyword_performance_report(
+        campaign_id=campaign_id,
+        date_range=date_range
+    )
+
+@api_router.get("/admin/google-ads/geographic")
+async def get_google_ads_geographic(
+    date_range: str = "LAST_30_DAYS",
+    current_user: dict = Depends(get_admin_user)
+):
+    """
+    Get geographic performance report from Google Ads (MOCK DATA).
+    Shows performance per Belgian city.
+    """
+    return google_ads_mock_service.get_geographic_performance_report(date_range=date_range)
+
+@api_router.get("/admin/google-ads/summary")
+async def get_google_ads_summary(
+    current_user: dict = Depends(get_admin_user)
+):
+    """
+    Get account summary with overall performance metrics (MOCK DATA).
+    Includes recommendations.
+    """
+    return google_ads_mock_service.get_account_summary()
+
+@api_router.post("/admin/google-ads/refresh")
+async def refresh_google_ads_data(
+    current_user: dict = Depends(get_admin_user)
+):
+    """
+    Refresh mock data with new random values.
+    In production, this would trigger a cache refresh from the real API.
+    """
+    return google_ads_mock_service.refresh_data()
+
+
 # Include the router in the main app (must be after all route definitions)
 app.include_router(api_router)
