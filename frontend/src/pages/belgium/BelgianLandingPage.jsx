@@ -1,19 +1,23 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 import { Helmet } from "react-helmet-async";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
 import { 
-  Zap, Droplet, Key, Phone, Clock, Shield, Star, 
-  MapPin, CheckCircle, ChevronRight, ArrowRight
+  Zap, Droplets, Key, Phone, Clock, Shield, Star, 
+  CheckCircle, Menu, X, ArrowRight, Settings, MapPin
 } from "lucide-react";
 import { BE_CONFIG, BELGIAN_CITIES, BELGIAN_SERVICES, beRoute } from "@/config/belgiumConfig";
 
-const SERVICE_ICONS = {
-  loodgieter: Droplet,
-  slotenmaker: Key,
-  elektricien: Zap
+const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
+
+const iconMap = {
+  Zap: Zap,
+  Droplets: Droplets,
+  Key: Key
 };
 
 const SERVICE_COLORS = {
@@ -22,136 +26,380 @@ const SERVICE_COLORS = {
   elektricien: "from-yellow-400 to-yellow-500"
 };
 
+const SERVICE_ICONS = {
+  loodgieter: Droplets,
+  slotenmaker: Key,
+  elektricien: Zap
+};
+
 export default function BelgianLandingPage() {
   const navigate = useNavigate();
-  const [selectedService, setSelectedService] = useState(null);
+  const [services, setServices] = useState([]);
+  const [stats, setStats] = useState({ total_bookings: 0, total_vakmannen: 0, total_reviews: 0, avg_rating: 4.8 });
+  const [reviews, setReviews] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isEmergency, setIsEmergency] = useState(false);
+  const [user, setUser] = useState(null);
 
-  const mainCities = BELGIAN_CITIES.filter(c => c.isCapital);
-  const popularSearches = [
-    "spoed loodgieter Antwerpen",
-    "slotenmaker Gent 24/7",
-    "elektricien Brugge",
-    "buitengesloten Leuven",
-    "lekkage spoed Mechelen",
-    "stroomstoring Hasselt"
-  ];
+  const checkAuth = () => {
+    const token = localStorage.getItem('token');
+    const userData = localStorage.getItem('user');
+    if (token && userData) {
+      try {
+        setUser(JSON.parse(userData));
+      } catch (e) {
+        console.error("Error parsing user data:", e);
+      }
+    }
+  };
+
+  const fetchServices = async () => {
+    try {
+      const response = await axios.get(`${API}/services`);
+      setServices(response.data);
+    } catch (error) {
+      console.error("Error fetching services:", error);
+    }
+  };
+
+  const fetchStats = async () => {
+    try {
+      const response = await axios.get(`${API}/stats/public`);
+      setStats(response.data);
+    } catch (error) {
+      console.error("Error fetching stats:", error);
+    }
+  };
+
+  const fetchReviews = async () => {
+    try {
+      const response = await axios.get(`${API}/reviews/latest`);
+      setReviews(response.data);
+    } catch (error) {
+      console.error("Error fetching reviews:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchServices();
+    fetchStats();
+    fetchReviews();
+    checkAuth();
+  }, []);
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    const query = searchQuery.toLowerCase().trim();
+    const emergencyParam = isEmergency ? '?emergency=true' : '';
+    
+    if (!query) {
+      navigate(beRoute(`/boek${emergencyParam}`));
+      return;
+    }
+    
+    if (query.includes("elektr") || query.includes("stroom") || query.includes("lamp") || query.includes("schakelaar") || query.includes("stopcontact") || query.includes("kortsluiting") || query.includes("zekering") || query.includes("differentieel")) {
+      navigate(beRoute(`/boek?service=elektricien${isEmergency ? '&emergency=true' : ''}`));
+    } else if (query.includes("lood") || query.includes("lek") || query.includes("kraan") || query.includes("water") || query.includes("afvoer") || query.includes("toilet") || query.includes("wc") || query.includes("verstop") || query.includes("riool") || query.includes("cv") || query.includes("verwarming")) {
+      navigate(beRoute(`/boek?service=loodgieter${isEmergency ? '&emergency=true' : ''}`));
+    } else if (query.includes("slot") || query.includes("deur") || query.includes("buiten") || query.includes("sleutel") || query.includes("inbraak") || query.includes("cilinder")) {
+      navigate(beRoute(`/boek?service=slotenmaker${isEmergency ? '&emergency=true' : ''}`));
+    } else {
+      navigate(beRoute(`/boek${emergencyParam}`));
+    }
+  };
+
+  const handleSuggestionClick = (term) => {
+    setSearchQuery(term);
+    const query = term.toLowerCase();
+    const emergencyParam = isEmergency ? '&emergency=true' : '';
+    
+    if (query.includes("stroom") || query.includes("kortsluiting") || query.includes("differentieel")) {
+      navigate(beRoute(`/boek?service=elektricien${emergencyParam}`));
+    } else if (query.includes("lek") || query.includes("wc") || query.includes("verstop") || query.includes("riool")) {
+      navigate(beRoute(`/boek?service=loodgieter${emergencyParam}`));
+    } else if (query.includes("buiten") || query.includes("slot")) {
+      navigate(beRoute(`/boek?service=slotenmaker${emergencyParam}`));
+    } else {
+      navigate(beRoute("/boek"));
+    }
+  };
+
+  const mainCities = BELGIAN_CITIES.filter(c => 
+    ["antwerpen", "brussel", "gent", "brugge", "leuven", "hasselt"].includes(c.slug)
+  );
 
   return (
     <>
       <Helmet>
-        <title>24/7 Spoed Loodgieter, Slotenmaker & Elektricien België | SpoedDienst24.be</title>
-        <meta name="description" content={BE_CONFIG.seo.description} />
-        <meta property="og:title" content="SpoedDienst24.be - 24/7 Vakmannen in België" />
-        <meta property="og:description" content={BE_CONFIG.seo.description} />
+        <title>SpoedDienst24.be | 24/7 Spoed Loodgieter, Slotenmaker & Elektricien België</title>
+        <meta name="description" content="24/7 spoed loodgieter, slotenmaker en elektricien in heel België. Binnen 30 minuten ter plaatse in Antwerpen, Brussel, Gent, Brugge, Leuven. Bel nu: 03 808 47 47" />
         <link rel="canonical" href="https://spoeddienst24.be" />
       </Helmet>
 
-      <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
+      <div className="min-h-screen bg-white">
         {/* Header */}
-        <header className="bg-white border-b sticky top-0 z-50">
-          <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-            <Link to={beRoute("/")} className="flex items-center gap-2">
-              <div className="w-10 h-10 bg-gradient-to-br from-[#FF4500] to-[#CC3700] rounded-xl flex items-center justify-center">
-                <Zap className="w-6 h-6 text-white" />
+        <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-slate-200">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex items-center justify-between h-16">
+              <Link to={beRoute("/")} className="flex items-center gap-2">
+                <div className="w-10 h-10 bg-[#FF4500] rounded-md flex items-center justify-center">
+                  <Zap className="w-6 h-6 text-white" />
+                </div>
+                <span className="font-bold text-xl text-slate-900">SpoedDienst24<span className="text-[#FF4500]">.be</span></span>
+              </Link>
+
+              {/* Desktop Nav */}
+              <nav className="hidden md:flex items-center gap-8">
+                <Link to={beRoute("/dienst/elektricien")} className="text-slate-600 hover:text-slate-900 font-medium">Elektricien</Link>
+                <Link to={beRoute("/dienst/loodgieter")} className="text-slate-600 hover:text-slate-900 font-medium">Loodgieter</Link>
+                <Link to={beRoute("/dienst/slotenmaker")} className="text-slate-600 hover:text-slate-900 font-medium">Slotenmaker</Link>
+                <Link to={beRoute("/over-ons")} className="text-slate-600 hover:text-slate-900 font-medium">Over Ons</Link>
+              </nav>
+
+              <div className="hidden md:flex items-center gap-4">
+                {user?.role === 'admin' && (
+                  <Link to="/admin" className="flex items-center gap-1 text-[#FF4500] hover:text-[#CC3700] font-medium">
+                    <Settings className="w-4 h-4" />
+                    Beheer
+                  </Link>
+                )}
+                <Link to={beRoute("/vakman/register")} className="text-slate-600 hover:text-slate-900 font-medium">Word Vakman</Link>
+                {user ? (
+                  <Link to={user.role === 'vakman' ? '/vakman/dashboard' : '/dashboard'}>
+                    <Button variant="outline">Dashboard</Button>
+                  </Link>
+                ) : (
+                  <Link to="/login">
+                    <Button variant="outline">Inloggen</Button>
+                  </Link>
+                )}
+                <a href={`tel:${BE_CONFIG.contact.phone}`} className="flex items-center gap-2 bg-[#FF4500] text-white px-4 py-2 rounded-md font-medium hover:bg-[#CC3700] transition-colors">
+                  <Phone className="w-4 h-4" />
+                  <span>{BE_CONFIG.contact.phoneDisplay}</span>
+                </a>
+                
+                {/* Country Switcher */}
+                <div className="flex items-center border-l pl-4 ml-2">
+                  <a href="https://spoeddienst24.nl" className="text-slate-400 hover:text-slate-600 text-sm">🇳🇱</a>
+                  <span className="mx-1 text-slate-300">|</span>
+                  <span className="text-[#FF4500] text-sm font-medium">🇧🇪</span>
+                </div>
               </div>
-              <div>
-                <h1 className="font-bold text-xl text-slate-900">SpoedDienst24<span className="text-[#FF4500]">.be</span></h1>
-                <p className="text-xs text-slate-500">24/7 Vakmannen in België</p>
-              </div>
-            </Link>
-            
-            <div className="flex items-center gap-4">
-              {/* Country Switcher */}
-              <div className="hidden md:flex items-center gap-2 text-sm">
-                <a href="https://spoeddienst24.nl" className="px-2 py-1 rounded hover:bg-slate-100">🇳🇱 NL</a>
-                <span className="px-2 py-1 rounded bg-orange-100 text-orange-700 font-medium">🇧🇪 BE</span>
-              </div>
-              
-              <a 
-                href={`tel:${BE_CONFIG.contact.phone}`}
-                className="flex items-center gap-2 bg-[#FF4500] text-white px-4 py-2 rounded-full font-bold hover:bg-[#CC3700] transition-colors"
+
+              {/* Mobile Menu Button */}
+              <button 
+                className="md:hidden p-2"
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               >
-                <Phone className="w-4 h-4" />
-                <span className="hidden sm:inline">{BE_CONFIG.contact.phoneDisplay}</span>
-                <span className="sm:hidden">Bel Nu</span>
-              </a>
+                {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              </button>
             </div>
           </div>
+
+          {/* Mobile Menu */}
+          {mobileMenuOpen && (
+            <div className="md:hidden bg-white border-t border-slate-200 py-4">
+              <nav className="flex flex-col gap-2 px-4">
+                <Link to={beRoute("/dienst/elektricien")} className="py-2 text-slate-600 hover:text-slate-900">Elektricien</Link>
+                <Link to={beRoute("/dienst/loodgieter")} className="py-2 text-slate-600 hover:text-slate-900">Loodgieter</Link>
+                <Link to={beRoute("/dienst/slotenmaker")} className="py-2 text-slate-600 hover:text-slate-900">Slotenmaker</Link>
+                <Link to={beRoute("/over-ons")} className="py-2 text-slate-600 hover:text-slate-900">Over Ons</Link>
+                <Link to={beRoute("/vakman/register")} className="py-2 text-slate-600 hover:text-slate-900">Word Vakman</Link>
+                {user?.role === 'admin' && (
+                  <Link to="/admin" className="py-2 text-[#FF4500] hover:text-[#CC3700] font-medium flex items-center gap-2">
+                    <Settings className="w-4 h-4" />
+                    Admin Beheer
+                  </Link>
+                )}
+                {user ? (
+                  <Link to={user.role === 'vakman' ? '/vakman/dashboard' : '/dashboard'} className="py-2 text-slate-600 hover:text-slate-900">Dashboard</Link>
+                ) : (
+                  <Link to="/login" className="py-2 text-slate-600 hover:text-slate-900">Inloggen</Link>
+                )}
+                <a href={`tel:${BE_CONFIG.contact.phone}`} className="flex items-center gap-2 bg-[#FF4500] text-white px-4 py-3 rounded-md font-medium hover:bg-[#CC3700] transition-colors mt-2">
+                  <Phone className="w-4 h-4" />
+                  <span>{BE_CONFIG.contact.phoneDisplay}</span>
+                </a>
+                {/* Country Switcher Mobile */}
+                <div className="flex items-center gap-2 mt-4 pt-4 border-t">
+                  <a href="https://spoeddienst24.nl" className="px-3 py-1 bg-slate-100 rounded text-sm">🇳🇱 Nederland</a>
+                  <span className="px-3 py-1 bg-[#FF4500] text-white rounded text-sm">🇧🇪 België</span>
+                </div>
+              </nav>
+            </div>
+          )}
         </header>
 
         {/* Hero Section */}
-        <section className="relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900" />
-          <div className="absolute inset-0 opacity-10">
-            <div className="absolute top-20 left-20 w-72 h-72 bg-[#FF4500] rounded-full blur-3xl" />
-            <div className="absolute bottom-20 right-20 w-96 h-96 bg-blue-500 rounded-full blur-3xl" />
-          </div>
-          
-          <div className="relative max-w-7xl mx-auto px-4 py-16 md:py-24">
-            <div className="text-center max-w-4xl mx-auto">
-              {/* Belgian Badge */}
-              <Badge className="bg-black/20 text-white border-white/20 mb-6 px-4 py-1">
-                🇧🇪 Actief in heel Vlaanderen
-              </Badge>
-              
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-white mb-6 leading-tight">
-                24/7 Spoed Loodgieter,<br />
-                <span className="text-[#FF4500]">Slotenmaker & Elektricien</span><br />
-                in België
-              </h1>
-              
-              <p className="text-xl text-slate-300 mb-8 max-w-2xl mx-auto">
-                Vakmannen binnen 30 minuten aan uw deur in Antwerpen, Gent, Brugge, Leuven en heel Vlaanderen. 
-                Vaste prijzen, geen verrassingen.
-              </p>
+        <section className="pt-32 pb-20 px-4 sm:px-6 lg:px-8 bg-slate-50">
+          <div className="max-w-7xl mx-auto">
+            <div className="grid lg:grid-cols-2 gap-12 items-center">
+              <div>
+                <Badge className="bg-[#FF4500] text-white mb-6 px-4 py-1.5 text-sm font-medium">
+                  🇧🇪 24/7 Spoed Beschikbaar in België
+                </Badge>
+                <h1 className="font-black text-4xl sm:text-5xl lg:text-6xl text-slate-900 mb-4 leading-tight">
+                  24/7 Spoed <span className="text-[#FF4500]">Loodgieter, Slotenmaker & Elektricien</span>
+                </h1>
+                <p className="text-xl text-slate-700 font-medium mb-2">
+                  Heel Vlaanderen & Brussel — Direct hulp nodig?
+                </p>
+                <p className="text-lg text-slate-600 mb-8 max-w-lg">
+                  Binnen 30 minuten ter plaatse. Direct hulp bij lekkage, verstopping, buitensluiting, stroomstoring en kortsluiting. Vaste prijs, gecertificeerde vakmannen.
+                </p>
 
-              {/* Service Buttons */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-3xl mx-auto mb-8">
-                {BELGIAN_SERVICES.map(service => {
-                  const Icon = SERVICE_ICONS[service.slug];
-                  return (
-                    <Link
-                      key={service.slug}
-                      to={beRoute(`/dienst/${service.slug}`)}
-                      className={`group p-6 rounded-2xl bg-gradient-to-br ${SERVICE_COLORS[service.slug]} text-white hover:scale-105 transition-all duration-300 shadow-lg`}
+                {/* Search Box */}
+                <form onSubmit={handleSearch} className="mb-6">
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <div className="flex-1 relative">
+                      <Input
+                        type="text"
+                        placeholder="Wat is je probleem? (bijv. lekkage, buitengesloten)"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="h-14 pl-4 pr-4 text-base bg-white border-slate-200"
+                        data-testid="search-input"
+                      />
+                    </div>
+                    <Button 
+                      type="submit" 
+                      className="h-14 px-8 bg-[#FF4500] hover:bg-[#CC3700] text-white font-semibold text-base"
+                      data-testid="search-btn"
                     >
-                      <Icon className="w-12 h-12 mb-3 mx-auto" />
-                      <h3 className="text-xl font-bold">{service.name}</h3>
-                      <p className="text-sm opacity-90 mt-1">24/7 beschikbaar</p>
-                      <ArrowRight className="w-5 h-5 mx-auto mt-3 group-hover:translate-x-1 transition-transform" />
-                    </Link>
-                  );
-                })}
+                      Zoek Vakman
+                    </Button>
+                  </div>
+                  
+                  {/* Emergency Toggle */}
+                  <label className="flex items-center gap-3 mt-4 cursor-pointer">
+                    <div 
+                      className={`relative w-12 h-6 rounded-full transition-colors ${isEmergency ? 'bg-[#FF4500]' : 'bg-slate-200'}`}
+                      onClick={() => setIsEmergency(!isEmergency)}
+                    >
+                      <div className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-transform ${isEmergency ? 'translate-x-6' : ''}`} />
+                    </div>
+                    <span className="text-slate-700 font-medium">Spoed - Direct hulp nodig</span>
+                  </label>
+                </form>
+
+                {/* Popular Search Suggestions */}
+                <div className="mb-8">
+                  <p className="text-sm text-slate-500 mb-2">Populaire zoekopdrachten:</p>
+                  <div className="flex flex-wrap gap-2">
+                    {['Lekkage', 'WC verstopt', 'Buitengesloten', 'Stroomstoring', 'Riool verstopt', 'Kortsluiting', 'Slot vervangen', 'Differentieel'].map((term) => (
+                      <button
+                        key={term}
+                        type="button"
+                        onClick={() => handleSuggestionClick(term)}
+                        className="px-3 py-1.5 bg-white border border-slate-200 rounded-full text-sm text-slate-600 hover:border-[#FF4500] hover:text-[#FF4500] transition-colors"
+                      >
+                        {term}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Trust Badges */}
+                <div className="flex flex-wrap gap-6">
+                  <div className="flex items-center gap-2 text-slate-600">
+                    <Clock className="w-5 h-5 text-[#FF4500]" />
+                    <span className="text-sm font-medium">Snel geholpen</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-slate-600">
+                    <Star className="w-5 h-5 text-[#FF4500]" />
+                    <span className="text-sm font-medium">{stats.avg_rating || 4.8}/5 beoordeling</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-slate-600">
+                    <Shield className="w-5 h-5 text-[#FF4500]" />
+                    <span className="text-sm font-medium">Tevredenheidsgarantie</span>
+                  </div>
+                </div>
               </div>
 
-              {/* Trust Indicators */}
-              <div className="flex flex-wrap justify-center gap-6 text-white/80 text-sm">
-                <div className="flex items-center gap-2">
-                  <Clock className="w-5 h-5 text-[#FF4500]" />
-                  <span>Binnen 30 min ter plaatse</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Shield className="w-5 h-5 text-[#FF4500]" />
-                  <span>Gecertificeerde vakmannen</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Star className="w-5 h-5 text-[#FF4500]" />
-                  <span>4.9/5 klanttevredenheid</span>
+              {/* Hero Image */}
+              <div className="relative hidden lg:block">
+                <div className="relative">
+                  <img 
+                    src="https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=600&h=500&fit=crop" 
+                    alt="Vakman aan het werk" 
+                    className="rounded-2xl shadow-2xl w-full object-cover"
+                  />
+                  {/* Floating Badge */}
+                  <div className="absolute -bottom-6 -left-6 bg-white rounded-xl shadow-lg p-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                        <CheckCircle className="w-6 h-6 text-green-600" />
+                      </div>
+                      <div>
+                        <p className="font-bold text-slate-900">150+ Vakmannen</p>
+                        <p className="text-sm text-slate-500">Actief in België</p>
+                      </div>
+                    </div>
+                  </div>
+                  {/* Location Badge */}
+                  <div className="absolute -top-4 -right-4 bg-[#FF4500] text-white rounded-xl shadow-lg px-4 py-2">
+                    <div className="flex items-center gap-2">
+                      <MapPin className="w-4 h-4" />
+                      <span className="font-medium text-sm">Heel Vlaanderen</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Main Cities Section */}
-        <section className="py-16 bg-white">
-          <div className="max-w-7xl mx-auto px-4">
+        {/* Services Section */}
+        <section className="py-20 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-7xl mx-auto">
             <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold text-slate-900 mb-4">
-                Actief in heel Vlaanderen
+              <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
+                Onze Diensten in België
               </h2>
-              <p className="text-slate-600 max-w-2xl mx-auto">
-                Onze vakmannen staan paraat in alle grote Vlaamse steden en gemeenten
+              <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+                Professionele vakmannen voor al uw spoedreparaties in Vlaanderen en Brussel
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-8">
+              {BELGIAN_SERVICES.map(service => {
+                const Icon = SERVICE_ICONS[service.slug];
+                return (
+                  <Link
+                    key={service.slug}
+                    to={beRoute(`/dienst/${service.slug}`)}
+                    className={`group p-8 rounded-2xl bg-gradient-to-br ${SERVICE_COLORS[service.slug]} text-white hover:scale-105 transition-all duration-300 shadow-lg`}
+                  >
+                    <div className="w-16 h-16 bg-white/20 rounded-xl flex items-center justify-center mb-6">
+                      <Icon className="w-8 h-8" />
+                    </div>
+                    <h3 className="text-2xl font-bold mb-2">{service.name}</h3>
+                    <p className="text-white/80 mb-4">{service.description}</p>
+                    <div className="flex items-center gap-2 text-white font-medium group-hover:gap-4 transition-all">
+                      <span>Meer info</span>
+                      <ArrowRight className="w-5 h-5" />
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+
+        {/* Regions Section */}
+        <section className="py-20 px-4 sm:px-6 lg:px-8 bg-slate-50">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center mb-12">
+              <Badge className="bg-[#FF4500]/10 text-[#FF4500] mb-4">
+                <MapPin className="w-4 h-4 mr-1" />
+                Werkgebied
+              </Badge>
+              <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
+                Actief in heel Vlaanderen & Brussel
+              </h2>
+              <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+                Ons netwerk van vakmannen bedekt alle Belgische provincies
               </p>
             </div>
 
@@ -172,15 +420,14 @@ export default function BelgianLandingPage() {
               })}
             </div>
 
-            {/* Popular Cities */}
+            {/* City Pills */}
             <div className="flex flex-wrap justify-center gap-2">
               {BELGIAN_CITIES.slice(0, 20).map(city => (
                 <Link
                   key={city.slug}
                   to={beRoute(`/spoed-loodgieter/${city.slug}`)}
-                  className="px-4 py-2 bg-slate-100 hover:bg-[#FF4500] hover:text-white rounded-full text-sm transition-colors"
+                  className="px-4 py-2 bg-white border border-slate-200 hover:border-[#FF4500] hover:text-[#FF4500] rounded-full text-sm transition-colors"
                 >
-                  <MapPin className="w-3 h-3 inline mr-1" />
                   {city.name}
                 </Link>
               ))}
@@ -188,58 +435,59 @@ export default function BelgianLandingPage() {
           </div>
         </section>
 
-        {/* How It Works - Belgian Version */}
-        <section className="py-16 bg-slate-50">
-          <div className="max-w-7xl mx-auto px-4">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold text-slate-900 mb-4">
-                Hoe werkt het?
-              </h2>
-            </div>
-
-            <div className="grid md:grid-cols-4 gap-8">
-              {[
-                { step: 1, title: "Bel of boek online", desc: "Bel ons nummer of boek direct via de website" },
-                { step: 2, title: "Wij komen direct", desc: "Een vakman is binnen 30 minuten bij u" },
-                { step: 3, title: "Probleem opgelost", desc: "Professionele service met vaste prijzen" },
-                { step: 4, title: "Betaal achteraf", desc: "Betaal pas na goedkeuring van het werk" }
-              ].map(item => (
-                <div key={item.step} className="text-center">
-                  <div className="w-16 h-16 bg-[#FF4500] text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-4">
-                    {item.step}
-                  </div>
-                  <h3 className="font-bold text-lg text-slate-900 mb-2">{item.title}</h3>
-                  <p className="text-slate-600 text-sm">{item.desc}</p>
+        {/* Reviews Section */}
+        {reviews.length > 0 && (
+          <section className="py-20 px-4 sm:px-6 lg:px-8">
+            <div className="max-w-7xl mx-auto">
+              <div className="text-center mb-12">
+                <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
+                  Wat onze klanten zeggen
+                </h2>
+                <div className="flex items-center justify-center gap-2">
+                  <Star className="w-6 h-6 text-yellow-400 fill-yellow-400" />
+                  <span className="text-2xl font-bold text-slate-900">{stats.avg_rating || 4.8}</span>
+                  <span className="text-slate-500">gemiddelde beoordeling</span>
                 </div>
-              ))}
-            </div>
-          </div>
-        </section>
+              </div>
 
-        {/* Popular Searches */}
-        <section className="py-12 bg-white">
-          <div className="max-w-7xl mx-auto px-4">
-            <h3 className="text-lg font-bold text-slate-900 mb-4 text-center">
-              Populaire zoekopdrachten in België
-            </h3>
-            <div className="flex flex-wrap justify-center gap-2">
-              {popularSearches.map((search, idx) => (
-                <Badge key={idx} variant="outline" className="px-4 py-2 cursor-pointer hover:bg-slate-100">
-                  {search}
-                </Badge>
-              ))}
+              <div className="grid md:grid-cols-3 gap-6">
+                {reviews.slice(0, 3).map((review, index) => (
+                  <Card key={index} className="border-2 hover:border-[#FF4500] transition-colors">
+                    <CardContent className="p-6">
+                      <div className="flex items-center gap-1 mb-4">
+                        {[...Array(5)].map((_, i) => (
+                          <Star 
+                            key={i} 
+                            className={`w-4 h-4 ${i < review.rating ? 'text-yellow-400 fill-yellow-400' : 'text-slate-200'}`} 
+                          />
+                        ))}
+                      </div>
+                      <p className="text-slate-600 mb-4">"{review.comment}"</p>
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-[#FF4500] rounded-full flex items-center justify-center text-white font-bold">
+                          {review.customer_name?.charAt(0) || 'K'}
+                        </div>
+                        <div>
+                          <p className="font-medium text-slate-900">{review.customer_name || 'Klant'}</p>
+                          <p className="text-sm text-slate-500">{review.service_type}</p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
+        )}
 
         {/* CTA Section */}
-        <section className="py-16 bg-gradient-to-r from-[#FF4500] to-[#CC3700]">
-          <div className="max-w-4xl mx-auto px-4 text-center">
+        <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-[#FF4500] to-[#CC3700]">
+          <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-              Spoed in België? Wij helpen direct!
+              Direct hulp nodig in België?
             </h2>
             <p className="text-xl text-white/90 mb-8">
-              24/7 beschikbaar in Antwerpen, Gent, Brugge, Leuven en heel Vlaanderen
+              Onze vakmannen staan 24/7 klaar om u te helpen
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a 
@@ -254,25 +502,25 @@ export default function BelgianLandingPage() {
                 className="inline-flex items-center justify-center gap-2 bg-slate-900 text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-slate-800 transition-colors"
               >
                 Online Boeken
-                <ChevronRight className="w-5 h-5" />
+                <ArrowRight className="w-5 h-5" />
               </Link>
             </div>
           </div>
         </section>
 
         {/* Footer */}
-        <footer className="bg-slate-900 text-white py-12">
+        <footer className="bg-slate-900 text-white py-16">
           <div className="max-w-7xl mx-auto px-4">
-            <div className="grid md:grid-cols-4 gap-8">
+            <div className="grid md:grid-cols-4 gap-8 mb-12">
               <div>
-                <div className="flex items-center gap-2 mb-4">
-                  <div className="w-10 h-10 bg-[#FF4500] rounded-xl flex items-center justify-center">
+                <Link to={beRoute("/")} className="flex items-center gap-2 mb-4">
+                  <div className="w-10 h-10 bg-[#FF4500] rounded-md flex items-center justify-center">
                     <Zap className="w-6 h-6 text-white" />
                   </div>
-                  <span className="font-bold text-xl">SpoedDienst24.be</span>
-                </div>
+                  <span className="font-bold text-xl">SpoedDienst24<span className="text-[#FF4500]">.be</span></span>
+                </Link>
                 <p className="text-slate-400 text-sm">
-                  24/7 spoeddiensten voor loodgieter, slotenmaker en elektricien in heel België.
+                  24/7 spoed vakmannen in heel Vlaanderen en Brussel.
                 </p>
               </div>
               
@@ -292,18 +540,6 @@ export default function BelgianLandingPage() {
                   <li><Link to={beRoute("/buitengesloten-spoed")} className="hover:text-white">Buitengesloten</Link></li>
                   <li><Link to={beRoute("/stroomstoring-spoed")} className="hover:text-white">Stroomstoring</Link></li>
                   <li><Link to={beRoute("/toilet-verstopt-spoed")} className="hover:text-white">Toilet Verstopt</Link></li>
-                  <li><Link to={beRoute("/inbraakschade-spoed")} className="hover:text-white">Inbraakschade</Link></li>
-                </ul>
-              </div>
-              
-              <div>
-                <h4 className="font-bold mb-4">Steden</h4>
-                <ul className="space-y-2 text-slate-400 text-sm">
-                  {mainCities.map(city => (
-                    <li key={city.slug}>
-                      <Link to={beRoute(`/spoed-loodgieter/${city.slug}`)} className="hover:text-white">{city.name}</Link>
-                    </li>
-                  ))}
                 </ul>
               </div>
               
@@ -322,13 +558,12 @@ export default function BelgianLandingPage() {
                     <Phone className="w-4 h-4" />
                     <a href={`tel:${BE_CONFIG.contact.phone}`} className="hover:text-white">{BE_CONFIG.contact.phoneDisplay}</a>
                   </li>
-                  <li className="flex items-center gap-2">
-                    <span>✉️</span>
+                  <li>
                     <a href={`mailto:${BE_CONFIG.contact.email}`} className="hover:text-white">{BE_CONFIG.contact.email}</a>
                   </li>
                 </ul>
                 
-                {/* Country Switcher in Footer */}
+                {/* Country Switcher */}
                 <div className="mt-4 pt-4 border-t border-slate-700">
                   <p className="text-xs text-slate-500 mb-2">Land wijzigen:</p>
                   <div className="flex gap-2">
