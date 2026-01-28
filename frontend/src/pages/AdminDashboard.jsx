@@ -21,6 +21,7 @@ import BookingsManagement from "@/components/admin/BookingsManagement";
 import VakmannenManagement from "@/components/admin/VakmannenManagement";
 import ReviewsManagement from "@/components/admin/ReviewsManagement";
 import SEACampaignBuilder from "@/components/admin/SEACampaignBuilder";
+import GoogleAdsPerformance from "@/components/admin/GoogleAdsPerformance";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
