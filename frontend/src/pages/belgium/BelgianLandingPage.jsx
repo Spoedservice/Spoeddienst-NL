@@ -286,6 +286,17 @@ export default function BelgianLandingPage() {
               </div>
               
               <div>
+                <h4 className="font-bold mb-4">Spoedproblemen</h4>
+                <ul className="space-y-2 text-slate-400 text-sm">
+                  <li><Link to={beRoute("/lekkage-spoed")} className="hover:text-white">Lekkage Spoed</Link></li>
+                  <li><Link to={beRoute("/buitengesloten-spoed")} className="hover:text-white">Buitengesloten</Link></li>
+                  <li><Link to={beRoute("/stroomstoring-spoed")} className="hover:text-white">Stroomstoring</Link></li>
+                  <li><Link to={beRoute("/toilet-verstopt-spoed")} className="hover:text-white">Toilet Verstopt</Link></li>
+                  <li><Link to={beRoute("/inbraakschade-spoed")} className="hover:text-white">Inbraakschade</Link></li>
+                </ul>
+              </div>
+              
+              <div>
                 <h4 className="font-bold mb-4">Steden</h4>
                 <ul className="space-y-2 text-slate-400 text-sm">
                   {mainCities.map(city => (
@@ -297,7 +308,15 @@ export default function BelgianLandingPage() {
               </div>
               
               <div>
-                <h4 className="font-bold mb-4">Contact België</h4>
+                <h4 className="font-bold mb-4">Over Ons</h4>
+                <ul className="space-y-2 text-slate-400 text-sm">
+                  <li><Link to={beRoute("/over-ons")} className="hover:text-white">Over SpoedDienst24.be</Link></li>
+                  <li><Link to={beRoute("/prijzen")} className="hover:text-white">Prijzen</Link></li>
+                  <li><Link to={beRoute("/garantie")} className="hover:text-white">Garantie</Link></li>
+                  <li><Link to={beRoute("/vakman")} className="hover:text-white">Word Vakman</Link></li>
+                </ul>
+                
+                <h4 className="font-bold mb-4 mt-6">Contact België</h4>
                 <ul className="space-y-2 text-slate-400 text-sm">
                   <li className="flex items-center gap-2">
                     <Phone className="w-4 h-4" />
@@ -320,8 +339,39 @@ export default function BelgianLandingPage() {
               </div>
             </div>
             
+            {/* SEO Footer Links */}
+            <div className="border-t border-slate-800 mt-8 pt-8">
+              <h4 className="font-bold text-sm mb-4 text-slate-400">Spoed Loodgieter België</h4>
+              <div className="flex flex-wrap gap-2 text-xs text-slate-500 mb-4">
+                {BELGIAN_CITIES.slice(0, 15).map(city => (
+                  <Link key={city.slug} to={beRoute(`/spoed-loodgieter/${city.slug}`)} className="hover:text-white">
+                    Loodgieter {city.name}
+                  </Link>
+                ))}
+              </div>
+              
+              <h4 className="font-bold text-sm mb-4 text-slate-400">Spoed Slotenmaker België</h4>
+              <div className="flex flex-wrap gap-2 text-xs text-slate-500 mb-4">
+                {BELGIAN_CITIES.slice(0, 15).map(city => (
+                  <Link key={city.slug} to={beRoute(`/spoed-slotenmaker/${city.slug}`)} className="hover:text-white">
+                    Slotenmaker {city.name}
+                  </Link>
+                ))}
+              </div>
+              
+              <h4 className="font-bold text-sm mb-4 text-slate-400">Spoed Elektricien België</h4>
+              <div className="flex flex-wrap gap-2 text-xs text-slate-500">
+                {BELGIAN_CITIES.slice(0, 15).map(city => (
+                  <Link key={city.slug} to={beRoute(`/spoed-elektricien/${city.slug}`)} className="hover:text-white">
+                    Elektricien {city.name}
+                  </Link>
+                ))}
+              </div>
+            </div>
+            
             <div className="border-t border-slate-800 mt-8 pt-8 text-center text-slate-500 text-sm">
               <p>© 2024 SpoedDienst24.be - Alle rechten voorbehouden | 24/7 Vakmannen in België</p>
+              <p className="mt-2">Loodgieter België | Slotenmaker België | Elektricien België | Spoed Vakmannen Vlaanderen</p>
             </div>
           </div>
         </footer>
