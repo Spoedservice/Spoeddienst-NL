@@ -3169,8 +3169,8 @@ async def get_bulk_campaign(campaign_id: str, current_user: dict = Depends(get_a
 @api_router.get("/admin/bulk-campaigns/{campaign_id}/stats")
 async def get_campaign_stats(campaign_id: str, current_user: dict = Depends(get_admin_user)):
     """Get detailed campaign statistics"""
+    global bulk_campaign_service
     if not bulk_campaign_service:
-        global bulk_campaign_service
         bulk_campaign_service = BulkCampaignService(db, email_marketing_service)
     
     stats = await bulk_campaign_service.get_campaign_stats(campaign_id)
