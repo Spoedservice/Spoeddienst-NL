@@ -3212,8 +3212,8 @@ async def import_csv_to_campaign(
 @api_router.post("/admin/bulk-campaigns/{campaign_id}/schedule")
 async def schedule_campaign(campaign_id: str, current_user: dict = Depends(get_admin_user)):
     """Schedule campaign with throttling (spread over 5 days)"""
+    global bulk_campaign_service
     if not bulk_campaign_service:
-        global bulk_campaign_service
         bulk_campaign_service = BulkCampaignService(db, email_marketing_service)
     
     result = await bulk_campaign_service.schedule_campaign(campaign_id)
