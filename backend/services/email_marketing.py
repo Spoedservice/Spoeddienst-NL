@@ -853,10 +853,20 @@ class EmailMarketingService:
         if not template or not template.get("is_active"):
             return False
         
+        # Detect country from data (default to NL)
+        country = vakman_data.get("country", "NL").upper()
+        if country not in ["NL", "BE"]:
+            country = "NL"
+        
+        vakman_email = vakman_data.get("email", "")
+        
+        # Set user country for segmentation
+        await self.set_user_country(vakman_email, country)
+        
         # Add 'vakman' tag to user for segmentation - EXCLUDE from customer marketing
-        await self.add_user_tag(vakman_data.get("email"), "vakman")
+        await self.add_user_tag(vakman_email, "vakman")
         # Remove customer tag if accidentally added
-        await self.remove_user_tag(vakman_data.get("email"), "customer")
+        await self.remove_user_tag(vakman_email, "customer")
         
         service_names = {
             "elektricien": "Elektricien",
@@ -868,23 +878,29 @@ class EmailMarketingService:
         full_name = vakman_data.get("name", "") or vakman_data.get("vakman_name", "") or "Vakman"
         first_name = full_name.split()[0] if full_name and full_name.strip() else "Vakman"
         
+        # Get country-specific greeting
+        country_config = self.get_country_config(country)
+        greeting = country_config["greeting"] if country == "NL" else country_config["formal_greeting"]
+        
         variables = {
             "vakman_name": first_name,
             "first_name": first_name,
             "full_name": full_name,
             "name": first_name,
-            "vakman_email": vakman_data.get("email", ""),
-            "email": vakman_data.get("email", ""),
+            "vakman_email": vakman_email,
+            "email": vakman_email,
             "service_type": service_names.get(vakman_data.get("service_type", ""), "Vakman"),
+            "greeting": greeting,
+            "country": country,
             "frontend_url": self.frontend_url,
-            "unsubscribe_token": self.generate_unsubscribe_token(vakman_data.get("email", ""))
+            "unsubscribe_token": self.generate_unsubscribe_token(vakman_email)
         }
         
         subject = self.render_template(template["subject"], variables)
         html_content = self.render_template(template["html_template"], variables)
         
         return await self.send_email(
-            vakman_data.get("email"),
+            vakman_email,
             subject,
             html_content,
             "welcome_vakman",
