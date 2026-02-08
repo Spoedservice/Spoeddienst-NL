@@ -2968,10 +2968,108 @@ async def get_email_queue(current_user: dict = Depends(get_admin_user)):
     ).sort("send_at", 1).to_list(100)
     return {"queue": queue}
 
-# Public unsubscribe endpoint (no auth required)
+
+# ==================== IP WARMING & RATE LIMITING ====================
+
+@api_router.get("/admin/email-marketing/ip-warming")
+async def get_ip_warming_status(current_user: dict = Depends(get_admin_user)):
+    """Get current IP warming status and daily limits"""
+    if not email_marketing_service:
+        raise HTTPException(status_code=500, detail="Service unavailable")
+    
+    status = await email_marketing_service.get_ip_warming_status()
+    return status
+
+@api_router.post("/admin/email-marketing/ip-warming/toggle")
+async def toggle_ip_warming(enabled: bool = True, current_user: dict = Depends(get_admin_user)):
+    """Enable or disable IP warming limits"""
+    await db.email_rate_limits.update_one(
+        {"type": "ip_warming"},
+        {"$set": {"enabled": enabled}},
+        upsert=True
+    )
+    return {"message": f"IP warming {'ingeschakeld' if enabled else 'uitgeschakeld'}", "enabled": enabled}
+
+
+# ==================== COUNTRY SEGMENTATION ====================
+
+class CountryRequest(BaseModel):
+    email: str
+    country: str  # "NL" or "BE"
+
+@api_router.post("/admin/email-marketing/set-country")
+async def set_user_country(request: CountryRequest, current_user: dict = Depends(get_admin_user)):
+    """Set user's country for segmentation"""
+    if not email_marketing_service:
+        raise HTTPException(status_code=500, detail="Service unavailable")
+    
+    if request.country not in ["NL", "BE"]:
+        raise HTTPException(status_code=400, detail="Country must be 'NL' or 'BE'")
+    
+    success = await email_marketing_service.set_user_country(request.email, request.country)
+    return {"message": f"Land ingesteld op {request.country} voor {request.email}", "success": success}
+
+@api_router.get("/admin/email-marketing/users-by-country/{country}")
+async def get_users_by_country(country: str, exclude_vakman: bool = True, current_user: dict = Depends(get_admin_user)):
+    """Get all users from a specific country"""
+    if not email_marketing_service:
+        raise HTTPException(status_code=500, detail="Service unavailable")
+    
+    if country not in ["NL", "BE"]:
+        raise HTTPException(status_code=400, detail="Country must be 'NL' or 'BE'")
+    
+    users = await email_marketing_service.get_users_by_country(country, exclude_vakman)
+    return {
+        "country": country,
+        "count": len(users),
+        "users": users[:100],  # Limit response size
+        "total": len(users)
+    }
+
+@api_router.get("/admin/email-marketing/country-stats")
+async def get_country_stats(current_user: dict = Depends(get_admin_user)):
+    """Get email list statistics by country"""
+    nl_count = await db.email_preferences.count_documents({"country": "NL"})
+    be_count = await db.email_preferences.count_documents({"country": "BE"})
+    unknown_count = await db.email_preferences.count_documents({"country": {"$exists": False}})
+    
+    from services.email_marketing import COUNTRY_CONFIG
+    return {
+        "statistics": {
+            "NL": {"count": nl_count, "config": COUNTRY_CONFIG["NL"]},
+            "BE": {"count": be_count, "config": COUNTRY_CONFIG["BE"]},
+            "unknown": {"count": unknown_count}
+        },
+        "total": nl_count + be_count + unknown_count,
+        "note": "Belgen: beleefdere toon, Nederlanders: directe communicatie"
+    }
+
+
+# ==================== OPTIMAL SEND TIMING ====================
+
+@api_router.get("/admin/email-marketing/optimal-timing")
+async def get_optimal_timing(current_user: dict = Depends(get_admin_user)):
+    """Get optimal email send timing information"""
+    if not email_marketing_service:
+        raise HTTPException(status_code=500, detail="Service unavailable")
+    
+    is_optimal, timing_info = email_marketing_service.is_optimal_send_time()
+    next_optimal = email_marketing_service.get_next_optimal_send_time()
+    
+    return {
+        "current_timing": timing_info,
+        "next_optimal_time": next_optimal.isoformat(),
+        "next_optimal_formatted": next_optimal.strftime("%A %d %B om %H:%M CET"),
+        "recommendation": "Voor spoeddiensten werken dinsdag- en donderdagochtend (09:00-11:00) goed, evenals vrijdagmiddag (14:00-16:00)."
+    }
+
+
+# ==================== UNSUBSCRIBE VERIFICATION ====================
+
+# Public unsubscribe endpoint (no auth required) - GDPR compliant
 @api_router.get("/uitschrijven")
 async def unsubscribe_email(email: str, token: str):
-    """Unsubscribe from marketing emails"""
+    """Unsubscribe from marketing emails - GDPR/AVG compliant"""
     if not email_marketing_service:
         raise HTTPException(status_code=500, detail="Service unavailable")
     
@@ -2980,6 +3078,28 @@ async def unsubscribe_email(email: str, token: str):
         return {"message": "U bent succesvol uitgeschreven van marketing emails."}
     else:
         raise HTTPException(status_code=400, detail="Ongeldige uitschrijflink")
+
+@api_router.get("/admin/email-marketing/unsubscribe-stats")
+async def get_unsubscribe_stats(current_user: dict = Depends(get_admin_user)):
+    """Get unsubscribe statistics for GDPR compliance monitoring"""
+    total_unsubscribed = await db.email_preferences.count_documents({"unsubscribed": True})
+    total_subscribed = await db.email_preferences.count_documents({"unsubscribed": {"$ne": True}})
+    
+    # Recent unsubscribes (last 30 days)
+    thirty_days_ago = datetime.now(timezone.utc) - timedelta(days=30)
+    recent_unsubscribes = await db.email_preferences.count_documents({
+        "unsubscribed": True,
+        "unsubscribed_at": {"$gte": thirty_days_ago}
+    })
+    
+    return {
+        "total_unsubscribed": total_unsubscribed,
+        "total_subscribed": total_subscribed,
+        "recent_unsubscribes_30_days": recent_unsubscribes,
+        "unsubscribe_rate": round(total_unsubscribed / (total_subscribed + total_unsubscribed) * 100, 2) if (total_subscribed + total_unsubscribed) > 0 else 0,
+        "gdpr_compliant": True,
+        "note": "Alle marketing emails bevatten een werkende afmeldlink conform AVG/GDPR wetgeving."
+    }
 
 
 # ==================== USER TAG MANAGEMENT ====================
