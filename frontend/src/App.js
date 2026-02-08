@@ -92,6 +92,10 @@ function App() {
                 <Route path="/vakman" element={<BelgianVakmanPage />} />
                 <Route path="/vakman/register" element={<BelgianVakmanRegisterPage />} />
                 <Route path="/garantie" element={<BelgianGarantiePage />} />
+                {/* Belgian Legal Pages */}
+                <Route path="/voorwaarden" element={<BelgianVoorwaardenPage />} />
+                <Route path="/privacy" element={<BelgianPrivacyPage />} />
+                <Route path="/cookies" element={<BelgianCookiePage />} />
                 {/* Belgian SEO Problem pages */}
                 <Route path="/:slug" element={<BelgianProblemPage />} />
                 {/* Belgian City+Service pages */}
