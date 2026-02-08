@@ -17,7 +17,9 @@ logger = logging.getLogger(__name__)
 # Email Template Types
 EMAIL_TYPES = {
     "welcome_customer": "Welkomstmail Klant",
+    "welcome_customer_be": "Welkomstmail Klant (België)",
     "welcome_vakman": "Welkomstmail Vakman",
+    "welcome_vakman_be": "Welkomstmail Vakman (België)",
     "review_reminder": "Review Herinnering",
     "seasonal_winter": "Seizoenstips Winter",
     "seasonal_spring": "Seizoenstips Voorjaar",
@@ -34,7 +36,53 @@ USER_TAGS = {
     "premium_customer": "Premium Klant",
     "premium_vakman": "Premium Vakman",
     "inactive": "Inactief",
-    "newsletter": "Nieuwsbrief"
+    "newsletter": "Nieuwsbrief",
+    "country_nl": "Nederland",
+    "country_be": "België"
+}
+
+# Country-specific configuration
+COUNTRY_CONFIG = {
+    "NL": {
+        "name": "Nederland",
+        "domain": "spoeddienst24.nl",
+        "email": "info@spoeddienst24.nl",
+        "phone": "085 333 2847",
+        "tone": "direct",  # Nederlanders houden van directheid
+        "greeting": "Hallo",
+        "formal_greeting": "Beste"
+    },
+    "BE": {
+        "name": "België",
+        "domain": "spoeddienst24.be",
+        "email": "info@spoeddienst24.be",
+        "phone": "03 808 47 47",
+        "tone": "polite",  # Belgen houden van een beleefdere toon
+        "greeting": "Geachte",
+        "formal_greeting": "Beste"
+    }
+}
+
+# IP Warming Configuration - Start slow, build up reputation
+IP_WARMING_CONFIG = {
+    "enabled": True,
+    "daily_limits": {
+        "day_1_7": 500,      # Week 1: 500/dag
+        "day_8_14": 1000,    # Week 2: 1000/dag
+        "day_15_21": 2500,   # Week 3: 2500/dag
+        "day_22_28": 5000,   # Week 4: 5000/dag
+        "day_29_plus": 10000 # Week 5+: 10000/dag (max)
+    },
+    "start_date": None  # Will be set on first bulk send
+}
+
+# Optimal Send Times for Spoeddiensten
+OPTIMAL_SEND_TIMES = {
+    "best_days": [1, 3, 4],  # Tuesday (1), Thursday (3), Friday (4) - Monday=0
+    "best_hours": {
+        "morning": (9, 11),   # 09:00-11:00 - Dinsdag/Donderdag ochtend
+        "afternoon": (14, 16) # 14:00-16:00 - Vrijdagmiddag
+    }
 }
 
 # Default templates
