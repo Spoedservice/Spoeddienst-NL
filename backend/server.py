@@ -2879,6 +2879,77 @@ async def send_seasonal_campaign(request: SeasonalCampaignRequest, current_user:
         "sent_count": sent_count
     }
 
+class TestEmailRequest(BaseModel):
+    test_email: str = "info@spoeddienst24.nl"
+    test_name: str = "TestName"
+    template_type: str  # "welcome_customer" or "welcome_vakman"
+
+@api_router.post("/admin/email-marketing/send-test")
+async def send_test_email(request: TestEmailRequest, current_user: dict = Depends(get_admin_user)):
+    """Send a test email to verify personalization and segmentation"""
+    if not email_marketing_service:
+        raise HTTPException(status_code=500, detail="Email marketing service not initialized")
+    
+    valid_types = ["welcome_customer", "welcome_vakman"]
+    if request.template_type not in valid_types:
+        raise HTTPException(status_code=400, detail=f"Invalid template_type. Must be one of: {valid_types}")
+    
+    # Get the template
+    template = await db.email_templates.find_one({"type": request.template_type}, {"_id": 0})
+    if not template:
+        raise HTTPException(status_code=404, detail="Template not found")
+    
+    # Prepare test variables
+    if request.template_type == "welcome_customer":
+        variables = {
+            "customer_name": request.test_name,
+            "first_name": request.test_name,
+            "full_name": request.test_name,
+            "name": request.test_name,
+            "customer_email": request.test_email,
+            "email": request.test_email,
+            "frontend_url": FRONTEND_URL,
+            "unsubscribe_token": "TEST_TOKEN_12345"
+        }
+    else:  # welcome_vakman
+        variables = {
+            "vakman_name": request.test_name,
+            "first_name": request.test_name,
+            "full_name": request.test_name,
+            "name": request.test_name,
+            "vakman_email": request.test_email,
+            "email": request.test_email,
+            "service_type": "Loodgieter",
+            "frontend_url": FRONTEND_URL,
+            "unsubscribe_token": "TEST_TOKEN_12345"
+        }
+    
+    # Render template
+    subject = email_marketing_service.render_template(template["subject"], variables)
+    html_content = email_marketing_service.render_template(template["html_template"], variables)
+    
+    # Add TEST indicator to subject
+    subject = f"[TEST] {subject}"
+    
+    # Send the test email
+    success = await email_marketing_service.send_email(
+        request.test_email,
+        subject,
+        html_content,
+        f"test_{request.template_type}",
+        "test_email"
+    )
+    
+    if success:
+        return {
+            "message": f"Test email ({request.template_type}) succesvol verstuurd naar {request.test_email}",
+            "template_type": request.template_type,
+            "test_name_used": request.test_name,
+            "sent_to": request.test_email
+        }
+    else:
+        raise HTTPException(status_code=500, detail="Kon test email niet versturen. Controleer SMTP instellingen.")
+
 @api_router.post("/admin/email-marketing/process-queue")
 async def process_email_queue(current_user: dict = Depends(get_admin_user)):
     """Manually trigger processing of the email queue"""
