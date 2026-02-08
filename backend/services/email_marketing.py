@@ -799,22 +799,37 @@ class EmailMarketingService:
         if not template or not template.get("is_active"):
             return False
         
+        # Detect country from data (default to NL)
+        country = customer_data.get("country", "NL").upper()
+        if country not in ["NL", "BE"]:
+            country = "NL"
+        
+        # Set user country for segmentation
+        customer_email = customer_data.get("email", "")
+        await self.set_user_country(customer_email, country)
+        
         # Add 'customer' tag to user for segmentation
-        await self.add_user_tag(customer_data.get("email"), "customer")
+        await self.add_user_tag(customer_email, "customer")
         
         # Get the customer's first name (handle various input formats)
         full_name = customer_data.get("name", "") or customer_data.get("customer_name", "") or "Klant"
         first_name = full_name.split()[0] if full_name and full_name.strip() else "Klant"
+        
+        # Get country-specific greeting (Belgen: beleefder, Nederlanders: directer)
+        country_config = self.get_country_config(country)
+        greeting = country_config["greeting"] if country == "NL" else country_config["formal_greeting"]
         
         variables = {
             "customer_name": first_name,
             "first_name": first_name,
             "full_name": full_name,
             "name": first_name,
-            "customer_email": customer_data.get("email", ""),
-            "email": customer_data.get("email", ""),
+            "customer_email": customer_email,
+            "email": customer_email,
+            "greeting": greeting,
+            "country": country,
             "frontend_url": self.frontend_url,
-            "unsubscribe_token": self.generate_unsubscribe_token(customer_data.get("email", ""))
+            "unsubscribe_token": self.generate_unsubscribe_token(customer_email)
         }
         
         subject = self.render_template(template["subject"], variables)
