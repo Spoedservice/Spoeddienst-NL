@@ -27,6 +27,16 @@ EMAIL_TYPES = {
     "manual": "Handmatige Mail"
 }
 
+# User Tags for Segmentation
+USER_TAGS = {
+    "customer": "Klant",
+    "vakman": "Vakman",
+    "premium_customer": "Premium Klant",
+    "premium_vakman": "Premium Vakman",
+    "inactive": "Inactief",
+    "newsletter": "Nieuwsbrief"
+}
+
 # Default templates
 DEFAULT_TEMPLATES = {
     "welcome_customer": {
