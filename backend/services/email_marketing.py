@@ -431,6 +431,63 @@ class EmailMarketingService:
                 await self.collections["campaigns"].insert_one(campaign)
                 logger.info(f"Created default campaign: {campaign['type']}")
     
+    # ==================== TAG MANAGEMENT ====================
+    
+    async def add_user_tag(self, email: str, tag: str) -> bool:
+        """Add a tag to a user for segmentation"""
+        if not email:
+            return False
+        await self.collections["preferences"].update_one(
+            {"email": email.lower()},
+            {
+                "$set": {"email": email.lower()},
+                "$addToSet": {"tags": tag},
+                "$setOnInsert": {"created_at": datetime.now(timezone.utc)}
+            },
+            upsert=True
+        )
+        logger.info(f"Added tag '{tag}' to {email}")
+        return True
+    
+    async def remove_user_tag(self, email: str, tag: str) -> bool:
+        """Remove a tag from a user"""
+        if not email:
+            return False
+        await self.collections["preferences"].update_one(
+            {"email": email.lower()},
+            {"$pull": {"tags": tag}}
+        )
+        logger.info(f"Removed tag '{tag}' from {email}")
+        return True
+    
+    async def get_user_tags(self, email: str) -> List[str]:
+        """Get all tags for a user"""
+        pref = await self.collections["preferences"].find_one({"email": email.lower()})
+        return pref.get("tags", []) if pref else []
+    
+    async def has_tag(self, email: str, tag: str) -> bool:
+        """Check if user has a specific tag"""
+        tags = await self.get_user_tags(email)
+        return tag in tags
+    
+    async def get_users_by_tag(self, tag: str, exclude_tags: List[str] = None) -> List[dict]:
+        """Get all users with a specific tag, optionally excluding other tags"""
+        query = {"tags": tag}
+        if exclude_tags:
+            query["tags"] = {"$all": [tag], "$nin": exclude_tags}
+        
+        users = await self.collections["preferences"].find(
+            query,
+            {"_id": 0, "email": 1, "tags": 1}
+        ).to_list(10000)
+        return users
+    
+    async def is_vakman(self, email: str) -> bool:
+        """Check if user is tagged as vakman (for exclusion from customer flows)"""
+        return await self.has_tag(email, "vakman")
+    
+    # ==================== END TAG MANAGEMENT ====================
+    
     def generate_unsubscribe_token(self, email: str) -> str:
         """Generate a simple unsubscribe token"""
         import hashlib
