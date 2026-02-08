@@ -3132,9 +3132,9 @@ class CreateCampaignRequest(BaseModel):
 @api_router.post("/admin/bulk-campaigns")
 async def create_bulk_campaign(request: CreateCampaignRequest, current_user: dict = Depends(get_admin_user)):
     """Create a new bulk email campaign"""
+    global bulk_campaign_service
     if not bulk_campaign_service:
         # Initialize if not done yet
-        global bulk_campaign_service
         bulk_campaign_service = BulkCampaignService(db, email_marketing_service)
     
     result = await bulk_campaign_service.create_campaign(
