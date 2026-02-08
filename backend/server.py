@@ -2911,6 +2911,70 @@ async def unsubscribe_email(email: str, token: str):
         raise HTTPException(status_code=400, detail="Ongeldige uitschrijflink")
 
 
+# ==================== USER TAG MANAGEMENT ====================
+
+class TagRequest(BaseModel):
+    email: str
+    tag: str
+
+class BulkTagRequest(BaseModel):
+    emails: List[str]
+    tag: str
+
+@api_router.get("/admin/email-marketing/tags")
+async def get_available_tags(current_user: dict = Depends(get_admin_user)):
+    """Get available user tags for segmentation"""
+    from services.email_marketing import USER_TAGS
+    return {"tags": USER_TAGS}
+
+@api_router.post("/admin/email-marketing/tags/add")
+async def add_user_tag(request: TagRequest, current_user: dict = Depends(get_admin_user)):
+    """Add a tag to a user"""
+    if not email_marketing_service:
+        raise HTTPException(status_code=500, detail="Service unavailable")
+    
+    success = await email_marketing_service.add_user_tag(request.email, request.tag)
+    return {"message": f"Tag '{request.tag}' toegevoegd aan {request.email}", "success": success}
+
+@api_router.post("/admin/email-marketing/tags/remove")
+async def remove_user_tag(request: TagRequest, current_user: dict = Depends(get_admin_user)):
+    """Remove a tag from a user"""
+    if not email_marketing_service:
+        raise HTTPException(status_code=500, detail="Service unavailable")
+    
+    success = await email_marketing_service.remove_user_tag(request.email, request.tag)
+    return {"message": f"Tag '{request.tag}' verwijderd van {request.email}", "success": success}
+
+@api_router.post("/admin/email-marketing/tags/bulk-add")
+async def bulk_add_tag(request: BulkTagRequest, current_user: dict = Depends(get_admin_user)):
+    """Add a tag to multiple users"""
+    if not email_marketing_service:
+        raise HTTPException(status_code=500, detail="Service unavailable")
+    
+    success_count = 0
+    for email in request.emails:
+        if await email_marketing_service.add_user_tag(email, request.tag):
+            success_count += 1
+    
+    return {"message": f"Tag '{request.tag}' toegevoegd aan {success_count}/{len(request.emails)} gebruikers"}
+
+@api_router.get("/admin/email-marketing/tags/users/{tag}")
+async def get_users_by_tag(tag: str, exclude_vakman: bool = False, current_user: dict = Depends(get_admin_user)):
+    """Get all users with a specific tag"""
+    if not email_marketing_service:
+        raise HTTPException(status_code=500, detail="Service unavailable")
+    
+    exclude_tags = ["vakman"] if exclude_vakman else None
+    users = await email_marketing_service.get_users_by_tag(tag, exclude_tags)
+    return {"users": users, "count": len(users)}
+
+@api_router.get("/admin/email-marketing/user-preferences/{email}")
+async def get_user_preferences(email: str, current_user: dict = Depends(get_admin_user)):
+    """Get email preferences and tags for a user"""
+    pref = await db.email_preferences.find_one({"email": email.lower()}, {"_id": 0})
+    return {"preferences": pref or {"email": email, "tags": [], "unsubscribed": False}}
+
+
 # ==================== GOOGLE ADS MOCK API ====================
 # Mock service for Google Ads integration - will be swapped for real API when Developer Token is approved
 
