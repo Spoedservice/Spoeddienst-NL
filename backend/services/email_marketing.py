@@ -514,9 +514,20 @@ class EmailMarketingService:
         if not template or not template.get("is_active"):
             return False
         
+        # Add 'customer' tag to user for segmentation
+        await self.add_user_tag(customer_data.get("email"), "customer")
+        
+        # Get the customer's first name (handle various input formats)
+        full_name = customer_data.get("name", "") or customer_data.get("customer_name", "") or "Klant"
+        first_name = full_name.split()[0] if full_name and full_name.strip() else "Klant"
+        
         variables = {
-            "customer_name": customer_data.get("name", "Klant"),
+            "customer_name": first_name,
+            "first_name": first_name,
+            "full_name": full_name,
+            "name": first_name,
             "customer_email": customer_data.get("email", ""),
+            "email": customer_data.get("email", ""),
             "frontend_url": self.frontend_url,
             "unsubscribe_token": self.generate_unsubscribe_token(customer_data.get("email", ""))
         }
@@ -542,15 +553,28 @@ class EmailMarketingService:
         if not template or not template.get("is_active"):
             return False
         
+        # Add 'vakman' tag to user for segmentation - EXCLUDE from customer marketing
+        await self.add_user_tag(vakman_data.get("email"), "vakman")
+        # Remove customer tag if accidentally added
+        await self.remove_user_tag(vakman_data.get("email"), "customer")
+        
         service_names = {
             "elektricien": "Elektricien",
             "loodgieter": "Loodgieter",
             "slotenmaker": "Slotenmaker"
         }
         
+        # Get the vakman's first name (handle various input formats)
+        full_name = vakman_data.get("name", "") or vakman_data.get("vakman_name", "") or "Vakman"
+        first_name = full_name.split()[0] if full_name and full_name.strip() else "Vakman"
+        
         variables = {
-            "vakman_name": vakman_data.get("name", "Vakman"),
+            "vakman_name": first_name,
+            "first_name": first_name,
+            "full_name": full_name,
+            "name": first_name,
             "vakman_email": vakman_data.get("email", ""),
+            "email": vakman_data.get("email", ""),
             "service_type": service_names.get(vakman_data.get("service_type", ""), "Vakman"),
             "frontend_url": self.frontend_url,
             "unsubscribe_token": self.generate_unsubscribe_token(vakman_data.get("email", ""))
