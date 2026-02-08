@@ -3185,8 +3185,8 @@ async def import_csv_to_campaign(
     current_user: dict = Depends(get_admin_user)
 ):
     """Import contacts from CSV file"""
+    global bulk_campaign_service
     if not bulk_campaign_service:
-        global bulk_campaign_service
         bulk_campaign_service = BulkCampaignService(db, email_marketing_service)
     
     if country not in ["NL", "BE"]:
