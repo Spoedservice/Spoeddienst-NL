@@ -413,8 +413,188 @@ class EmailMarketingService:
             "campaigns": db.email_campaigns,
             "sent": db.sent_emails,
             "preferences": db.email_preferences,
-            "queue": db.email_queue
+            "queue": db.email_queue,
+            "rate_limits": db.email_rate_limits
         }
+    
+    # ==================== IP WARMING & RATE LIMITING ====================
+    
+    async def get_daily_send_count(self) -> int:
+        """Get number of emails sent today"""
+        today_start = datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
+        count = await self.collections["sent"].count_documents({
+            "sent_at": {"$gte": today_start},
+            "status": "sent"
+        })
+        return count
+    
+    async def get_ip_warming_limit(self) -> int:
+        """Get current daily limit based on IP warming schedule"""
+        # Get or create warming start date
+        config = await self.collections["rate_limits"].find_one({"type": "ip_warming"})
+        
+        if not config:
+            # First time - create config
+            config = {
+                "type": "ip_warming",
+                "start_date": datetime.now(timezone.utc),
+                "enabled": True
+            }
+            await self.collections["rate_limits"].insert_one(config)
+        
+        if not config.get("enabled", True):
+            return 999999  # No limit if disabled
+        
+        # Calculate days since start
+        start_date = config.get("start_date", datetime.now(timezone.utc))
+        days_active = (datetime.now(timezone.utc) - start_date).days + 1
+        
+        # Return appropriate limit based on warming schedule
+        if days_active <= 7:
+            return IP_WARMING_CONFIG["daily_limits"]["day_1_7"]
+        elif days_active <= 14:
+            return IP_WARMING_CONFIG["daily_limits"]["day_8_14"]
+        elif days_active <= 21:
+            return IP_WARMING_CONFIG["daily_limits"]["day_15_21"]
+        elif days_active <= 28:
+            return IP_WARMING_CONFIG["daily_limits"]["day_22_28"]
+        else:
+            return IP_WARMING_CONFIG["daily_limits"]["day_29_plus"]
+    
+    async def can_send_email(self) -> tuple:
+        """Check if we can send more emails today (IP warming)"""
+        daily_count = await self.get_daily_send_count()
+        daily_limit = await self.get_ip_warming_limit()
+        
+        can_send = daily_count < daily_limit
+        remaining = max(0, daily_limit - daily_count)
+        
+        return can_send, remaining, daily_limit
+    
+    async def get_ip_warming_status(self) -> dict:
+        """Get current IP warming status"""
+        daily_count = await self.get_daily_send_count()
+        daily_limit = await self.get_ip_warming_limit()
+        config = await self.collections["rate_limits"].find_one({"type": "ip_warming"})
+        
+        start_date = config.get("start_date") if config else datetime.now(timezone.utc)
+        days_active = (datetime.now(timezone.utc) - start_date).days + 1
+        
+        return {
+            "enabled": config.get("enabled", True) if config else True,
+            "days_active": days_active,
+            "current_daily_limit": daily_limit,
+            "emails_sent_today": daily_count,
+            "remaining_today": max(0, daily_limit - daily_count),
+            "percentage_used": round(daily_count / daily_limit * 100, 1) if daily_limit > 0 else 0,
+            "start_date": start_date.isoformat() if start_date else None,
+            "schedule": IP_WARMING_CONFIG["daily_limits"]
+        }
+    
+    # ==================== COUNTRY SEGMENTATION ====================
+    
+    async def set_user_country(self, email: str, country: str) -> bool:
+        """Set user's country for segmentation (NL or BE)"""
+        if country not in ["NL", "BE"]:
+            return False
+        
+        # Remove old country tag and add new one
+        await self.remove_user_tag(email, "country_nl")
+        await self.remove_user_tag(email, "country_be")
+        await self.add_user_tag(email, f"country_{country.lower()}")
+        
+        # Also store country directly
+        await self.collections["preferences"].update_one(
+            {"email": email.lower()},
+            {"$set": {"country": country}},
+            upsert=True
+        )
+        
+        logger.info(f"Set country {country} for {email}")
+        return True
+    
+    async def get_user_country(self, email: str) -> str:
+        """Get user's country (default: NL)"""
+        pref = await self.collections["preferences"].find_one({"email": email.lower()})
+        return pref.get("country", "NL") if pref else "NL"
+    
+    async def get_users_by_country(self, country: str, exclude_vakman: bool = True) -> List[dict]:
+        """Get all users from a specific country"""
+        query = {"country": country}
+        if exclude_vakman:
+            query["tags"] = {"$nin": ["vakman"]}
+        
+        users = await self.collections["preferences"].find(
+            query,
+            {"_id": 0}
+        ).to_list(10000)
+        return users
+    
+    def get_country_config(self, country: str) -> dict:
+        """Get country-specific configuration"""
+        return COUNTRY_CONFIG.get(country, COUNTRY_CONFIG["NL"])
+    
+    def get_country_greeting(self, country: str, formal: bool = False) -> str:
+        """Get appropriate greeting based on country and formality"""
+        config = self.get_country_config(country)
+        return config["formal_greeting"] if formal else config["greeting"]
+    
+    # ==================== OPTIMAL SEND TIMING ====================
+    
+    def is_optimal_send_time(self) -> tuple:
+        """Check if current time is optimal for sending marketing emails"""
+        now = datetime.now(timezone.utc)
+        # Adjust for CET/CEST (UTC+1 or UTC+2)
+        local_hour = (now.hour + 1) % 24  # Simplified CET
+        weekday = now.weekday()
+        
+        is_best_day = weekday in OPTIMAL_SEND_TIMES["best_days"]
+        
+        morning_start, morning_end = OPTIMAL_SEND_TIMES["best_hours"]["morning"]
+        afternoon_start, afternoon_end = OPTIMAL_SEND_TIMES["best_hours"]["afternoon"]
+        
+        is_morning = morning_start <= local_hour < morning_end
+        is_afternoon = afternoon_start <= local_hour < afternoon_end
+        is_best_hour = is_morning or is_afternoon
+        
+        recommendation = None
+        if not is_best_day:
+            recommendation = "Beste dagen: dinsdag, donderdag, vrijdag"
+        elif not is_best_hour:
+            recommendation = "Beste uren: 09:00-11:00 of 14:00-16:00"
+        
+        return is_best_day and is_best_hour, {
+            "is_optimal": is_best_day and is_best_hour,
+            "current_day": ["Maandag", "Dinsdag", "Woensdag", "Donderdag", "Vrijdag", "Zaterdag", "Zondag"][weekday],
+            "current_hour": local_hour,
+            "is_best_day": is_best_day,
+            "is_best_hour": is_best_hour,
+            "recommendation": recommendation,
+            "best_times": "Dinsdag/Donderdag 09:00-11:00, Vrijdag 14:00-16:00"
+        }
+    
+    def get_next_optimal_send_time(self) -> datetime:
+        """Calculate the next optimal send time"""
+        now = datetime.now(timezone.utc)
+        
+        # Find next Tuesday, Thursday, or Friday at 09:00 CET
+        days_ahead = 0
+        while days_ahead < 7:
+            check_date = now + timedelta(days=days_ahead)
+            if check_date.weekday() in OPTIMAL_SEND_TIMES["best_days"]:
+                # Set to 09:00 CET (08:00 UTC)
+                optimal_time = check_date.replace(hour=8, minute=0, second=0, microsecond=0)
+                if optimal_time > now:
+                    return optimal_time
+            days_ahead += 1
+        
+        # Fallback: next Tuesday at 09:00
+        days_until_tuesday = (1 - now.weekday()) % 7
+        if days_until_tuesday == 0:
+            days_until_tuesday = 7
+        return (now + timedelta(days=days_until_tuesday)).replace(hour=8, minute=0, second=0, microsecond=0)
+    
+    # ==================== END NEW FEATURES ====================
     
     async def initialize_default_templates(self):
         """Initialize default email templates if they don't exist"""
