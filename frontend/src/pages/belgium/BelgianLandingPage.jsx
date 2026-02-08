@@ -605,6 +605,13 @@ export default function BelgianLandingPage() {
             </div>
             
             <div className="border-t border-slate-800 mt-8 pt-8 text-center text-slate-500 text-sm">
+              <div className="flex flex-wrap justify-center gap-4 mb-4">
+                <Link to={beRoute("/voorwaarden")} className="hover:text-white">Algemene Voorwaarden</Link>
+                <span>|</span>
+                <Link to={beRoute("/privacy")} className="hover:text-white">Privacy Policy</Link>
+                <span>|</span>
+                <Link to={beRoute("/cookies")} className="hover:text-white">Cookie Beleid</Link>
+              </div>
               <p>© 2024 SpoedDienst24.be - Alle rechten voorbehouden | 24/7 Vakmannen in België</p>
               <p className="mt-2">Loodgieter België | Slotenmaker België | Elektricien België | Spoed Vakmannen Vlaanderen</p>
             </div>
