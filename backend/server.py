@@ -3112,6 +3112,150 @@ class BulkTagRequest(BaseModel):
     emails: List[str]
     tag: str
 
+# ==================== BULK CAMPAIGN SERVICE ====================
+from services.bulk_campaign import BulkCampaignService, REGIONAL_CONFIG, AB_TEST_SUBJECTS, THROTTLE_CONFIG
+
+bulk_campaign_service = None
+
+@api_router.on_event("startup")
+async def init_bulk_campaign_service():
+    global bulk_campaign_service
+    if db is not None and email_marketing_service is not None:
+        bulk_campaign_service = BulkCampaignService(db, email_marketing_service)
+
+# Campaign Management Endpoints
+class CreateCampaignRequest(BaseModel):
+    name: str
+    country: str  # "NL" or "BE"
+    ab_test_enabled: bool = True
+
+@api_router.post("/admin/bulk-campaigns")
+async def create_bulk_campaign(request: CreateCampaignRequest, current_user: dict = Depends(get_admin_user)):
+    """Create a new bulk email campaign"""
+    if not bulk_campaign_service:
+        # Initialize if not done yet
+        global bulk_campaign_service
+        bulk_campaign_service = BulkCampaignService(db, email_marketing_service)
+    
+    result = await bulk_campaign_service.create_campaign(
+        name=request.name,
+        country=request.country,
+        ab_test_enabled=request.ab_test_enabled
+    )
+    return result
+
+@api_router.get("/admin/bulk-campaigns")
+async def list_bulk_campaigns(current_user: dict = Depends(get_admin_user)):
+    """List all bulk campaigns"""
+    if not bulk_campaign_service:
+        global bulk_campaign_service
+        bulk_campaign_service = BulkCampaignService(db, email_marketing_service)
+    
+    campaigns = await bulk_campaign_service.list_campaigns()
+    return {"campaigns": campaigns}
+
+@api_router.get("/admin/bulk-campaigns/{campaign_id}")
+async def get_bulk_campaign(campaign_id: str, current_user: dict = Depends(get_admin_user)):
+    """Get campaign details"""
+    if not bulk_campaign_service:
+        global bulk_campaign_service
+        bulk_campaign_service = BulkCampaignService(db, email_marketing_service)
+    
+    campaign = await bulk_campaign_service.get_campaign(campaign_id)
+    if not campaign:
+        raise HTTPException(status_code=404, detail="Campaign not found")
+    return campaign
+
+@api_router.get("/admin/bulk-campaigns/{campaign_id}/stats")
+async def get_campaign_stats(campaign_id: str, current_user: dict = Depends(get_admin_user)):
+    """Get detailed campaign statistics"""
+    if not bulk_campaign_service:
+        global bulk_campaign_service
+        bulk_campaign_service = BulkCampaignService(db, email_marketing_service)
+    
+    stats = await bulk_campaign_service.get_campaign_stats(campaign_id)
+    return stats
+
+# CSV Import Endpoint
+@api_router.post("/admin/bulk-campaigns/{campaign_id}/import-csv")
+async def import_csv_to_campaign(
+    campaign_id: str,
+    country: str,
+    file: UploadFile = File(...),
+    current_user: dict = Depends(get_admin_user)
+):
+    """Import contacts from CSV file"""
+    if not bulk_campaign_service:
+        global bulk_campaign_service
+        bulk_campaign_service = BulkCampaignService(db, email_marketing_service)
+    
+    if country not in ["NL", "BE"]:
+        raise HTTPException(status_code=400, detail="Country must be 'NL' or 'BE'")
+    
+    # Read CSV content
+    content = await file.read()
+    csv_content = content.decode("utf-8")
+    
+    # Detect delimiter
+    delimiter = ";" if ";" in csv_content[:500] else ","
+    
+    result = await bulk_campaign_service.import_csv(
+        csv_content=csv_content,
+        country=country,
+        campaign_id=campaign_id,
+        delimiter=delimiter
+    )
+    
+    return result
+
+# Scheduling Endpoint
+@api_router.post("/admin/bulk-campaigns/{campaign_id}/schedule")
+async def schedule_campaign(campaign_id: str, current_user: dict = Depends(get_admin_user)):
+    """Schedule campaign with throttling (spread over 5 days)"""
+    if not bulk_campaign_service:
+        global bulk_campaign_service
+        bulk_campaign_service = BulkCampaignService(db, email_marketing_service)
+    
+    result = await bulk_campaign_service.schedule_campaign(campaign_id)
+    return result
+
+# A/B Test Results
+@api_router.get("/admin/bulk-campaigns/{campaign_id}/ab-results")
+async def get_ab_test_results(campaign_id: str, current_user: dict = Depends(get_admin_user)):
+    """Get A/B test results for a campaign"""
+    if not bulk_campaign_service:
+        global bulk_campaign_service
+        bulk_campaign_service = BulkCampaignService(db, email_marketing_service)
+    
+    results = await bulk_campaign_service.get_ab_test_results(campaign_id)
+    return results
+
+# Regional and A/B Config Info
+@api_router.get("/admin/bulk-campaigns/config/regional")
+async def get_regional_config(current_user: dict = Depends(get_admin_user)):
+    """Get regional configuration for NL and BE"""
+    return {
+        "regions": REGIONAL_CONFIG,
+        "note": "NL: directe toon, BE: beleefdere toon"
+    }
+
+@api_router.get("/admin/bulk-campaigns/config/ab-subjects")
+async def get_ab_subjects(current_user: dict = Depends(get_admin_user)):
+    """Get A/B test subject lines"""
+    return {
+        "subjects": AB_TEST_SUBJECTS,
+        "note": "50/50 split - meet open rates en click rates"
+    }
+
+@api_router.get("/admin/bulk-campaigns/config/throttle")
+async def get_throttle_config(current_user: dict = Depends(get_admin_user)):
+    """Get throttling configuration for spam prevention"""
+    return {
+        "config": THROTTLE_CONFIG,
+        "note": "Emails worden verspreid over 5 dagen om spam filters te voorkomen"
+    }
+
+
 @api_router.get("/admin/email-marketing/tags")
 async def get_available_tags(current_user: dict = Depends(get_admin_user)):
     """Get available user tags for segmentation"""
