@@ -3147,8 +3147,8 @@ async def create_bulk_campaign(request: CreateCampaignRequest, current_user: dic
 @api_router.get("/admin/bulk-campaigns")
 async def list_bulk_campaigns(current_user: dict = Depends(get_admin_user)):
     """List all bulk campaigns"""
+    global bulk_campaign_service
     if not bulk_campaign_service:
-        global bulk_campaign_service
         bulk_campaign_service = BulkCampaignService(db, email_marketing_service)
     
     campaigns = await bulk_campaign_service.list_campaigns()
