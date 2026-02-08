@@ -3223,8 +3223,8 @@ async def schedule_campaign(campaign_id: str, current_user: dict = Depends(get_a
 @api_router.get("/admin/bulk-campaigns/{campaign_id}/ab-results")
 async def get_ab_test_results(campaign_id: str, current_user: dict = Depends(get_admin_user)):
     """Get A/B test results for a campaign"""
+    global bulk_campaign_service
     if not bulk_campaign_service:
-        global bulk_campaign_service
         bulk_campaign_service = BulkCampaignService(db, email_marketing_service)
     
     results = await bulk_campaign_service.get_ab_test_results(campaign_id)
