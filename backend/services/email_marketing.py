@@ -85,121 +85,325 @@ OPTIMAL_SEND_TIMES = {
     }
 }
 
-# Default templates
+# Default templates - Professional Design
 DEFAULT_TEMPLATES = {
     "welcome_customer": {
-        "subject": "Welkom bij SpoedDienst24! ⚡",
-        "html_template": """
-        <html>
-        <body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #f5f5f5;">
-            <div style="background: linear-gradient(135deg, #FF4500 0%, #CC3700 100%); padding: 30px; text-align: center;">
-                <h1 style="color: white; margin: 0; font-size: 28px;">⚡ SpoedDienst24</h1>
-                <p style="color: rgba(255,255,255,0.9); margin: 10px 0 0 0;">24/7 Vakmannen aan uw deur</p>
-            </div>
-            
-            <div style="padding: 30px; background-color: white;">
-                <h2 style="color: #333; margin-top: 0;">Welkom bij SpoedDienst24, {{customer_name}}!</h2>
-                
-                <p style="color: #666; font-size: 16px; line-height: 1.6;">
-                    Bedankt voor uw registratie! U kunt nu gebruik maken van onze 24/7 spoeddiensten voor:
-                </p>
-                
-                <div style="display: flex; gap: 10px; margin: 20px 0;">
-                    <div style="flex: 1; background-color: #e3f2fd; padding: 15px; border-radius: 8px; text-align: center;">
-                        <span style="font-size: 24px;">🔧</span>
-                        <p style="margin: 5px 0 0 0; font-weight: bold; color: #1976d2;">Loodgieter</p>
-                    </div>
-                    <div style="flex: 1; background-color: #fff3e0; padding: 15px; border-radius: 8px; text-align: center;">
-                        <span style="font-size: 24px;">🔑</span>
-                        <p style="margin: 5px 0 0 0; font-weight: bold; color: #f57c00;">Slotenmaker</p>
-                    </div>
-                    <div style="flex: 1; background-color: #fff8e1; padding: 15px; border-radius: 8px; text-align: center;">
-                        <span style="font-size: 24px;">⚡</span>
-                        <p style="margin: 5px 0 0 0; font-weight: bold; color: #fbc02d;">Elektricien</p>
-                    </div>
-                </div>
-                
-                <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
-                    <h3 style="color: #FF4500; margin-top: 0;">🎁 Wat u kunt verwachten:</h3>
-                    <ul style="color: #666; padding-left: 20px;">
-                        <li>Reactie binnen 15 minuten bij spoedgevallen</li>
-                        <li>Gecertificeerde en betrouwbare vakmannen</li>
-                        <li>Vaste, transparante prijzen</li>
-                        <li>Betaling pas na de klus</li>
-                    </ul>
-                </div>
-                
-                <div style="text-align: center; margin: 30px 0;">
-                    <a href="{{frontend_url}}/boek" style="display: inline-block; background-color: #FF4500; color: white; padding: 15px 40px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px;">
-                        Boek Nu een Vakman →
-                    </a>
-                </div>
-                
-                <p style="color: #999; font-size: 14px; text-align: center;">
-                    Vragen? Bel ons op <a href="tel:0853332847" style="color: #FF4500;">085 333 2847</a>
-                </p>
-            </div>
-            
-            <div style="background-color: #333; padding: 20px; text-align: center;">
-                <p style="color: #999; margin: 0 0 10px 0; font-size: 12px;">© 2024 SpoedDienst24.nl - Alle rechten voorbehouden</p>
-                <p style="margin: 0;">
-                    <a href="{{frontend_url}}/uitschrijven?email={{customer_email}}&token={{unsubscribe_token}}" style="color: #999; font-size: 11px;">Uitschrijven van marketing emails</a>
-                </p>
-            </div>
-        </body>
-        </html>
-        """
+        "subject": "Welkom bij SpoedDienst24 — Uw account is geactiveerd",
+        "html_template": """<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f4f4;">
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color: #f4f4f4;">
+        <tr>
+            <td align="center" style="padding: 40px 20px;">
+                <table role="presentation" width="600" cellspacing="0" cellpadding="0" style="background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                    
+                    <!-- Header -->
+                    <tr>
+                        <td style="background: linear-gradient(135deg, #FF4500 0%, #E03E00 100%); padding: 40px 40px 30px 40px;">
+                            <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+                                <tr>
+                                    <td>
+                                        <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: 700; letter-spacing: -0.5px;">SpoedDienst24</h1>
+                                        <p style="margin: 8px 0 0 0; color: rgba(255,255,255,0.9); font-size: 14px; font-weight: 400;">24/7 Professionele Vakmannen</p>
+                                    </td>
+                                    <td align="right" valign="top">
+                                        <div style="background-color: rgba(255,255,255,0.2); border-radius: 50%; width: 50px; height: 50px; text-align: center; line-height: 50px;">
+                                            <span style="font-size: 24px;">⚡</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    
+                    <!-- Main Content -->
+                    <tr>
+                        <td style="padding: 40px;">
+                            <h2 style="margin: 0 0 20px 0; color: #1a1a1a; font-size: 24px; font-weight: 600;">
+                                Beste {{first_name}},
+                            </h2>
+                            
+                            <p style="margin: 0 0 25px 0; color: #4a4a4a; font-size: 16px; line-height: 1.7;">
+                                Welkom bij SpoedDienst24. Uw account is succesvol geactiveerd en u heeft nu toegang tot ons netwerk van gecertificeerde vakmannen, 24 uur per dag, 7 dagen per week.
+                            </p>
+                            
+                            <!-- Services Grid -->
+                            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin: 30px 0;">
+                                <tr>
+                                    <td width="33%" style="padding: 0 8px 0 0;">
+                                        <div style="background-color: #f8f9fa; border-radius: 8px; padding: 20px; text-align: center; border: 1px solid #e9ecef;">
+                                            <div style="width: 40px; height: 40px; background-color: #FF4500; border-radius: 8px; margin: 0 auto 12px auto; line-height: 40px;">
+                                                <span style="color: white; font-size: 18px;">🔧</span>
+                                            </div>
+                                            <p style="margin: 0; color: #1a1a1a; font-weight: 600; font-size: 14px;">Loodgieter</p>
+                                        </div>
+                                    </td>
+                                    <td width="33%" style="padding: 0 4px;">
+                                        <div style="background-color: #f8f9fa; border-radius: 8px; padding: 20px; text-align: center; border: 1px solid #e9ecef;">
+                                            <div style="width: 40px; height: 40px; background-color: #FF4500; border-radius: 8px; margin: 0 auto 12px auto; line-height: 40px;">
+                                                <span style="color: white; font-size: 18px;">🔑</span>
+                                            </div>
+                                            <p style="margin: 0; color: #1a1a1a; font-weight: 600; font-size: 14px;">Slotenmaker</p>
+                                        </div>
+                                    </td>
+                                    <td width="33%" style="padding: 0 0 0 8px;">
+                                        <div style="background-color: #f8f9fa; border-radius: 8px; padding: 20px; text-align: center; border: 1px solid #e9ecef;">
+                                            <div style="width: 40px; height: 40px; background-color: #FF4500; border-radius: 8px; margin: 0 auto 12px auto; line-height: 40px;">
+                                                <span style="color: white; font-size: 18px;">⚡</span>
+                                            </div>
+                                            <p style="margin: 0; color: #1a1a1a; font-weight: 600; font-size: 14px;">Elektricien</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                            
+                            <!-- Benefits -->
+                            <div style="background-color: #fafafa; border-radius: 8px; padding: 25px; margin: 25px 0; border-left: 4px solid #FF4500;">
+                                <h3 style="margin: 0 0 15px 0; color: #1a1a1a; font-size: 16px; font-weight: 600;">Wat wij u bieden:</h3>
+                                <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+                                    <tr>
+                                        <td style="padding: 8px 0; color: #4a4a4a; font-size: 14px;">
+                                            <span style="color: #FF4500; margin-right: 10px;">✓</span>Gemiddelde responstijd van 30 minuten
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 8px 0; color: #4a4a4a; font-size: 14px;">
+                                            <span style="color: #FF4500; margin-right: 10px;">✓</span>Vaste, transparante tarieven
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 8px 0; color: #4a4a4a; font-size: 14px;">
+                                            <span style="color: #FF4500; margin-right: 10px;">✓</span>100% tevredenheidsgarantie
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 8px 0; color: #4a4a4a; font-size: 14px;">
+                                            <span style="color: #FF4500; margin-right: 10px;">✓</span>Betaling na voltooiing
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            
+                            <!-- CTA Button -->
+                            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin: 35px 0;">
+                                <tr>
+                                    <td align="center">
+                                        <a href="{{frontend_url}}/boek" style="display: inline-block; background: linear-gradient(135deg, #FF4500 0%, #E03E00 100%); color: #ffffff; text-decoration: none; padding: 16px 40px; border-radius: 6px; font-weight: 600; font-size: 16px; box-shadow: 0 4px 14px rgba(255, 69, 0, 0.4);">
+                                            Vakman Boeken
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+                            
+                            <p style="margin: 30px 0 0 0; color: #6a6a6a; font-size: 14px; line-height: 1.6;">
+                                Met vriendelijke groet,<br>
+                                <strong style="color: #1a1a1a;">Het SpoedDienst24 Team</strong>
+                            </p>
+                        </td>
+                    </tr>
+                    
+                    <!-- Footer -->
+                    <tr>
+                        <td style="background-color: #1a1a1a; padding: 30px 40px;">
+                            <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+                                <tr>
+                                    <td>
+                                        <p style="margin: 0 0 8px 0; color: #ffffff; font-size: 14px; font-weight: 600;">SpoedDienst24</p>
+                                        <p style="margin: 0; color: #888888; font-size: 13px;">24/7 Bereikbaar: 085 333 2847</p>
+                                        <p style="margin: 5px 0 0 0; color: #888888; font-size: 13px;">info@spoeddienst24.nl</p>
+                                    </td>
+                                    <td align="right" valign="top">
+                                        <p style="margin: 0; color: #666666; font-size: 11px;">KVK: 94499210835</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" style="padding-top: 20px; border-top: 1px solid #333333; margin-top: 20px;">
+                                        <p style="margin: 15px 0 0 0; color: #666666; font-size: 11px; text-align: center;">
+                                            <a href="{{frontend_url}}/uitschrijven?email={{customer_email}}&token={{unsubscribe_token}}" style="color: #888888; text-decoration: underline;">Uitschrijven</a>
+                                            &nbsp;&nbsp;|&nbsp;&nbsp;
+                                            <a href="{{frontend_url}}/privacy" style="color: #888888; text-decoration: underline;">Privacy Policy</a>
+                                        </p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>"""
     },
     "welcome_vakman": {
-        "subject": "Welkom bij het SpoedDienst24 team! 🛠️",
-        "html_template": """
-        <html>
-        <body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-            <div style="background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); padding: 30px; text-align: center;">
-                <h1 style="color: white; margin: 0;">⚡ SpoedDienst24</h1>
-                <p style="color: rgba(255,255,255,0.9); margin: 10px 0 0 0;">Vakman Partnership</p>
-            </div>
-            
-            <div style="padding: 30px; background-color: #f8f9fa;">
-                <h2 style="color: #333; margin-top: 0;">Welkom bij het team, {{vakman_name}}!</h2>
-                
-                <p style="color: #666; font-size: 16px; line-height: 1.6;">
-                    Bedankt voor je aanmelding als {{service_type}} bij SpoedDienst24. Je profiel wordt momenteel beoordeeld door ons team.
-                </p>
-                
-                <div style="background-color: white; padding: 20px; border-radius: 10px; border-left: 4px solid #2563eb; margin: 20px 0;">
-                    <h3 style="color: #2563eb; margin-top: 0;">📋 Volgende stappen:</h3>
-                    <ol style="color: #666; padding-left: 20px;">
-                        <li style="margin-bottom: 10px;">Je ontvangt binnen 24 uur bericht over je goedkeuring</li>
-                        <li style="margin-bottom: 10px;">Na goedkeuring kun je direct klussen ontvangen</li>
-                        <li style="margin-bottom: 10px;">Je krijgt een notificatie bij elke nieuwe klus in jouw regio</li>
-                    </ol>
-                </div>
-                
-                <div style="background-color: #fff3e6; padding: 20px; border-radius: 10px; margin: 20px 0;">
-                    <h3 style="color: #FF4500; margin-top: 0;">💰 Verdien meer met Premium</h3>
-                    <p style="color: #666; margin: 0;">
-                        Met een Premium lidmaatschap krijg je voorrang bij klussen en betaal je lagere commissie. 
-                        Bekijk de voordelen in je dashboard!
-                    </p>
-                </div>
-                
-                <div style="text-align: center; margin: 30px 0;">
-                    <a href="{{frontend_url}}/vakman/dashboard" style="display: inline-block; background-color: #2563eb; color: white; padding: 15px 40px; text-decoration: none; border-radius: 8px; font-weight: bold;">
-                        Ga naar je Dashboard →
-                    </a>
-                </div>
-            </div>
-            
-            <div style="background-color: #333; padding: 20px; text-align: center;">
-                <p style="color: #999; margin: 0 0 10px 0; font-size: 12px;">© 2024 SpoedDienst24.nl</p>
-                <p style="margin: 0;">
-                    <a href="{{frontend_url}}/uitschrijven?email={{vakman_email}}&token={{unsubscribe_token}}" style="color: #999; font-size: 11px;">Uitschrijven</a>
-                </p>
-            </div>
-        </body>
-        </html>
-        """
+        "subject": "Welkom als Partner — SpoedDienst24",
+        "html_template": """<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #0a0a0a;">
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color: #0a0a0a;">
+        <tr>
+            <td align="center" style="padding: 40px 20px;">
+                <table role="presentation" width="600" cellspacing="0" cellpadding="0" style="background-color: #141414; border-radius: 12px; overflow: hidden; border: 1px solid #2a2a2a;">
+                    
+                    <!-- Header -->
+                    <tr>
+                        <td style="padding: 40px 40px 30px 40px; border-bottom: 1px solid #2a2a2a;">
+                            <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+                                <tr>
+                                    <td>
+                                        <h1 style="margin: 0; color: #ffffff; font-size: 24px; font-weight: 700; letter-spacing: -0.5px;">
+                                            <span style="color: #FF4500;">Spoed</span>Dienst24
+                                        </h1>
+                                        <p style="margin: 8px 0 0 0; color: #888888; font-size: 13px; font-weight: 500; text-transform: uppercase; letter-spacing: 1px;">Partner Network</p>
+                                    </td>
+                                    <td align="right" valign="middle">
+                                        <div style="background: linear-gradient(135deg, #FF4500 0%, #CC3700 100%); border-radius: 8px; padding: 10px 16px;">
+                                            <span style="color: #ffffff; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">PRO</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    
+                    <!-- Main Content -->
+                    <tr>
+                        <td style="padding: 40px;">
+                            <h2 style="margin: 0 0 25px 0; color: #ffffff; font-size: 28px; font-weight: 600; line-height: 1.3;">
+                                Welkom, {{first_name}}.
+                            </h2>
+                            
+                            <p style="margin: 0 0 30px 0; color: #b0b0b0; font-size: 16px; line-height: 1.8;">
+                                Uw aanmelding als <strong style="color: #ffffff;">{{service_type}}</strong> is ontvangen. Ons team beoordeelt uw profiel momenteel. U ontvangt binnen 24 uur een bevestiging.
+                            </p>
+                            
+                            <!-- Status Card -->
+                            <div style="background-color: #1e1e1e; border-radius: 10px; padding: 25px; margin: 30px 0; border: 1px solid #2a2a2a;">
+                                <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+                                    <tr>
+                                        <td width="50" valign="top">
+                                            <div style="width: 40px; height: 40px; background-color: #FF4500; border-radius: 50%; text-align: center; line-height: 40px;">
+                                                <span style="color: #ffffff; font-size: 18px;">1</span>
+                                            </div>
+                                        </td>
+                                        <td style="padding-left: 15px;">
+                                            <p style="margin: 0 0 5px 0; color: #ffffff; font-size: 15px; font-weight: 600;">Profiel Beoordeling</p>
+                                            <p style="margin: 0; color: #888888; font-size: 13px;">Wij controleren uw gegevens en certificeringen</p>
+                                        </td>
+                                        <td align="right" valign="middle">
+                                            <span style="color: #FF4500; font-size: 12px; font-weight: 600;">IN BEHANDELING</span>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            
+                            <div style="background-color: #1e1e1e; border-radius: 10px; padding: 25px; margin: 15px 0; border: 1px solid #2a2a2a; opacity: 0.6;">
+                                <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+                                    <tr>
+                                        <td width="50" valign="top">
+                                            <div style="width: 40px; height: 40px; background-color: #333333; border-radius: 50%; text-align: center; line-height: 40px;">
+                                                <span style="color: #888888; font-size: 18px;">2</span>
+                                            </div>
+                                        </td>
+                                        <td style="padding-left: 15px;">
+                                            <p style="margin: 0 0 5px 0; color: #888888; font-size: 15px; font-weight: 600;">Account Activatie</p>
+                                            <p style="margin: 0; color: #666666; font-size: 13px;">Toegang tot uw persoonlijke dashboard</p>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            
+                            <div style="background-color: #1e1e1e; border-radius: 10px; padding: 25px; margin: 15px 0; border: 1px solid #2a2a2a; opacity: 0.6;">
+                                <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+                                    <tr>
+                                        <td width="50" valign="top">
+                                            <div style="width: 40px; height: 40px; background-color: #333333; border-radius: 50%; text-align: center; line-height: 40px;">
+                                                <span style="color: #888888; font-size: 18px;">3</span>
+                                            </div>
+                                        </td>
+                                        <td style="padding-left: 15px;">
+                                            <p style="margin: 0 0 5px 0; color: #888888; font-size: 15px; font-weight: 600;">Start met Verdienen</p>
+                                            <p style="margin: 0; color: #666666; font-size: 13px;">Ontvang klussen in uw regio</p>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            
+                            <!-- Stats Preview -->
+                            <div style="margin: 35px 0; padding: 25px 0; border-top: 1px solid #2a2a2a; border-bottom: 1px solid #2a2a2a;">
+                                <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+                                    <tr>
+                                        <td align="center" width="33%">
+                                            <p style="margin: 0; color: #FF4500; font-size: 28px; font-weight: 700;">500+</p>
+                                            <p style="margin: 5px 0 0 0; color: #888888; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;">Partners</p>
+                                        </td>
+                                        <td align="center" width="33%">
+                                            <p style="margin: 0; color: #ffffff; font-size: 28px; font-weight: 700;">15K+</p>
+                                            <p style="margin: 5px 0 0 0; color: #888888; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;">Klussen/Jaar</p>
+                                        </td>
+                                        <td align="center" width="33%">
+                                            <p style="margin: 0; color: #ffffff; font-size: 28px; font-weight: 700;">4.8</p>
+                                            <p style="margin: 5px 0 0 0; color: #888888; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;">Rating</p>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            
+                            <!-- CTA Button -->
+                            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin: 30px 0 20px 0;">
+                                <tr>
+                                    <td align="center">
+                                        <a href="{{frontend_url}}/vakman/dashboard" style="display: inline-block; background: linear-gradient(135deg, #FF4500 0%, #CC3700 100%); color: #ffffff; text-decoration: none; padding: 16px 40px; border-radius: 6px; font-weight: 600; font-size: 15px; box-shadow: 0 4px 20px rgba(255, 69, 0, 0.3);">
+                                            Naar Dashboard
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    
+                    <!-- Footer -->
+                    <tr>
+                        <td style="background-color: #0a0a0a; padding: 30px 40px; border-top: 1px solid #2a2a2a;">
+                            <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+                                <tr>
+                                    <td>
+                                        <p style="margin: 0; color: #666666; font-size: 13px;">
+                                            <strong style="color: #888888;">SpoedDienst24</strong> — Partner Network
+                                        </p>
+                                        <p style="margin: 8px 0 0 0; color: #555555; font-size: 12px;">
+                                            085 333 2847 &nbsp;|&nbsp; partners@spoeddienst24.nl
+                                        </p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding-top: 20px;">
+                                        <p style="margin: 0; color: #444444; font-size: 11px;">
+                                            <a href="{{frontend_url}}/uitschrijven?email={{vakman_email}}&token={{unsubscribe_token}}" style="color: #666666; text-decoration: underline;">Uitschrijven</a>
+                                            &nbsp;&nbsp;|&nbsp;&nbsp;
+                                            <a href="{{frontend_url}}/vakman/voorwaarden" style="color: #666666; text-decoration: underline;">Voorwaarden</a>
+                                        </p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>"""
     },
     "review_reminder": {
         "subject": "Hoe was uw ervaring met {{vakman_name}}? ⭐",
