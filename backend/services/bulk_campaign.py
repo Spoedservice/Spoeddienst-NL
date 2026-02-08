@@ -174,13 +174,15 @@ class BulkCampaignService:
                 "B": {"sent": 0, "opened": 0, "clicked": 0}
             },
             "created_at": datetime.now(timezone.utc).isoformat(),
-            "updated_at": datetime.now(timezone.utc),
+            "updated_at": datetime.now(timezone.utc).isoformat(),
             "started_at": None,
             "completed_at": None
         }
         
         await self.campaigns_collection.insert_one(campaign)
-        return {"campaign_id": campaign["id"], "campaign": campaign}
+        
+        # Return without _id
+        return {"campaign_id": campaign_id, "message": "Campagne aangemaakt", "country": country}
     
     async def get_campaign(self, campaign_id: str) -> Optional[dict]:
         """Get campaign by ID"""
