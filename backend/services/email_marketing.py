@@ -792,7 +792,7 @@ class EmailMarketingService:
                 )
     
     async def send_seasonal_campaign(self, season: str):
-        """Send seasonal campaign to all customers"""
+        """Send seasonal campaign to all customers (excludes vakmannen)"""
         template_type = f"seasonal_{season}"
         template = await self.collections["templates"].find_one({"type": template_type})
         
@@ -805,9 +805,24 @@ class EmailMarketingService:
         sent_count = 0
         
         for customer in customers:
+            customer_email = customer.get("email", "")
+            
+            # Skip if user is tagged as vakman (segmentation exclusion)
+            if await self.is_vakman(customer_email):
+                logger.info(f"Skipping {customer_email} - tagged as vakman")
+                continue
+            
+            # Get first name for personalization
+            full_name = customer.get("name", "Klant")
+            first_name = full_name.split()[0] if full_name and full_name.strip() else "Klant"
+            
             variables = {
-                "customer_name": customer.get("name", "Klant"),
-                "customer_email": customer.get("email", ""),
+                "customer_name": first_name,
+                "first_name": first_name,
+                "full_name": full_name,
+                "name": first_name,
+                "customer_email": customer_email,
+                "email": customer_email,
                 "frontend_url": self.frontend_url,
                 "unsubscribe_token": self.generate_unsubscribe_token(customer.get("email", ""))
             }
