@@ -151,8 +151,9 @@ class BulkCampaignService:
         ab_test_enabled: bool = True
     ) -> dict:
         """Create a new bulk email campaign"""
+        campaign_id = str(uuid.uuid4())
         campaign = {
-            "id": str(uuid.uuid4()),
+            "id": campaign_id,
             "name": name,
             "country": country,
             "template_type": template_type,
@@ -172,7 +173,7 @@ class BulkCampaignService:
                 "A": {"sent": 0, "opened": 0, "clicked": 0},
                 "B": {"sent": 0, "opened": 0, "clicked": 0}
             },
-            "created_at": datetime.now(timezone.utc),
+            "created_at": datetime.now(timezone.utc).isoformat(),
             "updated_at": datetime.now(timezone.utc),
             "started_at": None,
             "completed_at": None
