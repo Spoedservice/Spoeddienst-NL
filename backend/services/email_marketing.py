@@ -447,7 +447,11 @@ class EmailMarketingService:
         
         # Calculate days since start
         start_date = config.get("start_date", datetime.now(timezone.utc))
-        days_active = (datetime.now(timezone.utc) - start_date).days + 1
+        # Handle timezone-naive datetimes from MongoDB
+        if start_date and start_date.tzinfo is None:
+            start_date = start_date.replace(tzinfo=timezone.utc)
+        
+        days_active = (datetime.now(timezone.utc) - start_date).days + 1 if start_date else 1
         
         # Return appropriate limit based on warming schedule
         if days_active <= 7:
