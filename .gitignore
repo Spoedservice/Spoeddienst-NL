@@ -4,3 +4,10 @@ emergent.sh
 .emergent/
 *.emergentagent*
 # Other existing ignores
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example
+.env*
+!.env.example
